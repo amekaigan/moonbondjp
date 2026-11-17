@@ -1,6 +1,6 @@
 /* Moonbond analytics (GA4). Set the measurement ID below, e.g. 'G-XXXXXXXXXX'. Empty = no tracking. */
 (function () {
-  var GA_ID = '';
+  var GA_ID = 'G-705EPJMDMC';
   if (!/^G-[A-Z0-9]+$/.test(GA_ID)) { window.mbTrack = function () {}; return; }
   window.dataLayer = window.dataLayer || [];
   function gtag() { window.dataLayer.push(arguments); }
