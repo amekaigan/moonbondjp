@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Moonbond · Full Reading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* The paid reading: two birthdays in, eight chapters out. Indigo night and washi paper, same family as the free page. */
+:root{
+  --night:#12264f; --night-2:#1b3668; --night-3:#2b4c87; --paper:#f6f0e1; --paper-2:#e9e0ca; --ink:#1d1b27; --ink-2:#55506a;
+  --shu:#d4472a; --kin:#d6b05a; --mist:#bcc8e2; --hair:rgba(255,255,255,.18);
+  --display:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",Georgia,serif;
+  --body:"Zen Kaku Gothic New","Hiragino Sans","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--night);color:var(--paper);font-family:var(--body);font-size:16px;line-height:1.6}
+p,ul,ol,h1,h2,h3,fieldset,legend{margin:0;padding:0}
+ul,ol{list-style:none}
+fieldset{border:0;min-width:0}
+.wrap{width:100%;max-width:680px;margin:0 auto;padding:0 16px}
+h1,h2,h3{font-family:var(--display);line-height:1.25;font-weight:800;text-wrap:balance}
+:focus-visible{outline:3px solid var(--kin);outline-offset:2px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:12px;padding-bottom:12px}
+.brand{display:flex;align-items:center;gap:8px}
+.brand-moon{width:18px;height:18px;border-radius:50%;box-shadow:inset -6px 0 0 0 var(--kin)}
+.brand-name{font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:.04em}
+.brand-jp{font-family:var(--display);color:var(--kin);font-size:14px}
+.lang{display:flex;gap:2px;border:1px solid var(--hair);border-radius:999px;padding:3px}
+.lang button{appearance:none;border:0;background:transparent;color:var(--mist);font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--paper);color:var(--ink)}
+
+.intro{display:flex;flex-direction:column;gap:14px;padding-top:10px;padding-bottom:26px}
+.intro-head{display:grid;grid-template-columns:1fr 84px;gap:14px;align-items:center}
+.intro-head img{width:84px;height:84px;display:block}
+.intro h1{font-size:clamp(26px,7.4vw,38px)}
+.intro-sub{color:var(--mist);font-size:15px}
+form{display:flex;flex-direction:column;gap:14px}
+legend{font-weight:700;font-size:15px;margin-bottom:6px}
+.date-row{display:grid;grid-template-columns:1.5fr .9fr 1.1fr;gap:8px}
+.date-row label{display:flex;flex-direction:column;gap:4px;min-width:0}
+.date-row label span{font-size:12px;color:var(--mist)}
+select{width:100%;min-width:0;background:var(--night-2);color:var(--paper);border:1px solid rgba(255,255,255,.3);border-radius:10px;padding:12px 10px;font-size:16px;font-family:inherit}
+.btn{appearance:none;background:var(--shu);color:#fff6ea;border:1px solid var(--shu);border-radius:10px;padding:14px 18px;font-size:16px;font-weight:700;cursor:pointer;text-align:center;font-family:inherit}
+.err{color:#ffc9b8;font-size:14px;min-height:1px}
+
+#reading{display:flex;flex-direction:column;gap:16px;padding-bottom:40px}
+#reading[hidden]{display:none}
+.cover{background:var(--night-2);border:1px solid var(--hair);border-radius:18px;padding:22px 20px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden}
+.cover-cats{display:flex;gap:10px;align-items:flex-end;justify-content:flex-end;position:absolute;right:16px;top:16px}
+.cover-cats img{height:64px;width:auto;display:block}
+.cover-for{font-size:13px;color:var(--mist);padding-right:120px}
+.cover-names{font-family:var(--display);font-weight:800;font-size:24px;line-height:1.3;padding-right:120px}
+.cover-bond{color:var(--kin);font-family:var(--display);font-weight:700;font-size:16px}
+.cover-title{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.38;white-space:pre-line}
+.cover-sub{font-size:16px;line-height:1.65}
+#wheel{width:100%;max-width:320px;height:auto;display:block;margin:4px auto 0}
+#wheel text{font-family:var(--display);fill:var(--mist);font-size:12px}
+#wheel .a text{fill:var(--ink)}
+#wheel .b text{fill:#fff6ea}
+#wheel .mid1{fill:var(--paper);font-size:34px;font-weight:800}
+#wheel .mid2{fill:var(--kin);font-size:13px;font-family:var(--body);font-weight:700}
+.legend{display:flex;gap:16px;justify-content:center;font-size:13px;color:var(--mist)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+.ch{background:var(--paper);color:var(--ink);border-radius:18px;padding:22px 20px;display:flex;flex-direction:column;gap:14px}
+.ch-head{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center}
+.ch-num{width:44px;height:44px;border-radius:50%;background:var(--night);color:var(--kin);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:20px}
+.ch-label{font-size:12.5px;font-weight:700;color:var(--shu)}
+.ch h2{font-size:21px;line-height:1.35}
+.ch p{font-size:16px;line-height:1.85}
+html[lang="ja"] .ch p{line-height:1.95}
+html[lang="ja"] h1,html[lang="ja"] h2,html[lang="ja"] .closing .line{text-wrap:wrap}
+.sides{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.side{background:var(--paper-2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:4px}
+.mini{font-size:12.5px;font-weight:700;color:var(--shu)}
+.side-name{font-family:var(--display);font-weight:800;font-size:20px;line-height:1.3}
+.side p{font-size:15px;line-height:1.7}
+.meter{display:grid;gap:10px}
+.meter-row{display:grid;grid-template-columns:7.2em 1fr 3.2em;align-items:center;gap:12px;font-size:14.5px;font-weight:700}
+.pbar{display:block;height:12px;border-radius:6px;overflow:hidden}
+.pbar i{display:block;height:100%;border-radius:6px}
+.pct{font-family:var(--display);font-weight:800;font-size:18px;line-height:1;text-align:right;font-variant-numeric:tabular-nums}
+.pct small{font-size:12px;font-weight:700;margin-left:1px}
+@media (prefers-reduced-motion:no-preference){.pbar i{animation:pgrow 1s cubic-bezier(.2,.7,.2,1) both}@keyframes pgrow{from{width:0}}}
+.pbar{background:rgba(29,27,39,.12)}
+.pbar i{background:var(--shu)}
+.pct{color:var(--ink)}
+.room-bar{display:grid;grid-template-columns:1fr 3.2em;align-items:center;gap:12px}
+.who-card{background:var(--paper-2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.who-top{display:flex;align-items:center;gap:12px}
+.who-disc{flex:none;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:25px;background:var(--kin);color:var(--ink)}
+.who-disc.b{background:var(--shu);color:#fff6ea}
+.who-tag{font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.who-name{font-family:var(--display);font-weight:800;font-size:18px;line-height:1.25}
+.who-arch{font-size:14px;color:var(--ink-2)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700;background:var(--paper);color:var(--ink)}
+.who-card p{font-size:15px;line-height:1.75}
+.dots li{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;font-size:16px;line-height:1.7}
+.dots{display:flex;flex-direction:column;gap:8px}
+.dots svg{width:20px;height:20px;margin-top:4px}
+.try{background:var(--night);color:var(--paper);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.try .mini{color:var(--kin)}
+.try p{font-size:16px;line-height:1.65;font-weight:700}
+.gift{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start;background:#fbf3d9;border-radius:12px;padding:14px 16px}
+.gift svg{width:24px;height:24px;margin-top:2px}
+.gift .mini{color:#8a6410}
+.gift p{font-family:var(--display);font-weight:700;font-size:16.5px;line-height:1.75}
+.rooms{display:flex;flex-direction:column;gap:10px}
+.room{background:var(--paper-2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.room-name{font-family:var(--display);font-weight:800;font-size:17px}
+.room p{font-size:15px;line-height:1.7}
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;background:var(--paper-2);border-radius:12px;padding:14px}
+.step-n{width:34px;height:34px;border-radius:50%;background:var(--shu);color:#fff6ea;display:grid;place-items:center;font-weight:700}
+.step strong{display:block;font-family:var(--display);font-size:17.5px;line-height:1.4}
+.step p{font-size:15px;line-height:1.75;margin-top:4px}
+.step-lead{display:block;font-size:14px;color:var(--ink-2);margin-bottom:2px}
+.closing{background:var(--night-2);border:1px solid var(--hair);border-radius:18px;padding:24px 20px;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center}
+.closing img{width:64px;height:64px}
+.closing .for{font-size:13px;font-weight:700;color:var(--kin)}
+.closing .line{font-family:var(--display);font-weight:500;font-size:17.5px;line-height:1.9;text-align:left}
+.closing .fine{font-size:12.5px;color:var(--mist);max-width:36em}
+@media print{
+  body{background:#fff;color:#000}
+  .top,.intro{display:none}
+  .ch,.cover,.closing{break-inside:avoid;border:1px solid #ccc}
+}
+</style>
+<script id="core">
+/* Calendar and Shukuyō logic. No DOM access in this block. */
+var EPOCH0 = -18273;            /* 1919-12-22 as days since 1970-01-01: first day of lunar month 11 */
+var ENC = "bbabaabaabbabbbabaabaababbbabbaAbaababbabbabababaabbababbababaababbAbabbababaabababbabbabaabababbabbabAabaabbabbbabaabaababbbabbaabAababbabbbaabaabababbbababaabababbabBababaabababbabbababaabababbabbabaaBabababbbabaabaababbbabbaabaaBabbabbbaabaabababbbababaabababbabbaBaababababbabbabaababababbabbabaabaBababbabbaabaababbbabbaabaababbabbbAabaabababbbababaabababbbababaAbababbabbabaababababbababababababaBbababababaabbabbabbaabaababbabbbaaBaabababbbababaabababbbababaabAbabbabbabaababababbabababababababbAbababababababbabababaababbabbababaAbababbbababaabababbbababaabaabbbabbAbaabaabbabbabbaababababbababAbabababababbabababaabbababbababaabAbabbbababaabababbbababaabaabbbabbabAabaabbabbbabaabaababbbabababAbaabbabbabababaabbababbabababaababBabbababaabababbabbabaabaabbabbbabaAbaabbabbbabaabaababbbabbaabaabAbbabbababaabababbabbababaababbabAbbababaabababbabbabaabababbabbabaabAabbabbbabaabaababbbabbaabaababbabbAbabaabababbbababaabababbabbabAbaabababbababbabaabababbabbabaabaAbbabbbabaabaababbbabbaabaababbabbbaAbaabababbbababaabababbabbabaabababAbbabababababababbabbaababababAbbabbaabaababbbabbaabaababbabbbaabAabababbbababaabababbabbabaababababBbabaababababbababababababababbAbababaababbbabababaababbabbababaAbababbbababaabababbbababaabababbabbAbaababababbabababababababbababababAbababbabababaababbabbababaabAbabbbababaabababbbababaabaabbbabbabAabaabbabbabbaabaabbababbabababababAbabbabababaababbabbababaabababbbAbabaabababbbababaabaabbabbbabaaBaabb";            /* one letter per lunar month: a=29 days, b=30 days, capitals = leap month */
+var MONTHS = [];
+(function(){
+  var d = EPOCH0, m = 11;
+  for (var i = 0; i < ENC.length; i++){
+    var ch = ENC.charAt(i), leap = (ch === 'A' || ch === 'B'), len = (ch === 'a' || ch === 'A') ? 29 : 30;
+    if (i > 0 && !leap) m = m % 12 + 1;
+    MONTHS.push({s:d, m:m, leap:leap, len:len});
+    d += len;
+  }
+})();
+var LAST_DAY = MONTHS[MONTHS.length-1].s + MONTHS[MONTHS.length-1].len - 1;
+/* first-day mansion of each lunar month (index into the 27), months 1..12 */
+var FIRST = [0,22,24,26,1,3,5,8,11,13,15,18,20];
+function dayNum(y, m, d){ return Math.round(Date.UTC(y, m-1, d) / 86400000); }
+function lunarOf(dn){
+  if (dn < EPOCH0 || dn > LAST_DAY) return null;
+  var lo = 0, hi = MONTHS.length - 1;
+  while (lo < hi){ var mid = (lo + hi + 1) >> 1; if (MONTHS[mid].s <= dn) lo = mid; else hi = mid - 1; }
+  var mo = MONTHS[lo];
+  return {m:mo.m, d:dn - mo.s + 1, leap:mo.leap};
+}
+function shukuOf(y, m, d){
+  var L = lunarOf(dayNum(y, m, d));
+  if (!L) return null;
+  return {idx:(FIRST[L.m] + L.d - 1) % 27, lm:L.m, ld:L.d, leap:L.leap};
+}
+var REL9 = ['ei','sui','an','ki','sei','kai','yu','shin'];
+function relOf(a, b){
+  var pos = ((b - a + 27) % 27) + 1, r = (pos - 1) % 9, g = Math.floor((pos - 1) / 9);
+  var key = r === 0 ? ['mei','go','tai'][g] : REL9[r-1];
+  var steps = Math.min(pos - 1, 27 - (pos - 1));
+  return {pos:pos, key:key, steps:steps};
+}
+function hashStr(s){ var h = 2166136261; for (var i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+if (typeof module !== 'undefined') module.exports = {shukuOf:shukuOf, relOf:relOf, lunarOf:lunarOf, dayNum:dayNum, hashStr:hashStr, MONTHS:MONTHS};
+</script>
+</head>
+<body>
+<header class="wrap top">
+  <div class="brand"><span class="brand-moon" aria-hidden="true"></span><span class="brand-name">Moonbond</span><span class="brand-jp" lang="ja">月の縁</span></div>
+  <div class="lang" role="group" aria-label="Language"><button type="button" id="langEn" aria-pressed="true">EN</button><button type="button" id="langJa" aria-pressed="false" lang="ja">日本語</button></div>
+</header>
+<main class="wrap">
+  <section class="intro">
+    <div class="intro-head">
+      <div><h1 id="tH1"></h1><p class="intro-sub" id="tSub"></p></div>
+      <img src="art/moon.webp" alt="" width="330" height="328">
+    </div>
+    <form id="birthForm" novalidate>
+      <fieldset><legend id="tYou"></legend>
+        <div class="date-row">
+          <label for="bMonth"><span class="lm"></span><select id="bMonth"></select></label>
+          <label for="bDay"><span class="ld"></span><select id="bDay"></select></label>
+          <label for="bYear"><span class="ly"></span><select id="bYear"></select></label>
+        </div>
+      </fieldset>
+      <fieldset><legend id="tThem"></legend>
+        <div class="date-row">
+          <label for="pMonth"><span class="lm"></span><select id="pMonth"></select></label>
+          <label for="pDay"><span class="ld"></span><select id="pDay"></select></label>
+          <label for="pYear"><span class="ly"></span><select id="pYear"></select></label>
+        </div>
+      </fieldset>
+      <button class="btn" type="submit" id="tGo"></button>
+      <p class="err" id="err" role="alert"></p>
+    </form>
+  </section>
+  <div id="reading" hidden></div>
+</main>
+<script>
+var lang = 'en';
+var MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+function L(en, ja){ return lang === 'ja' ? ja : en; }
+/* kanji, romaji, English name, archetype, tagline, keywords, reading, in love, kimono color, obi color, pattern, traits */
+var M = [
+['昴','Bō-shuku','Pleiades','The Radiant Scholar','Grace, learning and a quiet glow that draws people in.',['Refined','Curious','Honored'],'Bō is counted among the most fortunate mansions. You carry yourself with natural dignity, love to learn, and tend to be lifted by mentors and elders.','You fall for minds first and need a partner who respects your ideals.',['Fuji-iro','藤色','#BBBCDE'],['Kogane','黄金','#E6B422'],'shippo',[3,3,5,4]],
+['畢','Hisshuku','Net','The Steady Climber','Slow, sure and impossible to knock off course.',['Enduring','Loyal','Grounded'],'You build your life the way a mountain path is cut, one firm step at a time. Others tire and you keep going, so your best years tend to arrive later and last longer.','Devoted and constant, you show love through reliability more than words.',['Tokiwa-iro','常磐色','#007B43'],['Kuri-iro','栗色','#762F07'],'kikko',[4,3,3,5]],
+['觜','Shi-shuku','Beak','The Silver Tongue','Words are your craft, and you choose them with care.',['Articulate','Studious','Discreet'],'You think before you speak, and when you do speak people listen. Knowledge and conversation win you trust, while your real feelings stay close to your chest.','You court with conversation and need someone who can keep up with it.',['Rikyū-nezumi','利休鼠','#888E7E'],['Kikyō-iro','桔梗色','#5654A2'],'yagasuri',[3,2,5,4]],
+['参','Shin-shuku','Three Stars','The Trailblazer','Bold ideas, a loud laugh and no patience for the old way.',['Daring','Inventive','Outspoken'],'Curiosity pulls you toward whatever is new, and you say exactly what you think about it. You wake a room up and open doors other people had not noticed.','You need freedom and a partner who enjoys a lively debate.',['Shu-iro','朱色','#EB6101'],['Kon','紺','#223A70'],'uroko',[5,3,4,1]],
+['井','Sei-shuku','Well','The Clear Thinker','Cool logic and deep reserves.',['Analytical','Composed','Fair'],'Like well water, your mind is clear and runs deep. You gather facts, argue precisely and stay calm when others do not, so people rely on your judgement.','You warm up slowly, then stay loyal for a very long time.',['Asagi-iro','浅葱色','#00A3AF'],['Shironeri','白練','#F3F3F2'],'seigaiha',[3,2,5,4]],
+['鬼','Ki-shuku','Spirit','The Free Spirit','Playful, generous and hard to pin down.',['Open-hearted','Curious','Lucky'],'Tradition calls this the most auspicious mansion of all. You wander toward whatever fascinates you, give freely, and somehow land on your feet.','You love with childlike sincerity and wilt under control.',['Yamabuki-iro','山吹色','#F8B500'],['Wakatake-iro','若竹色','#68BE8D'],'asanoha',[3,5,3,3]],
+['柳','Ryū-shuku','Willow','The Devoted Flame','Whatever you love, you love completely.',['Passionate','Magnetic','Focused'],'You pour yourself into the people and pursuits that capture you, and that intensity attracts followers. Like a willow you bend with the wind while your roots stay put.','All-in and protective, you need a partner who can match your depth.',['Yanagi-iro','柳色','#A8C97F'],['Enji','臙脂','#B94047'],'kanoko',[5,4,3,2]],
+['星','Sei-shuku','Star','The Self-Made Star','Quiet ambition that outworks everyone.',['Hardworking','Independent','Ambitious'],'You set a far-off goal and walk toward it without fuss. Success comes from your own effort, often later than for others, and it is all the more solid for that.','Proud and private, you open up to someone who respects your goals.',['Ruri-iro','瑠璃色','#1E50A2'],['Ukon-iro','鬱金色','#FABF14'],'kikko',[5,2,4,3]],
+['張','Chō-shuku','Drawn Bow','The Leading Light','Made for the stage, and generous with the spotlight.',['Charismatic','Proud','Expressive'],'You know how to present yourself, and people gather around you. Under the confident surface is a careful planner who hates to disappoint.','You want to be admired and will spoil the one who does.',['Hi-iro','緋色','#D3381C'],['Kogane','黄金','#E6B422'],'ichimatsu',[5,3,3,2]],
+['翼','Yoku-shuku','Wings','The Far Traveler','High standards and wings wide enough to reach them.',['Idealistic','Precise','Worldly'],'You aim for perfection and will go a long way to find it, often literally. Distant places, foreign ideas and long projects suit you.','Faithful and exacting, you take time to choose and then commit.',['Sora-iro','空色','#A0D8EF'],['Gunjō-iro','群青色','#4C6CB3'],'yagasuri',[4,3,4,3]],
+['軫','Shin-shuku','Chariot','The Graceful Connector','Light on your feet and welcome everywhere.',['Sociable','Nimble','Considerate'],'You read a room in seconds and move through it with ease, linking people who should know each other. Travel, trade and anything in motion bring you luck.','Attentive and gentle, you need steady reassurance in return.',['Shinbashi-iro','新橋色','#59B9C6'],['Sango-iro','珊瑚色','#F5B1AA'],'shippo',[3,5,3,3]],
+['角','Kaku-shuku','Horn','The Charmer','Style, wit and a gift for enjoying life.',['Stylish','Playful','Skilled'],'You have good taste and clever hands, and you make hard things look easy. People come for the fun and stay for the principled core you keep hidden.','Popular and flirtatious, yet loyal once your heart is set.',['Botan-iro','牡丹色','#E7609E'],['Sumi','墨','#595857'],'ichimatsu',[3,4,3,3]],
+['亢','Kō-shuku','Neck','The Reformer','Principle first, authority second.',['Principled','Defiant','Just'],'You hold firm convictions and will stand alone to defend them. Unfairness moves you to act, which makes you a natural advocate.','You need an equal who shares your values.',['Kachi-iro','勝色','#4D4C61'],['Akane-iro','茜色','#B7282E'],'uroko',[5,2,4,2]],
+['氐','Tei-shuku','Root','The Powerhouse','A strong appetite for life, and the stamina to feed it.',['Vigorous','Practical','Determined'],'You have staying power in body and mind, and you go straight after what you want. Practical instincts turn your desires into results.','Ardent and direct, you say what you want.',['Kaki-iro','柿色','#ED6D3D'],['Chitose-midori','千歳緑','#316745'],'asanoha',[5,3,3,2]],
+['房','Bō-shuku','Chamber','The Fortunate Heir','Charm, comfort and luck with money.',['Blessed','Elegant','Warm'],'Fortune tends to find you through family, patrons or simple good timing. You enjoy fine things and share them graciously, which keeps the luck flowing.','Affectionate and well loved, you thrive in a harmonious home.',['Kōbai-iro','紅梅色','#F2A0A1'],['Kohaku-iro','琥珀色','#BF783A'],'shippo',[2,4,3,5]],
+['心','Shin-shuku','Heart','The Heart Reader','You sense what people feel before they say it.',['Perceptive','Charming','Adaptable'],'You understand people by instinct and can become whoever the moment needs. That gift wins hearts while your own stays carefully hidden.','Captivating and guarded, you treat trust as everything.',['Kurenai','紅','#D7003A'],['Shikon','紫紺','#460E44'],'kanoko',[3,5,4,2]],
+['尾','Bi-shuku','Tail','The Finisher','Once you start, you do not stop.',['Persistent','Competitive','Dedicated'],'You have a fighter\'s focus and a craftsman\'s patience. You stay on one path until you master it, and you rise to a challenge.','Serious and single-minded, you pursue one person wholeheartedly.',['Suō','蘇芳','#9E3D3F'],['Tetsukon','鉄紺','#17184B'],'yagasuri',[5,3,3,3]],
+['箕','Ki-shuku','Winnowing Basket','The Straight Shooter','Frank, fearless and happiest standing on your own feet.',['Bold','Honest','Independent'],'You say what you mean and take on what others avoid. Hardship toughens you, and you often do best far from where you began.','Direct and big-hearted, you have no time for games.',['Kincha','金茶','#F39800'],['Koke-iro','苔色','#69821B'],'uroko',[5,3,2,3]],
+['斗','To-shuku','Dipper','The Quiet Warrior','Calm on the outside, fiercely determined within.',['Driven','Charismatic','Spiritual'],'You carry a strong sense of purpose and a competitive streak you rarely show. People sense your inner strength and follow your lead.','Idealistic, you look for a partner you can deeply respect.',['Gunjō-iro','群青色','#4C6CB3'],['Ginnezu','銀鼠','#AFAFB0'],'kikko',[5,3,4,3]],
+['女','Jo-shuku','Maiden','The Strategist','Discipline, patience and a plan for everything.',['Diligent','Organized','Patient'],'You study hard, work methodically and keep your promises. Quiet effort earns you authority, and you manage people and resources well.','Reserved at first, you show care through practical support.',['Nando-iro','納戸色','#008899'],['Zōge-iro','象牙色','#F8F4E6'],'ichimatsu',[4,2,5,4]],
+['虚','Kyo-shuku','Void','The Dreamer','A rich inner world and ideals that reach past the ordinary.',['Sensitive','Idealistic','Complex'],'You feel deeply and think in big, unconventional pictures. Your moods swing between confidence and doubt, and that tension feeds real creativity.','Romantic and private, you need a patient partner who understands you.',['Edo-murasaki','江戸紫','#745399'],['Geppaku','月白','#EAF4FC'],'seigaiha',[3,4,4,1]],
+['危','Ki-shuku','Rooftop','The Adventurer','Life is more fun near the edge.',['Sociable','Daring','Trendsetting'],'You love novelty, people and a little risk. Quick to try things, you bring energy to any group and often spot a trend first.','Fun and spontaneous, you treat routine as the enemy.',['Tsuyukusa-iro','露草色','#38A1DB'],['Tanpopo-iro','蒲公英色','#FFD900'],'kanoko',[4,4,3,1]],
+['室','Shisshuku','Hall','The Builder','Big energy, big plans, and the nerve to carry them out.',['Powerful','Confident','Enterprising'],'You think on a grand scale and push projects forward with force. Obstacles rarely slow you, and you often build something that lasts.','Protective and proud, you lead in love as in life.',['Kokiake','深緋','#C9171E'],['Sumi','墨','#595857'],'ichimatsu',[5,2,3,3]],
+['壁','Heki-shuku','Wall','The Hidden Pillar','The quiet strength others lean on.',['Supportive','Wise','Private'],'You prefer to work behind the scenes, where your judgement and loyalty hold everything up. You have a taste for the mysterious and rarely reveal all you know.','Devoted and discreet, you love by standing firmly beside someone.',['Ainezu','藍鼠','#6C848D'],['Kyō-murasaki','京紫','#9D5B8B'],'kikko',[3,4,4,5]],
+['奎','Kei-shuku','Stride','The Noble Heart','Upright, gentle and guided by a clear conscience.',['Sincere','Refined','Principled'],'You value pure intentions and treat people with courtesy. Good partnerships, in marriage and in work, bring out your best fortune.','Faithful and idealistic, you seek a true life partner.',['Shiraai','白藍','#C1E4E9'],['Kakitsubata-iro','杜若色','#3E62AD'],'seigaiha',[2,4,4,5]],
+['婁','Rō-shuku','Bond','The Fine-Tuner','A sharp eye for detail and a talent for bringing people together.',['Observant','Helpful','Meticulous'],'You notice what others miss and quietly put things in order. As an adviser and go-between you are invaluable.','Caring and attentive, you look after the small things that matter.',['Wasabi-iro','山葵色','#A8BF93'],['Azuki-iro','小豆色','#96514D'],'asanoha',[3,4,5,4]],
+['胃','I-shuku','Granary','The Lone Wolf','Fierce independence and an appetite for achievement.',['Self-reliant','Bold','Ambitious'],'You trust your own strength and prefer to carve your own road. Courage and hunger for success carry you through tests that stop others.','Intense and proud, you need respect before affection.',['Daidai-iro','橙色','#EE7800'],['Kachi-iro','勝色','#4D4C61'],'uroko',[5,2,3,2]]
+];
+
+var PAT = {
+  seigaiha:['Seigaiha','青海波','Endless waves: lasting calm and good fortune'],
+  asanoha:['Asanoha','麻の葉','Hemp leaf: healthy, steady growth'],
+  shippo:['Shippō','七宝','Linked circles: harmony and good ties'],
+  kikko:['Kikkō','亀甲','Tortoise shell: long life'],
+  ichimatsu:['Ichimatsu','市松','Unbroken checks: prosperity that continues'],
+  uroko:['Uroko','鱗','Scales: protection from harm'],
+  yagasuri:['Yagasuri','矢絣','Arrow feathers: a path that never turns back'],
+  kanoko:['Kanoko','鹿の子','Fawn spots: abundance and family luck']
+};
+
+/* kanji, romaji, name, how you see them, how they see you */
+var REL = {
+  mei:['命','Mei','Mirror','You share the same mansion. You understand each other without words, and you also see your own flaws in them.','They see themselves in you, strengths and flaws alike.'],
+  go:['業','Gō','Karmic Gift','Tradition says they carry a debt to you from a past life. They tend to help you and ask for little back.','To them, you carry a debt from a past life. You may find yourself helping them freely.'],
+  tai:['胎','Tai','Karmic Calling','You feel moved to support them, as if keeping a promise carried into this life.','They feel moved to support you, as if keeping a promise carried into this life.'],
+  ei:['栄','Ei','Prosperity','The luckiest bond in Shukuyō. They lift your fortunes, and what you start together tends to grow.','To them, you bring luck. Your presence helps their plans grow.'],
+  shin:['親','Shin','Kinship','Close as family. Trust comes easily and lasts, in love, friendship and work alike.','They see you as family. Their trust in you comes easily and lasts.'],
+  yu:['友','Yū','Friendship','Easy, warm company. You relax around them and the talk never runs dry.','They relax around you. To them, you are easy company.'],
+  sui:['衰','Sui','Waning','You care for them deeply and tend to give more than you take. Mind your energy.','They care for you deeply and tend to give more than they take.'],
+  an:['安','An','Comfort','You feel settled and in control around them. The pull is stronger on their side, so handle their heart gently.','They feel settled around you, while the stronger pull is on your side.'],
+  kai:['壊','Kai','Disruption','Magnetic and unsettling. They can upend your routines and change you, for better or worse.','To them, you are magnetic and unsettling. You can shake up their routines.'],
+  ki:['危','Ki','Risk','Different worlds and different values. Exciting and unpredictable, better for adventures than routines.','To them, you come from another world. Exciting to be around, hard to predict.'],
+  sei:['成','Sei','Achievement','They sharpen your thinking and push you to finish what you start. A strong match for work and study.','You sharpen their thinking and push them to finish what they start.']
+};
+var PAIR = {mei:['Mirror','命'],go:['Karmic Thread','業胎'],tai:['Karmic Thread','業胎'],ei:['Prosperity & Kinship','栄親'],shin:['Prosperity & Kinship','栄親'],yu:['Friendship & Waning','友衰'],sui:['Friendship & Waning','友衰'],an:['Comfort & Disruption','安壊'],kai:['Comfort & Disruption','安壊'],ki:['Risk & Achievement','危成'],sei:['Risk & Achievement','危成']};
+
+var SHOP_URL = '';   /* set to the shop page once reports are on sale */
+var DIST = {ei:[1,8,10],shin:[1,8,10],yu:[2,7,11],sui:[2,7,11],an:[3,6,12],kai:[3,6,12],ki:[4,5,13],sei:[4,5,13]};
+var DNAME = ['Near','Middle','Far'];
+var DTEXT = ['A near bond: the pull is felt fast and strong.','A middle bond: a steady pull with room to breathe.','A far bond: a gentle pull that works slowly, over years.'];
+var LOCK_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="#d4472a"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="#d4472a" stroke-width="2"/></svg>';
+var RANK = {dai:['大吉','Dai-kichi','Great blessing'],chu:['中吉','Chū-kichi','Middle blessing'],sho:['小吉','Shō-kichi','Small blessing'],kichi:['吉','Kichi','Blessing'],sue:['末吉','Sue-kichi','Blessing to come'],kyo:['凶','Kyō','Caution']};
+var SLIPS = [
+['dai','The plum blooms before the snow has gone. Begin now.','Say it plainly. It will be welcome.','A door you knocked on long ago opens.','Granted, sooner than you expect.'],
+['dai','A fair wind fills the sail the moment it is raised.','Good news arrives from an unexpected direction.','Take the lead. Others are ready to follow.','Granted, if you share the credit.'],
+['chu','The moon climbs slowly and lights the whole valley.','Patience wins more than pursuit.','Steady effort is noticed this week.','It comes true by degrees.'],
+['chu','Clear water finds its own way down the mountain.','Let things flow. Do not force a reply.','Simplify the plan and it succeeds.','Possible, by the simplest route.'],
+['sho','One lantern is enough to cross the bridge.','A small kindness matters more than a grand gesture.','Finish one task well before starting the next.','A modest version comes true first.'],
+['sho','Tea tastes best when the cup is not too full.','Leave room for the other person to speak.','Do less, and do it better.','Granted in part. Be glad of the part.'],
+['kichi','The crane stands still, and the fish come to it.','Being yourself is the whole strategy.','Wait for the right opening, then move once.','Likely, with good timing.'],
+['kichi','New thread on an old loom makes fine cloth.','An old friend may see you in a new light.','Pair what you know with one new skill.','Granted through familiar hands.'],
+['sue','Seeds sleep under the frost. Spring keeps its promise.','Not yet, but warming.','Prepare quietly. Your season is coming.','Later, and better for the wait.'],
+['sue','The path bends, and the shrine is just past the bend.','Keep walking. Today\'s view is not the whole road.','A delay hides an advantage.','Granted after one more effort.'],
+['kyo','Wind in the pines tonight. Tie your sleeves and wait it out.','Listen twice before you answer.','Check the details and postpone big promises.','Hold it for a calmer day.'],
+['kyo','Thin ice on the pond. Go around.','Avoid tests and ultimatums.','Choose the safe route today.','Not now. Ask again soon.']
+];
+
+
+var YOMI = ['ぼうしゅく','ひっしゅく','ししゅく','しんしゅく','せいしゅく','きしゅく','りゅうしゅく','せいしゅく','ちょうしゅく','よくしゅく','しんしゅく','かくしゅく','こうしゅく','ていしゅく','ぼうしゅく','しんしゅく','びしゅく','きしゅく','としゅく','じょしゅく','きょしゅく','きしゅく','しつしゅく','へきしゅく','けいしゅく','ろうしゅく','いしゅく'];
+/* archetype, tagline, keywords, reading, in love */
+var MJ = [
+['気品ある学者','気品と学び、そして人を引き寄せる静かな輝き。',['上品','探究心','尊敬される'],'昴宿は特に幸運な宿のひとつとされます。自然な品格があり、学ぶことを好み、師や年長者に引き立てられやすい人です。','まず知性に惹かれます。あなたの理想を尊重してくれる相手が必要です。'],
+['着実な登山者','ゆっくり、確実に。誰にも進路を曲げられない。',['粘り強い','誠実','地に足がついた'],'山道を切り開くように、一歩ずつ確かに人生を築きます。周りが疲れても歩き続けるので、最盛期は遅めに訪れ、長く続きます。','一途で変わらない人。言葉よりも、頼れる行動で愛を示します。'],
+['言葉の名手','言葉があなたの技。ひとつひとつ丁寧に選びます。',['弁が立つ','勉強家','慎重'],'よく考えてから話し、話せば人が耳を傾けます。知識と会話で信頼を得ますが、本心は胸の内にしまっています。','会話で距離を縮めます。その会話についてこられる相手が必要です。'],
+['開拓者','大胆な発想と大きな笑い声。古いやり方には我慢できない。',['大胆','独創的','率直'],'好奇心が新しいものへ向かわせ、思ったことをそのまま口にします。場を活気づけ、誰も気づかなかった扉を開く人です。','自由が必要です。活発な議論を楽しめる相手が合います。'],
+['明晰な思考家','冷静な論理と、深い蓄え。',['分析的','落ち着き','公平'],'井戸の水のように、頭脳は澄んで深い。事実を集め、正確に論じ、周りが動揺しても冷静なので、判断を頼りにされます。','打ち解けるまでに時間がかかりますが、その後はとても長く誠実です。'],
+['自由な魂','遊び心があり、気前がよく、つかみどころがない。',['おおらか','好奇心','幸運'],'伝統的に、もっとも縁起のよい宿とされます。心惹かれるものへ自由に向かい、惜しみなく与え、なぜかうまく着地します。','子どものように純粋に愛します。束縛されるとしおれてしまいます。'],
+['一途な炎','好きになったものは、とことん愛する。',['情熱的','人を惹きつける','集中力'],'心をつかんだ人や物事に全力を注ぎ、その熱量が人を集めます。柳のように風にはしなっても、根は動きません。','全力で愛し、守ろうとします。その深さに応えられる相手が必要です。'],
+['自力で輝く星','誰よりも努力する、静かな野心。',['努力家','自立','向上心'],'遠い目標を定め、騒がずに歩き続けます。成功は自分の努力から生まれ、人より遅れて来ることが多いぶん、揺るぎません。','誇り高く、内面を見せません。目標を尊重してくれる人に心を開きます。'],
+['舞台の主役','舞台に立つために生まれ、光を人にも分ける。',['華がある','誇り高い','表現力'],'自分の見せ方を知っていて、人が集まります。自信に満ちた表面の下には、期待を裏切りたくない慎重な計画家がいます。','称賛されたい人。称賛してくれる相手を、とことん甘やかします。'],
+['遠くへ行く旅人','高い理想と、そこへ届く大きな翼。',['理想家','几帳面','国際的'],'完璧を目指し、そのためなら文字どおり遠くまで行きます。遠い土地、異国の考え方、長期の仕事が合います。','誠実で基準が高い人。選ぶのに時間をかけ、決めたら貫きます。'],
+['軽やかな橋渡し役','身軽で、どこでも歓迎される。',['社交的','機敏','気配り'],'場の空気を一瞬で読み、軽やかに動いて、出会うべき人同士をつなぎます。旅、商い、動きのあるものが幸運を運びます。','よく気がつく優しい人。その分、変わらない安心感を求めます。'],
+['人気者','センスと機知、人生を楽しむ才能。',['おしゃれ','遊び上手','器用'],'趣味がよく手先も器用で、難しいことを簡単そうにこなします。人は楽しさに惹かれて集まり、隠れた芯の強さを知って離れません。','モテて気も多いけれど、心が決まれば一途です。'],
+['改革者','まず信念。権威はその次。',['信念','反骨','正義感'],'強い信念を持ち、守るためなら一人でも立ちます。不公平を見ると動かずにいられない、生まれつきの代弁者です。','価値観を共有できる、対等な相手が必要です。'],
+['エネルギーの塊','人生への旺盛な欲と、それを満たす体力。',['精力的','現実的','意志が強い'],'心身ともに持久力があり、欲しいものへまっすぐ向かいます。現実的な勘が、望みを結果に変えます。','情熱的で率直。望むことをはっきり口にします。'],
+['恵まれた跡継ぎ','魅力と豊かさ、そして金運。',['恵まれた','優雅','温かい'],'家族や後援者、あるいは巡り合わせを通じて運がやって来ます。良いものを楽しみ、気前よく分かち合うので、運が巡り続けます。','愛情深く、愛される人。穏やかな家庭で力を発揮します。'],
+['心を読む人','相手が口にする前に、気持ちを感じ取る。',['洞察力','魅力的','順応性'],'直感で人を理解し、その場に必要な自分になれます。その才能で人の心をつかみますが、自分の心は慎重に隠しています。','人を惹きつけるのに、警戒心は強い。信頼がすべてです。'],
+['やり遂げる人','始めたら、止まらない。',['粘り強い','負けず嫌い','ひたむき'],'闘う人の集中力と、職人の忍耐を持っています。極めるまで一つの道を歩み、挑戦されるほど力を出します。','真剣で一途。一人の相手を全力で追いかけます。'],
+['直球勝負の人','率直で恐れ知らず。自分の足で立つときがいちばん幸せ。',['大胆','正直','独立心'],'思ったとおりに話し、人が避けることを引き受けます。苦労が人を強くし、生まれた場所から離れて成功することが多い人です。','まっすぐで心が広い。駆け引きには興味がありません。'],
+['静かな闘士','外は穏やか、内には激しい決意。',['意欲的','カリスマ','精神性'],'強い使命感と、めったに見せない闘争心を持っています。内なる強さを感じ取って、人がついてきます。','理想が高く、心から尊敬できる相手を求めます。'],
+['戦略家','規律と忍耐。すべてに計画がある。',['勤勉','整理上手','辛抱強い'],'よく学び、手順を踏んで働き、約束を守ります。静かな努力で信頼と立場を得て、人も資源も上手に管理します。','最初は控えめ。実際に役立つ支えで愛情を示します。'],
+['夢見る人','豊かな内面世界と、日常を超える理想。',['繊細','理想家','複雑'],'深く感じ、型にはまらない大きな絵で考えます。自信と迷いの間を揺れ動き、その緊張が本物の創造性を育てます。','ロマンチストで内向的。理解してくれる、気の長い相手が必要です。'],
+['冒険家','人生は、ぎりぎりのところが面白い。',['社交的','大胆','流行に敏感'],'新しいもの、人、少しのリスクが好き。すぐ試す人で、どんな集まりにも活気を与え、流行を最初に見つけます。','楽しく気まま。マンネリが最大の敵です。'],
+['築き上げる人','大きなエネルギー、大きな計画、やり抜く度胸。',['力強い','自信','事業家'],'大きなスケールで考え、力強く物事を進めます。障害があっても止まらず、長く残るものを築くことが多い人です。','守ろうとする気持ちが強く、誇り高い。恋でも人生でもリードします。'],
+['縁の下の柱','人が寄りかかる、静かな強さ。',['支える','聡明','秘密主義'],'裏方を好み、その判断力と誠実さが全体を支えます。神秘的なものを好み、知っていることをすべては明かしません。','献身的で控えめ。そばにしっかり立つことで愛します。'],
+['高潔な心','まっすぐで優しく、澄んだ良心に従う。',['誠実','上品','信念'],'純粋な動機を大切にし、人に礼儀正しく接します。結婚でも仕事でも、良いパートナーが最高の運を引き出します。','誠実で理想が高い。本当の人生の伴侶を求めます。'],
+['調整の名人','細部を見抜く目と、人を結びつける才能。',['観察力','世話好き','几帳面'],'人が見落とすことに気づき、静かに物事を整えます。相談役や仲介役として欠かせない存在です。','思いやりがあり、よく気がつく。大切な小さなことに気を配ります。'],
+['一匹狼','強い独立心と、達成への渇望。',['自立','大胆','野心'],'自分の力を信じ、自分の道を切り開くことを好みます。勇気と成功への渇望が、人が止まる試練も乗り越えさせます。','激しく誇り高い。愛情の前に、まず敬意が必要です。']
+];
+var PATJ = {
+  seigaiha:'穏やかな波が続くように、平穏と幸運が続く',
+  asanoha:'健やかで、まっすぐな成長',
+  shippo:'円がつながる。調和と良縁',
+  kikko:'亀の甲羅。長寿',
+  ichimatsu:'途切れない格子。繁栄が続く',
+  uroko:'鱗。厄除け',
+  yagasuri:'射た矢は戻らない。まっすぐな道',
+  kanoko:'子鹿の斑点。豊かさと家族の幸運'
+};
+/* reading, label, how you see them, how they see you */
+var RELJ = {
+  mei:['めい','鏡','同じ宿の二人です。言葉がなくても分かり合えますが、相手の中に自分の欠点も見えます。','相手はあなたの中に、長所も短所も含めて自分自身を見ています。'],
+  go:['ごう','前世からの贈り物','伝統では、相手は前世であなたに借りがあるとされます。見返りをあまり求めずに助けてくれる傾向があります。','相手から見ると、あなたは前世の借りを負う側です。気づけば進んで相手を助けているかもしれません。'],
+  tai:['たい','前世からの使命','前世からの約束を果たすかのように、相手を支えたくなります。','相手は、前世からの約束を果たすかのように、あなたを支えたくなります。'],
+  ei:['えい','繁栄','宿曜でいちばん幸運な相性です。相手があなたの運を引き上げ、一緒に始めたことは育ちやすくなります。','相手にとって、あなたは幸運を運ぶ人です。あなたがいると相手の計画が育ちます。'],
+  shin:['しん','身内','家族のように近い相手です。恋愛でも友情でも仕事でも、信頼が自然に生まれ、長く続きます。','相手はあなたを身内のように感じています。あなたへの信頼は自然に生まれ、長続きします。'],
+  yu:['ゆう','友情','気楽で温かい相手です。一緒にいるとくつろげて、会話が尽きません。','相手はあなたといるとくつろげます。相手にとって、あなたは気楽に過ごせる人です。'],
+  sui:['すい','衰え','あなたは相手を深く思い、受け取るより多く与えがちです。自分のエネルギーに気をつけて。','相手はあなたを深く思い、受け取るより多く与えがちです。'],
+  an:['あん','安らぎ','相手といると落ち着き、主導権を持てます。強く惹かれているのは相手の側なので、相手の心は丁寧に扱って。','相手はあなたといると落ち着きます。ただし、強く惹かれているのはあなたの側です。'],
+  kai:['かい','破壊','強く惹かれるのに、心が乱される相手です。良くも悪くも、あなたの日常をひっくり返し、あなたを変えます。','相手にとって、あなたは強く惹かれるのに心を乱す存在です。相手の日常を揺さぶることがあります。'],
+  ki:['き','危うさ','住む世界も価値観も違う相手です。刺激的で予測できず、日常よりも冒険に向きます。','相手から見ると、あなたは別世界の人です。一緒にいると刺激的で、予測ができません。'],
+  sei:['せい','達成','相手はあなたの考えを磨き、始めたことをやり遂げるよう後押しします。仕事や勉強に強い相性です。','あなたは相手の考えを磨き、始めたことをやり遂げるよう後押しします。']
+};
+var PAIRJ = {mei:'うつし鏡の二人',go:'前世からの縁',tai:'前世からの縁',ei:'いちばん幸運な縁',shin:'いちばん幸運な縁',yu:'気の合う友の縁',sui:'気の合う友の縁',an:'引き合い、揺さぶる縁',kai:'引き合い、揺さぶる縁',ki:'違うから磨き合う縁',sei:'違うから磨き合う縁'};
+var DNAMEJ = ['近距離','中距離','遠距離'];
+var DTEXTJ = ['近距離：引き合う力を早く、強く感じます。','中距離：ほどよい距離感のある、安定した引力です。','遠距離：穏やかな引力が、年単位でゆっくり働きます。'];
+var RANKJ = {dai:['だいきち','大きな恵み'],chu:['ちゅうきち','中くらいの恵み'],sho:['しょうきち','小さな恵み'],kichi:['きち','恵み'],sue:['すえきち','これから来る恵み'],kyo:['きょう','用心']};
+var SLIPSJ = [
+['雪が消える前に梅は咲く。いま始めよ。','率直に伝えて。きっと喜ばれます。','ずっと前に叩いた扉が開きます。','叶います。思うより早く。'],
+['帆を上げた瞬間、追い風が吹く。','思いがけない方向から良い知らせが届きます。','先頭に立って。周りはついてくる準備ができています。','叶います。手柄を分かち合えば。'],
+['月はゆっくり昇り、谷じゅうを照らす。','追うより、待つほうが実ります。','今週、地道な努力が認められます。','少しずつ叶っていきます。'],
+['澄んだ水は、自分で山を下る道を見つける。','流れに任せて。返事を急がせないで。','計画を単純にすれば成功します。','叶います。いちばん単純な道で。'],
+['橋を渡るには、提灯ひとつで足りる。','大きな演出より、小さな親切が効きます。','次を始める前に、ひとつをきちんと仕上げて。','まず控えめな形で叶います。'],
+['茶は、注ぎすぎない器がいちばんうまい。','相手が話す余白を残して。','量を減らし、質を上げて。','一部が叶います。その一部を喜んで。'],
+['鶴はじっと立ち、魚のほうが寄ってくる。','自分らしくいること。それが作戦のすべて。','好機を待ち、一度だけ動いて。','叶いそうです。時機が合えば。'],
+['古い機に新しい糸で、良い布が織れる。','古い友人が、あなたを新しい目で見るかもしれません。','今の知識に、新しい技をひとつ足して。','なじみの人の手を通して叶います。'],
+['種は霜の下で眠る。春は約束を守る。','まだです。でも温まってきています。','静かに準備を。あなたの季節が来ます。','遅れて叶います。待ったぶん良い形で。'],
+['道は曲がる。社はその曲がり角のすぐ先。','歩き続けて。今日の景色が道のすべてではありません。','遅れの中に、有利な点が隠れています。','もうひと頑張りの後に叶います。'],
+['今夜は松に風。袖を結んで、やり過ごせ。','答える前に、二度聞いて。','細部を確かめ、大きな約束は先延ばしに。','穏やかな日まで取っておいて。'],
+['池には薄氷。回り道を。','相手を試すことや、最後通告は避けて。','今日は安全な道を選んで。','今ではありません。近いうちにもう一度。']
+];
+var JA = {
+  eyebrow:'宿曜 · 日本の月の占星術',
+  h1:'あの人と、私。<br>月が教えてくれる<br>二人のこと。',
+  sub:'どうして惹かれるの？<br>どうしてすれ違うの？',
+  lede:'生まれた日から読み解く、二人だけの物語。',
+  cta:'二人の相性を診断する',
+  legYou:'あなたの誕生日',
+  meterH:'この相性をひと目で', whoH:'二人はこんな人', scenesH:'二人に起きやすいこと', tipH:'今日からできること', wheelH:'27宿の輪の上の二人',
+  p3:'第3章 · 二人に起きやすいこと',
+  legThem:'相手の誕生日 <span class="hint">恋人・気になる人・友人・家族</span>',
+  lblM:'月', lblD:'日', lblY:'年',
+  reveal:'診断する',
+  as1:'10秒で結果が出ます', as2:'無料・登録なし', as3:'生まれた時間は不要', as4:'誕生日は保存も送信もされません',
+  connH:'二人の診断結果', legA:'あなた', legB:'相手',
+  miniA:'あなたから見た相手', miniB:'相手から見たあなた',
+  sideNote:'ここまでが無料の診断です。この先では、二人がぶつかる理由、相手が口にしない本音、長続きのコツまで、あなたたち二人の組み合わせに合わせて読み解きます。',
+  prog:'全8章のうち、3章を読み終えました', p1:'第1章 · 二人の相性と、お互いの見え方', p2:'第2章 · 二人はこんな人',
+  priceLine:'残りの5章すべて。二人の組み合わせに合わせた、くわしい鑑定です',
+  unlock:'続きの5章を読む',
+  compare:'ほかのプランも見る',
+  lockFine:'楽しみと振り返りのための読み物です。傾向をお伝えするもので、結果を約束するものではありません。',
+  shareBondH:'二人の相性をシェア', saveStory:'画像を保存', copyCap:'投稿文をコピー',
+  mineH:'あなたの宿', mineSub:'あなた自身の性格と恋愛の傾向を、誕生日から読み解きます。',
+  inLove:'恋愛では',
+  kimH:'あなたに似合う着物の色',
+  kimFine:'日本の伝統色と着物の文様から選んだ、当サイト独自の提案です。古典の宿曜にはない、オリジナルの組み合わせです。',
+  shareMineH:'あなたの宿をシェア', saveImg:'画像を保存',
+  omiH:'今日のおみくじ',
+  omiSub:'今日の運勢を、1日1回引けます。',
+  allH:'二十七宿の一覧', allSub:'気になる宿をタップすると、性格が読めます。色は、その宿の着物の色です。',
+  edH:'もっと詳しく知りたい方へ', edSub:'知りたい深さに合わせて選べます。',
+  t1name:'無料診断', t1chip:'いま読んだ内容', t1a:'二人の相性と、お互いの見え方', t1b:'二人はこんな人', t1c:'二人に起きやすいこと', t1d:'シェア用の画像',
+  t2name:'くわしい相性鑑定', t2chip:'おすすめ', t2a:'この関係が、今の形になった理由', t2b:'二人がぶつかる場所と、本当の理由', t2c:'相手が口にしない本音', t2d:'恋愛・結婚・日常、それぞれの相性', t2e:'長続きさせる3つのコツ', t2btn:'くわしい鑑定を読む',
+  t3name:'カップル完全版', t3chip:'すべて入り', t3a:'くわしい相性鑑定のすべて', t3b:'二人が出会った意味', t3c:'一緒に暮らす時のコツ', t3d:'この先12か月、二人に良い日', t3e:'二人の名前が入った、記念の鑑定証', t3btn:'カップル完全版を読む',
+  abH:'宿曜とは',
+  f1:'月が毎月通る宿の数', f2:'空海が唐から持ち帰ったと伝わる年', f3:'二人の相性の種類',
+  q1:'宿曜占星術とは？', a1:'宿曜（しゅくよう、すくよう）は、27の宿をもとにした日本の占星術です。原典は9世紀に唐から日本へ伝わりました。',
+  q2:'西洋の月星座とどう違う？', a2:'西洋の月星座は、生まれた時刻の月を12星座のどれかに当てはめます。宿曜は月の通り道を27の宿に分け、旧暦の誕生日から読むので、出生時刻は要りません。',
+  q3:'何が得意？', a3:'人との相性です。どの二つの宿の組み合わせも6種類の相性に分けられるため、日本では恋愛・友人・仕事の相性を見るのによく使われています。',
+  q4:'これは予言？', a4:'いいえ。未来を言い当てるものではありません。日本に伝わる文化として、また自分や大切な人を見つめ直すきっかけとして楽しんでください。',
+  ft1:'この診断は娯楽を目的としたものです。傾向をお伝えするもので、結果を約束するものではありません。',
+  ft2:'宿は日本時間の旧暦にもとづき、1920年以降の誕生日に対応します。閏月は、繰り返す元の月の宿を使います。'
+};
+/* one-line verdict per bond: [English, Japanese] */
+var VERDICT = {
+  '安壊':['One of you feels safe. The other feels shaken.',"It's the same bond, felt from two sides.",'片方は安らぎ、\nもう片方は揺さぶられる。','同じ一つの関係を、二人は別々の気持ちで過ごしています。'],
+  '栄親':["Shukuyō's luckiest bond.",'One of you brings the luck. The other makes it feel like home.','宿曜でいちばん\n幸運な相性。','片方が運を運び、もう片方がそこを「帰る場所」にします。'],
+  '友衰':['Easy company, uneven effort.','One of you gives a little more, every time.','一緒にいると楽。\nでも、尽くす量が違う。','いつも少しだけ多く与えているのは、どちらか片方です。'],
+  '危成':["You don't think alike, and that's the point.",'One of you gets sharper. The other keeps getting surprised.','考え方は合わない。\nだから、磨き合える。','片方は成長させられ、もう片方は驚かされ続けます。'],
+  '業胎':['A bond Shukuyō ties to a past life.','One of you gives without keeping count. The other receives without knowing why.','宿曜では、\n前世からの縁。','片方は見返りを求めずに尽くし、もう片方は理由も分からないまま受け取っています。'],
+  '命':['Same mansion. You get each other without words.',"And that's exactly where it gets hard.",'同じ宿の二人。\n言葉なしで分かり合える。','難しくなるのは、まさにそこからです。']
+};
+/* Openers of the locked parts, cut mid-sentence on purpose: [English, Japanese]. The paid report has to finish every one of these sentences. */
+var TDIST = {
+  d0:{t:['Why this bond hit so fast','この関係が、一気に近づいた理由'],o:["Near bonds skip the slow part. You were inside each other's lives before either of you had decided to be. That speed has a price, and it shows up around",'輪の上で近い位置にある二人は、ゆっくり進む段階を飛ばします。どちらも心を決める前に、もう互いの生活の中にいたはず。その速さには代償があり、それが表に出るのは']},
+  d1:{t:['Why you can go quiet and not lose each other','黙っていても切れないのは、なぜか'],o:['A middle bond leaves room. You can go a week without talking and pick up where you left off. The risk here is the opposite of a fight. It is the slow','輪の上でほどよく離れた二人には、余白があります。一週間話さなくても、続きから始められる。危ないのは喧嘩ではなく、その反対。ゆっくりと進む']},
+  d2:{t:['Why this bond took years to show itself','この縁が、すぐには分からなかった理由'],o:['Far bonds run on a long clock. At first you may have felt almost nothing. What you have now was built later, by repetition, and it tends to turn on a single','輪の上で遠い位置にある二人は、時間をかけて近づきます。最初はほとんど何も感じなかったかもしれません。今あるものは、後から少しずつ育ったもの。そして転機になるのは、たいてい一つの']},
+  mei:{t:['What happens when two of the same mansion meet','同じ宿の二人が出会うと、何が起きるか'],o:['You recognise each other at once, because you are looking at your own habits. That is comforting for a while. Then one of you does the thing you like least in yourself, and','すぐに分かり合えるのは、自分の癖を見ているから。しばらくは心地いい。けれど片方が「自分のいちばん嫌いな自分」を見せた時、']},
+  karmic:{t:['Why this one felt decided before you met','出会う前から決まっていたように感じる理由'],o:['Shukuyō places you nine steps apart, on the two points it ties to past lives. One of you gives without counting. The other receives without knowing why. The question the tradition asks of you is','二人は、輪の上で9宿ぶん離れた位置にいます。宿曜で、前世と結びつけられる特別な位置です。片方は見返りを求めずに尽くし、もう片方は理由も分からず受け取る。宿曜が二人に問いかけるのは、']}
+};
+var TT = {
+  clash:['Where you two clash, and what it is really about','二人がぶつかる場所と、その本当の理由'],
+  need:['What they need from you and rarely ask for','相手があなたに求めているのに、口にしないこと'],
+  life:['Love, marriage, daily life: where this bond is strong and where it slips','恋愛・結婚・日常。うまくいく場面と、つまずきやすい場面'],
+  last:['Three things that make this bond last','この関係を長続きさせる3つのコツ'],
+  lifeO:['The same bond scores differently in each room of a life. For {A} and {B}, the strongest room is not the one most people would guess. It is','同じ相性でも、人生の場面ごとに強さが変わります。{A}と{B}の場合、いちばん強いのは、多くの人が思う場面ではありません。それは'],
+  lastO:['The first is simple, and most pairs with this bond skip it:','一つ目は簡単で、この相性の二人のほとんどが飛ばしてしまうこと。それは']
+};
+/* keyed by what they are to you */
+var TCLASH = {
+  ei:['You two rarely fight. That is the problem. The one thing that needs saying keeps getting put off, usually by you, because','二人はめったに喧嘩しません。問題はそこです。言うべき一言が先延ばしになる。たいていは、あなたの側で。なぜなら'],
+  shin:['They feel like family, so you treat them like family: you stop explaining yourself. The first crack is almost always the day they needed you to ask, and you','家族のように感じるから、家族のように扱ってしまう。つまり、説明をやめてしまう。最初のひびは、ほぼ決まって、相手が「聞いてほしかった日」に、あなたが'],
+  yu:['For you this is easy. Here is what they will not tell you: it is easy because they keep adjusting. The clash comes the day they stop, and it looks like','あなたにとって、この関係は楽です。相手が言わないのは、まさにそこ。楽なのは、相手が合わせ続けているから。ぶつかるのは相手がそれをやめた日で、その時の様子は'],
+  sui:['You are the one keeping count without meaning to. Every time you give way, a small note gets filed. The clash is never about the thing in front of you. It is about note number','数えるつもりはないのに、数えているのはあなたの方。譲るたびに、小さなメモが一枚たまる。喧嘩の原因は、目の前のことではありません。たまったメモの、'],
+  an:['You feel calm here, so you assume they do too. They do not. What feels like a small decision to you lands on them like weather. The clash starts when you','あなたは落ち着いている。だから相手も同じだと思っている。違います。あなたには小さな決断でも、相手には天気のように降りかかる。ぶつかるのは、あなたが'],
+  kai:['They can turn your day over with one sentence and not notice they did it. You go quiet instead of saying so. The real clash comes later, about something else entirely, when','相手は一言であなたの一日をひっくり返し、しかも気づいていない。あなたは言わずに黙る。本当の衝突は後から、まったく別の話題で起きます。それは'],
+  ki:['You want the same things for different reasons, and it takes a while to notice. The first real clash is about money, time or a plan. Underneath it is one question neither of you','同じものを、違う理由で欲しがっている二人。気づくまでに時間がかかります。最初の本当の衝突は、お金か、時間か、計画の話。その下にあるのは、二人とも'],
+  sei:['They push you, and most days you are grateful. The clash comes on the day you needed comfort and got advice. What you say next decides whether','相手はあなたの背中を押す。たいていの日は、ありがたい。ぶつかるのは、慰めが欲しかった日に助言が返ってきた時。そこであなたが何と言うかで、'],
+  go:["They give and you take, and both of you act as if that is normal. It stays normal until one of you says the word 'owe'. After that,",'相手は与え、あなたは受け取る。二人ともそれを普通だと思っている。普通でなくなるのは、どちらかが「貸し」という言葉を口にした時。その後は、'],
+  tai:['You carry more than your half and rarely mention it. The clash, when it comes, surprises them completely, because from their side','あなたは半分より多くを背負い、それをほとんど口にしません。だから衝突が起きた時、相手は心底驚きます。相手の側からは、'],
+  mei:['You fight the way people fight with themselves: fast, and about the same thing each time. The pattern has three steps, and the second one is','二人の喧嘩は、自分自身との喧嘩に似ています。速くて、毎回同じことについて。流れには3つの段階があり、その2番目が']
+};
+var TNEED = {
+  ei:['To them you are home. What they need is not more closeness. It is for you to notice the one area where they still feel like a guest, which is','相手にとって、あなたは帰る場所です。必要なのは、これ以上の近さではありません。相手がまだ「お客さん」のように感じている、ある一つの領域に気づくこと。それは'],
+  shin:['They believe things go better when you are around, and they are a little afraid of what that means. What they need to hear from you, once, is','あなたがいると物事がうまくいく。相手はそう信じていて、その意味を少し怖がっています。相手があなたから一度だけ聞きたいのは、'],
+  yu:['They will not ask you to give back. Asking would spoil it for them. What they are waiting for is smaller than you think, and it is','相手は、返してほしいとは言いません。言えば台無しになると思っているから。待っているのは、あなたが思うよりずっと小さなこと。それは'],
+  sui:['With you they can finally relax, and they have no idea what it costs you. They need you to do one thing that will feel selfish:','相手は、あなたといる時だけ力を抜けます。それにあなたが何を払っているかは、知りません。相手に本当に必要なのは、あなたが「わがまま」に思える一つのことをすること。つまり、'],
+  an:['You unsettle them more than they let you see. They do not need you to change. They need warning: a small signal, given before you','あなたは、相手が見せている以上に、相手を揺さぶっています。変わってほしいわけではありません。必要なのは予告。あなたが何かをする前の、小さな合図。たとえば'],
+  kai:['Around you they feel safe enough to be careless. What they need, and would never think to ask for, is for you to say out loud the moment','相手はあなたの前で安心しきっていて、だから無頓着になります。相手に必要で、自分からは決して頼まないこと。それは、あなたが声に出して伝えること。あの瞬間に、'],
+  ki:['You make them better and they know it. What they need is to hear that they do not have to earn their place with you every time, especially when','あなたは相手を成長させ、相手もそれを分かっています。相手が必要としているのは、「毎回がんばらなくても、ここにいていい」と言ってもらうこと。特に、'],
+  sei:['To them you are a little unpredictable, and they like it more than they admit. What they need is one fixed point: a thing about you that never','相手にとって、あなたは少し予測できない人。口で言う以上に、それを気に入っています。必要なのは、一つの定点。あなたについて、決して'],
+  go:['They support you as if they had promised to. What they need back is not thanks. It is to be let in on the one thing you still handle','相手は、約束でもしたかのようにあなたを支えます。返してほしいのは、お礼ではありません。あなたが今も一人で抱えている、あの一つのことに'],
+  tai:['They receive from you easily, and part of them wonders what you get out of it. They need to know the honest answer, which is','相手はあなたから自然に受け取り、心のどこかで「この人は何を得ているんだろう」と思っています。必要なのは、正直な答え。それは'],
+  mei:['They need from you exactly what you need from them, and neither of you gives it first. Someone has to break the tie. In this mansion, the way through is','相手があなたに求めるものは、あなたが相手に求めるものと同じ。そして、どちらも先には差し出さない。誰かが均衡を破る必要があります。この宿の場合、その方法は']
+};
+/* ---------- free result: roles, both-side texts, scenes, tips, meter. All [English, Japanese]. Drafts written for this site from the traditional meaning of each bond. ---------- */
+var PAIRYOMI = {'命':'めい','業胎':'ぎょうたい','栄親':'えいしん','友衰':'ゆうすい','安壊':'あんかい','危成':'きせい'};
+var ROLE = {
+  mei:['The Mirror','もう一人の自分'], go:['The Giver','尽くしてくれる人'], tai:['The One to Look After','支えたくなる人'],
+  ei:['The Lucky Charm','運を運んでくれる人'], shin:['Family','家族のような人'], yu:['The Easy Friend','気の合う友'],
+  sui:['The One to Give To','尽くしたくなる人'], an:['The Safe Place','安らげる人'], kai:['The Disruptor','心を揺さぶる人'],
+  ki:['The Wild Card','別世界の人'], sei:['The Sharpener','成長させてくれる人']
+};
+/* a: what they are to you. b: what you are to them. */
+var SIDE = {
+  mei:{a:['They share your mansion. You get each other without words, and you also see your own flaws in them.','あなたと同じ宿の人。言葉がなくても分かり合えるけれど、相手の中に自分の欠点も見えてしまいます。'],b:['They see themselves in you, the good parts and the hard ones.','相手はあなたの中に、自分自身を見ています。いいところも、直したいところも。']},
+  go:{a:['Tradition says they owe you something from a past life. They help you again and again, and ask for little back.','宿曜では、前世であなたに借りがある人とされます。何度でも助けてくれて、見返りをほとんど求めません。'],b:['To them, you are the one who always shows up. You may catch yourself helping before they even ask.','相手にとって、あなたは「いつも助けてくれる人」。頼まれる前に、つい手を差し伸べているかもしれません。']},
+  tai:{a:['You feel moved to support them, as if you were keeping an old promise.','なぜか支えたくなる人。昔からの約束を守っているような気持ちになります。'],b:['They feel moved to support you, as if they were keeping an old promise.','相手はなぜか、あなたを支えたくなります。昔からの約束を守るように。']},
+  ei:{a:['They lift your luck. Things you start together tend to grow.','あなたの運を引き上げてくれる人。二人で始めたことは、不思議と育ちます。'],b:['To them, you are good luck. Their plans go better when you are around.','相手にとって、あなたは幸運を運ぶ人。あなたがいると、物事がうまく回ります。']},
+  shin:{a:['They feel like family. Trust comes easily and it lasts, in love, friendship and work alike.','家族のように近く感じる人。恋でも友情でも仕事でも、信頼が自然に生まれて長く続きます。'],b:['They think of you as family. They trusted you early, and that trust holds.','相手はあなたを、家族のように思っています。早いうちから信頼していて、それは簡単には揺らぎません。']},
+  yu:{a:['Easy, warm company. You relax around them and never run out of things to say.','一緒にいて楽な人。肩の力が抜けて、話が尽きません。'],b:['They relax around you. To them, you are the easy one to be with.','相手はあなたといると、ほっとします。気をつかわずにいられる相手です。']},
+  sui:{a:['You care about them deeply and tend to give more than you get. Watch your own energy.','大切に思うあまり、もらうより多く与えてしまう相手。自分が疲れすぎないように気をつけて。'],b:['They care about you deeply, and tend to give more than they get.','相手はあなたを大切に思い、もらうより多く与えようとします。']},
+  an:{a:['You feel calm and in control around them. The stronger pull is on their side, so be gentle with their heart.','一緒にいると落ち着けて、自分のペースでいられる相手。より強く惹かれているのは相手の方なので、気持ちは丁寧に扱ってあげて。'],b:['They feel calm around you. The stronger pull is on your side.','相手はあなたといると落ち着きます。より強く惹かれているのは、あなたの方です。']},
+  kai:{a:['Magnetic and unsettling. They can turn your routine upside down and change you, for better or worse.','強く惹かれるのに、心をかき乱される相手。良くも悪くも、あなたの日常を変えてしまう人です。'],b:['To them, you are magnetic and a little unsettling. You shake up their routine without trying.','相手にとって、あなたは強く惹かれるのに、どこか落ち着かない存在。知らないうちに、相手の日常を揺さぶっています。']},
+  ki:{a:['A different world, different values. Exciting and hard to predict, better at adventures than at routines.','住む世界も価値観も違う人。刺激的で先が読めず、ふだんの日よりも「特別な時間」に強い相手です。'],b:['To them, you are from another world. Exciting to be around, hard to predict.','相手から見ると、あなたは別世界の人。一緒にいると刺激的で、先が読めません。']},
+  sei:{a:['They sharpen your thinking and push you to finish what you start. Great for work, study and big goals.','あなたを成長させてくれる人。考えを磨き、やり遂げるまで背中を押してくれます。仕事や勉強、大きな目標に強い相性です。'],b:['You sharpen their thinking and push them to finish what they start.','あなたは相手を成長させる人。相手の考えを磨き、やり遂げるまで背中を押しています。']}
+};
+/* keyed by what they are to you */
+var SCENES = {
+  ei:[['Plans you make together tend to actually happen.','二人で立てた計画は、なぜか実現しやすい。'],['You rarely fight, so small complaints go unsaid.','大きな喧嘩はほとんどない。そのぶん、小さな不満は言わずに流しがち。'],['Other people tell you that you look good together.','周りから「お似合いだね」と言われることが多い。']],
+  shin:[['It felt comfortable almost from the first conversation.','初めて話した時から、不思議と気を許せた。'],['You skip the explaining because they "just know". Sometimes they do not.','「言わなくても分かるはず」と説明を省いてしまい、たまにすれ違う。'],['Even after time apart, you pick up right where you left off.','しばらく会わなくても、会えばすぐ元の空気に戻れる。']],
+  yu:[['Once you start talking, hours feel like minutes.','話し始めると止まらない。気づけば何時間もたっている。'],['They usually go along with what you want to do.','行き先や予定は、相手が合わせてくれることが多い。'],['It is so easy that the serious talks keep getting put off.','楽しい時間が心地よくて、真剣な話はつい後回しになる。']],
+  sui:[['You are usually the one who texts first, plans first and says sorry first.','連絡するのも、予定を決めるのも、謝るのも、たいていあなたから。'],['You say "it\'s fine" when it is not quite fine.','本当は少し引っかかっているのに、「大丈夫」と言ってしまう。'],['When they are happy, your own tiredness seems to disappear.','相手が喜ぶ顔を見ると、自分の疲れを忘れてしまう。']],
+  an:[['You can be yourself here. It rarely feels like work.','この人の前では、無理をしなくていい。自然体でいられる。'],['They seem to care a little more than you do, and you have noticed.','相手の方が少しだけ気持ちが強いと、うすうす感じている。'],['A passing remark from you can stay with them for days.','あなたの何気ない一言を、相手は何日も気にしていることがある。']],
+  kai:[['You cannot stop thinking about them, even when you would like to.','考えないようにしても、気づけば相手のことを考えている。'],['One message from them can change your mood for the whole day.','相手のたった一言で、その日の気分がまるごと変わる。'],['You have changed since you met them, and people around you have noticed.','出会ってから、自分が変わった。周りにもそう言われる。']],
+  ki:[['You are often amazed at how differently they see things.','「そんな考え方があるんだ」と驚かされることが多い。'],['Trips and special days go great. Ordinary Tuesdays are harder.','旅行やイベントは最高に楽しい。難しいのは、何もない普通の日。'],['The same argument about money, time or plans keeps coming back.','お金・時間・予定の話になると、いつも同じところでぶつかる。']],
+  sei:[['You get more done when they are around.','この人がいると、なぜか物事がはかどる。'],['You wanted comfort. You got advice.','ただ聞いてほしかっただけなのに、アドバイスが返ってくる。'],['You do not want to look lazy in front of them.','相手の前では、だらしない自分を見せたくない。']],
+  go:[['They help before you have even asked.','頼む前に、もう手を貸してくれている。'],['You sometimes wonder why they do so much for you.','「どうしてここまでしてくれるんだろう」と思うことがある。'],['It felt familiar from the very first meeting.','初めて会った気がしなかった。']],
+  tai:[['You cannot leave them to struggle alone.','相手が困っていると、放っておけない。'],['You have done things for them that you would not do for anyone else.','ほかの人にはしないことを、この人にはしてしまう。'],['It felt familiar from the very first meeting.','初めて会った気がしなかった。']],
+  mei:[['You often say the same thing at the same moment.','同じタイミングで、同じことを言ってしまう。'],['Their bad habits bother you most, because they are yours too.','相手の嫌なところほど気になる。自分にもあるところだから。'],['When you fight, neither of you backs down first.','喧嘩になると、どちらも先には折れない。']]
+};
+var TIP = {
+  '栄親':['Start one small thing together this month. This bond grows through shared projects.','今月、小さなことを一つ、二人で始めてみてください。この相性は、一緒に何かを育てるほど強くなります。'],
+  '友衰':['Next time, let the one who usually goes along choose the plan. Then take turns.','次に会う時は、いつも合わせている方が行き先を決めてください。その次は交代で。'],
+  '安壊':['Say the small thing on the day it happens. In this bond, saved-up words come out all at once.','小さな引っかかりは、その日のうちに言葉にしてください。この相性は、ため込むと一度にあふれます。'],
+  '危成':['When you disagree, ask "why does that matter to you?" before you argue the point.','意見が割れたら、言い返す前に「どうしてそれが大事なの？」と聞いてみてください。'],
+  '業胎':['Pick one thing you have come to take for granted, and say thank you for it out loud.','当たり前になっていることを一つ選んで、声に出して「ありがとう」と伝えてください。'],
+  '命':['Do one thing apart this week, then tell each other about it.','今週、一つだけ別々のことをして、あとで報告し合ってください。']
+};
+/* five-point sketch: attraction, ease, spark, staying power */
+var METER = {'栄親':[4,5,3,4,5],'友衰':[3,5,2,2,4],'安壊':[5,2,5,4,2],'危成':[3,2,4,5,3],'業胎':[4,4,2,3,5],'命':[4,5,2,3,3]};
+var METER_L = [['Attraction','惹かれやすさ'],['Ease','居心地のよさ'],['Spark','刺激'],['Growth','成長'],['Staying power','長続き']];
+/* where the two sit on the wheel, said without the word "distance", which reads as a long-distance relationship */
+var DCHIP = [['Close on the wheel','輪の上で近い位置'],['Mid-distance on the wheel','輪の上で中くらいの位置'],['Far apart on the wheel','輪の上で遠い位置']];
+var DTEXT2 = [
+  ['Close together on the wheel: the pull is felt fast and strong.','宿曜でいう「近距離」。輪の上で近い位置どうしで、影響が早く、強く出ます。'],
+  ['A middle distance on the wheel: a steady pull with room to breathe.','宿曜でいう「中距離」。ほどよい間合いがあり、影響は安定して続きます。'],
+  ['Far apart on the wheel: a gentle pull that works slowly, over years.','宿曜でいう「遠距離」。輪の上で離れた位置どうしで、影響はゆっくり、年月をかけて表れます。']
+];
+/* in a relationship, written without a subject so the same line fits either person */
+var LOVE = [
+['Falls for a sharp mind first. Needs a partner who respects big ideals.','まず知性に惹かれるタイプ。理想を尊重してくれる相手に心を開きます。'],
+['Devoted and constant. Shows love through reliability more than words.','一途で変わらない人。言葉より、頼れる行動で愛を示します。'],
+['Wins people over with conversation. Needs someone who can keep up.','会話で距離を縮めるタイプ。話のテンポが合う相手を求めます。'],
+['Needs freedom, and a partner who enjoys a lively debate.','自由でいたい人。遠慮なく言い合える相手と長続きします。'],
+['Slow to warm up, then loyal for a very long time.','打ち解けるまでは時間がかかるけれど、その後はとても長く誠実です。'],
+['Loves with childlike sincerity. Wilts under control.','子どものように純粋に愛する人。束縛されると元気をなくします。'],
+['All-in and protective. Needs a partner who can match that depth.','全力で愛し、守ろうとする人。同じ深さで応えてくれる相手を求めます。'],
+['Proud and private. Opens up once the dream is taken seriously.','誇り高く、簡単には内面を見せない人。夢を尊重してくれる相手に心を開きます。'],
+['Loves to be admired, and spoils the one who does the admiring.','ほめられると輝く人。認めてくれる相手を、とことん大切にします。'],
+['Faithful, with high standards. Takes time to choose, then commits.','誠実で、理想が高い人。選ぶまでは慎重、決めたら貫きます。'],
+['Attentive and gentle. Needs steady reassurance in return.','よく気がつく優しい人。そのぶん、変わらない安心感を求めます。'],
+['Popular and a bit of a flirt, yet loyal once the heart is set.','人気者で気が多く見えるけれど、心が決まれば一途です。'],
+['Wants an equal who shares the same values.','対等でいられる相手を求める人。価値観が合うことが何より大事です。'],
+['Passionate and direct. No guessing games.','情熱的で率直。欲しいものは、はっきり口にします。'],
+['Affectionate and easy to love. Happiest in a peaceful home.','愛情深く、愛され上手。穏やかな家庭でいちばん輝きます。'],
+['Magnetic but guarded. Trust is everything.','人を惹きつけるのに、警戒心は強め。信頼できるかどうかがすべてです。'],
+['Serious and single-minded. Pursues one person wholeheartedly.','真剣で一途。この人と決めたら、全力で向き合います。'],
+['Direct and big-hearted. No patience for games.','まっすぐで心が広い人。駆け引きは苦手です。'],
+['An idealist who needs a partner worth deep respect.','理想が高く、心から尊敬できる相手を求めます。'],
+['Reserved at first. Shows care through practical help.','最初は控えめ。言葉より、実際に役立つ行動で愛情を示します。'],
+['Romantic and private. Needs a patient partner who truly understands.','ロマンチストで繊細。分かってくれる、気の長い相手を求めます。'],
+['Fun and spontaneous. Routine is the enemy.','楽しいことが大好きで気まま。マンネリが何より苦手です。'],
+['Protective and proud. Takes the lead in love, as in life.','守りたい気持ちが強い人。恋でも人生でも、自分がリードします。'],
+['Devoted and discreet. Loves by standing firmly at someone\'s side.','献身的で控えめ。そばで支え続けることが、この人の愛し方です。'],
+['Faithful and idealistic. Looking for a true life partner.','誠実で理想が高い人。一生を共にできる相手を探しています。'],
+['Caring and attentive. Looks after the small things that matter.','思いやりがあり、よく気がつく人。小さなことを大切にします。'],
+['Intense and proud. Needs respect before affection.','情熱的で誇り高い人。愛情より先に、まず敬意を求めます。']
+];
+/* Five-level sketch shown as a percentage. The level sets the range; a small fixed offset from the two mansions keeps each pair's numbers its own. */
+var PCT_BASE = [0, 34, 50, 66, 80, 92];
+function pctOf(v, a, b, i){ var o = ((a*31 + b*17 + i*11 + 3) % 9) - 4; return Math.max(20, Math.min(98, PCT_BASE[v] + o)); }
+function pbar(p, label){ return '<span class="pbar" role="img" aria-label="' + label + ' ' + p + '%"><i style="width:' + p + '%"></i></span><span class="pct">' + p + '<small>%</small></span>'; }
+var SCENE_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle class="ring" cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.6"/><path class="tick" d="M7.5 12.5l3 3 6-6.5" fill="none" stroke="#fff6ea" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function scenesCount(){
+  var all = document.querySelectorAll('#scenes .scene-btn'), n = document.querySelectorAll('#scenes .scene-btn[aria-pressed="true"]').length;
+  $('scenesQ').textContent = n === 0 ? L('Tap the ones that sound familiar.', '当てはまるものをタップしてください。')
+    : (n === all.length ? L('All ' + n + ' sound familiar. This bond fits you two closely.', n + 'つ全部、当てはまりました。この相性は、二人によく表れています。')
+    : L(n + ' of ' + all.length + ' sound familiar.', all.length + 'つ中' + n + 'つ、当てはまりました。'));
+}
+
+var FULL = {"DIST": {"d0": {"en": "the moment ordinary life comes back in. Until then, the pull itself was carrying you. Now the small questions arrive: who calls first, how much time apart is normal, what a quiet evening means. Pairs who sit close on the wheel often read this stage as something going wrong. It isn't. It is the slow part you skipped, arriving late. Pairs who can say it out loud (\"we went fast, and now we're catching up\") tend to come through closer. Pairs who treat it as a warning sign tend to pull back at exactly the wrong moment.", "ja": "ふだんの生活が戻ってきた頃です。それまでは、引き合う力そのものが二人を動かしていました。そこへ、小さなことが顔を出します。どちらが先に連絡するか。どのくらい離れているのが普通か。何もしない夜をどう過ごすか。近い位置の二人は、この時期を「うまくいかなくなった」と受け取りがちです。でも、そうではありません。飛ばしてきた「ゆっくり進む段階」が、遅れてやって来ただけです。「急いで近づいたから、今はその分を取り戻している」。そう言葉にできた二人は、前より近くなります。"}, "d1": {"en": "drift that nobody notices. Because nothing is wrong, nothing gets said. Weeks go by on logistics: who is picking up what, at what time, where. A bond at this distance does not break in one bad night. It thins, quietly, while each of you assumes the other is fine. The fix is small and a little unromantic: a fixed time that belongs only to the two of you, kept even when there is nothing to talk about. This bond does not need intensity. It needs a rhythm.", "ja": "「すれ違い」です。誰も気づかないうちに進みます。何も問題がないから、何も話さない。会話は、迎えの時間や買い物の連絡ばかりになっていきます。この位置の二人は、一度の喧嘩では壊れません。お互いに「相手は大丈夫」と思い込んだまま、静かに薄くなっていきます。対策は小さくて、少し地味です。二人だけの決まった時間を作り、話すことがない日もそれを守ること。この相性に必要なのは、激しさではなく、リズムです。"}, "d2": {"en": "moment you can both still name: a hard week when one of you showed up, a trip, a talk that ran late into the night. Before it, you were two people who knew each other. After it, you were something else. Bonds this far apart on the wheel are easy to underrate, because they never arrive with fireworks. Their strength is the opposite: once built, they are hard to shake. If things feel flat right now, don't read it as fading. In this bond, flat is often what steady feels like from the inside.", "ja": "出来事です。二人とも、今でもはっきり思い出せるはず。どちらかが大変だった時に、もう片方がそばにいた週。一緒に行った旅行。夜遅くまで続いた話。その前の二人は「知り合い」で、その後の二人は別のものになりました。遠い位置の相性は、花火のようには始まらないので、軽く見られがちです。でも強みは、その反対にあります。一度できあがると、簡単には揺らぎません。今、少し物足りなく感じていても、気持ちが冷めたしるしではありません。この相性では、「安定」は内側から見ると「平ら」に感じるものです。"}, "mei": {"en": "the other reacts twice as hard as anyone else would. It is not really about them. It is the shock of seeing your own habit from the outside. Pairs who share a mansion tend to go one of two ways. Some become each other's harshest critic. Others become the one person who truly understands why the other is the way they are. What separates them is a single move: when you feel that flash of irritation, ask yourself first, \"where do I do this?\" Said out loud, that question turns a fight into a joke only the two of you get.", "ja": "もう片方は、ほかの誰よりも強く反応します。本当は、相手に怒っているのではありません。自分の癖を外から見せられた、その驚きです。同じ宿の二人がたどる道は、大きく二つ。互いにいちばん厳しい批判者になるか、「この人がなぜこうなのか」を誰よりも分かる相手になるか。分かれ目は一つだけです。いらっとした瞬間に、まず自分に聞くこと。「これ、自分もやっていないかな」。それを声に出せた時、喧嘩は二人だけの笑い話に変わります。"}, "karmic": {"en": "not who owes whom. It is whether the giving can stay free. In this bond one of you helps without being asked, and the other accepts without quite knowing why it feels so natural. Shukuyō reads that as an old tie being carried forward. You don't have to believe in past lives to use the idea. It simply says: this relationship did not start from zero, so don't keep score as if it had. The pairs who do well here are the ones where the receiver says thank you, and the giver is allowed to rest.", "ja": "「どちらが借りているか」ではありません。「与えることが、この先も自由でいられるか」です。この相性では、片方が頼まれなくても手を差し伸べ、もう片方は、なぜか自然にそれを受け取ります。宿曜はそれを、昔からの縁の続きと読みます。前世を信じなくても、この考え方は使えます。「この関係は、ゼロから始まったわけではない。だから、ゼロから数えるように貸し借りを数えなくていい」。うまくいく二人は、受け取る側が「ありがとう」を言い、与える側が休むことを許されています。"}}, "CLASH": {"ei": {"en": "things are good and you don't want to be the one who spoils it. So it waits. A week, a month. By the time it comes out, it is bigger than it ever needed to be, and they are hurt less by what you said than by how long you held it. In this bond, honesty is cheap when it is early and expensive when it is late. They can take more than you think.", "ja": "今がうまくいっていて、それを壊す人になりたくないからです。だから待ってしまう。一週間、一か月。やっと口にした時には、必要以上に大きな話になっています。相手が傷つくのは、言われた内容よりも、「そんなに長く黙っていたの」という方です。この相性では、早い正直は安く、遅い正直は高くつきます。相手は、あなたが思うより受け止められる人です。"}, "shin": {"en": "assumed you already knew. You answered a question they hadn't asked and missed the one they had. Pairs this close rarely fight about big things. They fight about being taken for granted. The repair is almost embarrassingly simple: ask the question you think you know the answer to. \"How was it, really?\" Then wait a little longer than feels natural. In this bond, being asked is how the other person knows they are still seen.", "ja": "「もう分かっている」と思い込んだ時です。聞かれていない質問に答え、聞いてほしかったことは聞き逃した。家族のように近い二人は、大きなことではあまり喧嘩しません。ぶつかるのは、「当たり前」にされた時です。直し方は、拍子抜けするほど簡単。答えを知っているつもりの質問を、あえて聞くこと。「本当のところ、どうだった？」。そして、いつもより少し長く待つ。この相性では、聞いてもらえることが、「まだ自分を見てくれている」というしるしになります。"}, "yu": {"en": "nothing at all. No raised voice. They just get a little quieter, a little slower to reply, a little harder to make plans with. You may not notice for a week. That quiet is the clash. What they are saying, without saying it, is \"I'd like it to be my turn.\" Meet it with \"what's wrong with you lately?\" and it hardens. Meet it with \"I think I've been taking more than I give\" and it usually ends in one evening.", "ja": "拍子抜けするほど静かです。声を荒げることはありません。ただ少し口数が減り、返信が遅くなり、予定が合いにくくなる。あなたは一週間ほど気づかないかもしれません。その静けさこそが、この相性の「衝突」です。相手は言葉にしないまま、こう言っています。「次は、こちらの番にしてほしい」。そこで「最近どうしたの？」と返すと、こじれます。「もらってばかりだったかもしれない」と返せば、たいてい一晩で終わります。"}, "sui": {"en": "thirty, or fifty, whichever one finally tipped the pile. That is why your anger can look out of proportion to them. They see one small thing. You are holding the whole stack. Here is the part worth knowing: most of what you gave was never asked for. It came from your own kindness. You offered, they accepted, and you filed the note anyway. The way out is to give less and say more. Once a week, turn a silent favor into a spoken request. It will feel selfish. It is actually what keeps this bond fair.", "ja": "三十枚目か五十枚目。山を崩した、最後の一枚です。だから相手には、あなたの怒りが大げさに見えます。相手に見えているのは、目の前の小さなこと一つ。あなたが抱えているのは、メモの山ぜんぶです。大切なのは、ここから。あなたがしてきたことの多くは、相手が頼んだものではなく、あなたの優しさから出たものです。あなたが差し出し、相手は受け取り、それでもメモは増えました。抜け出す道は、与える量を減らし、言葉を増やすこと。週に一度、黙ってやっていたことを、口に出したお願いに変えてみてください。わがままに感じるはずです。でもそれが、この関係を公平に保ちます。"}, "an": {"en": "decide something on your own because it seemed too small to mention: a changed plan, a weekend given to someone else, a joke at their expense. You have forgotten it by dinner. They are still turning it over three days later. From your side nothing happened. From theirs, you showed them how little it takes for you to move without them. You don't need permission to live your life. You only need to say it before, not after. In this bond, a warning is worth more than an apology.", "ja": "「わざわざ言うほどでもない」と思って、一人で決めた時です。予定の変更、ほかの人と過ごす週末、相手をネタにした冗談。あなたは夕食の頃には忘れています。相手は三日たっても、まだ考えています。あなたにとっては、何も起きていない。相手にとっては、「この人は、自分抜きでも簡単に動ける」と見せられた出来事です。自分の人生に、許可をもらう必要はありません。ただ、後からではなく、先に伝えること。この相性では、先のひと言は、後の謝罪よりずっと価値があります。"}, "kai": {"en": "you are tired and one more small thing lands. Then everything you swallowed comes out at once, attached to the wrong subject. They are honestly confused: why this, why now? They never knew about the first ten. This is a pattern you can change from your side. Name the jolt when it happens, in the smallest words you have: \"that one stung.\" No speech, no blame. They are not careless on purpose. With you they simply feel safe enough to stop choosing their words.", "ja": "あなたが疲れていて、小さなことがもう一つ重なった時です。飲み込んできたものが、関係のない話題にくっついて、一度に出てきます。相手は本気で戸惑います。「なぜこれで？ なぜ今？」。最初の十回を、相手は知らないからです。この流れは、あなたの側から変えられます。心が揺れたその時に、いちばん短い言葉で伝えてください。「今の、ちょっと刺さった」。説明も、責める言葉もいりません。相手は、わざと無神経なのではありません。あなたの前では安心しきって、言葉を選ぶのを忘れているだけです。"}, "ki": {"en": "has asked out loud: \"what is this for?\" One of you is building toward something. The other is here for the life you have right now. Neither is wrong, and that is why the argument never finishes. You keep debating the price of the trip when the real subject is what each of you wants this relationship to be. Have that conversation once, on a calm day, with no decision attached. You may not agree. But the next time you clash over a plan, you will both know which argument you are actually having.", "ja": "まだ口にしていない、一つの問いです。「この関係は、何のためにある？」。片方は、何かに向かって積み上げたい。もう片方は、今この時間を楽しみたい。どちらも間違っていません。だから、言い合いに終わりが来ないのです。旅行の値段で揉めているようで、本当の話題は「二人の関係に何を求めているか」。穏やかな日に一度だけ、何も決めなくていい前提で、その話をしてみてください。意見は合わないかもしれません。でも次に予定のことでぶつかった時、「今、本当は何について話しているのか」が二人とも分かります。"}, "sei": {"en": "they learn something about you or simply feel pushed away. \"You never listen\" closes the door. \"Right now I need you beside me, not ahead of me\" opens it. They push because they believe in you. It is their way of caring, and most days it works. But they cannot tell a day for pushing from a day for holding unless you say which one it is. Give them the signal at the start: \"I don't need fixing tonight.\" They will be relieved. Guessing was hard for them too.", "ja": "相手が「あなたのことを一つ知る」か、ただ「拒まれた」と感じるかが決まります。「いつも話を聞いてくれない」は扉を閉めます。「今は前を走らないで、隣にいてほしい」は扉を開けます。相手が背中を押すのは、あなたを信じているから。それが相手の愛情表現で、たいていの日はうまく働きます。ただ、「押してほしい日」と「受け止めてほしい日」の違いは、言われなければ分かりません。話の最初に合図を出してください。「今日は、解決はいらない」。相手はほっとするはずです。当てるのは、相手にとっても難しかったのです。"}, "go": {"en": "every kindness gets counted backwards. Things that were gifts turn into evidence. The giver starts listing. The receiver starts defending. Suddenly you are both doing accounts on something that was never a loan. If this has already happened, it can be undone, but only by the receiver, which is you. Don't argue the numbers. Say the thing that was missing: \"I noticed. I should have said so.\" What they wanted was never repayment. It was to know the giving landed.", "ja": "これまでの優しさが、さかのぼって数え直されます。贈り物だったものが、証拠に変わる。与えた側は並べ立て、受け取った側は言い訳を始める。もともと貸し借りではなかったものを、二人で精算し始めてしまいます。もう起きてしまっていても、元に戻せます。ただし、戻せるのは受け取る側、つまりあなたです。数字で言い返さないこと。足りなかったひと言を伝えてください。「気づいていた。もっと早く言えばよかった」。相手が欲しかったのは、お返しではありません。「ちゃんと届いていた」と知ることです。"}, "tai": {"en": "everything was fine. You never said it was heavy. You said \"I've got it,\" and they believed you. So when you finally break, they do not hear \"I'm tired.\" They hear \"you let me down, and I never gave you the chance not to.\" Neither of you wants that misunderstanding. The pull to support them is real, and it is a good thing in you. But support that is never spoken turns into a debt they did not know they had. Let them see the weight while it is still small.", "ja": "すべてが順調に見えていたからです。あなたは「重い」と言いませんでした。「大丈夫、やっておく」と言い、相手はそれを信じました。だから、あなたがついに限界を迎えた時、相手に聞こえるのは「疲れた」ではありません。「あなたは支えてくれなかった。そして、支える機会ももらえなかった」です。それは、どちらも望んでいないすれ違いです。支えたい気持ちは本物で、あなたのいいところです。ただ、口にしない支えは、相手が知らないうちに「借り」になります。重さがまだ小さいうちに、見せてあげてください。"}, "mei": {"en": "where it can be stopped. Step one: one of you says something sharp. Step two: the other answers in exactly the same tone, because you share the same reflex. Step three: you are both defending a position neither of you cares about. Nobody else can match you like this, which shows how evenly matched you are. At step two, do the one thing your shared reflex never does: slow down. \"We're doing it again.\" Whoever says it first has not lost. In a pair like yours, that person is the one holding the mirror.", "ja": "止められる場所です。1つ目、どちらかがきつい言い方をする。2つ目、もう片方がまったく同じ調子で言い返す。同じ反射を持っているからです。3つ目、気づけば二人とも、本当はどうでもいい主張を守って譲らない。ここまで互角に向き合える相手は、ほかにいません。それだけ、力の合った二人です。2つ目の段階で、二人の反射が絶対にしないことをしてください。速度を落とすこと。「また、いつものやつだ」。先に言った方が負けたわけではありません。同じ宿の二人では、その人が「鏡を持っている側」です。"}}, "CLASH_DO": {"ei": {"en": "Say the small thing within a day, in one plain sentence.", "ja": "小さなことは、一日以内に、ひと言で伝える。"}, "shin": {"en": "Ask one question you think you already know the answer to.", "ja": "答えを知っているつもりの質問を、一つ聞いてみる。"}, "yu": {"en": "This week, plan one thing entirely around what they like.", "ja": "今週、相手の好みだけで決めた予定を一つ作る。"}, "sui": {"en": "Once a week, replace a silent favor with a spoken request.", "ja": "週に一度、黙ってする気づかいを、口に出すお願いに変える。"}, "an": {"en": "Tell them before, not after, even when it seems too small to mention.", "ja": "小さなことでも、後からではなく先に伝える。"}, "kai": {"en": "Name the sting when it happens, in five words or fewer.", "ja": "心が揺れたら、その場で、短いひと言で伝える。"}, "ki": {"en": "On a calm day, ask each other what you want this relationship to be.", "ja": "穏やかな日に、「この関係に何を求めているか」を聞き合う。"}, "sei": {"en": "Say it at the start: \"Tonight I need comfort, not advice.\"", "ja": "話す前に「今日は聞いてほしいだけ」と伝える。"}, "go": {"en": "Thank them for one specific thing they did, and name it.", "ja": "してもらったことを一つ、具体的に挙げてお礼を言う。"}, "tai": {"en": "Say \"this one is heavy for me\" while it is still small.", "ja": "負担が小さいうちに「これは少し大変」と伝える。"}, "mei": {"en": "When it starts, say \"we're doing it again\" and take ten minutes.", "ja": "始まったら「また、いつものやつだ」と言って、10分おく。"}}, "NEED": {"ei": {"en": "usually the part of your life that existed before them: your oldest friends, your family's habits, the way you have always done things. You never shut them out. You simply never opened it, because to you it is just background. To them it is the last room in the house they haven't been shown. Invite them in on purpose. Ask their opinion on something that has always been \"yours.\" It costs you very little, and it tells them what they most want to hear: there is no part of this where they are only visiting.", "ja": "たいてい、相手と出会う前からあった、あなたの世界です。昔からの友人、家族の習慣、ずっと続けてきたやり方。あなたは締め出したつもりはありません。あなたにとっては当たり前の背景なので、わざわざ見せていなかっただけです。相手にとってそこは、まだ案内されていない最後の部屋です。意識して、招き入れてください。これまで「自分のこと」だった何かについて、相手の意見を聞いてみる。あなたの手間はわずかです。そして相手は、いちばん聞きたかったことを受け取ります。「この関係のどこにも、あなたがお客さんでいる場所はない」。"}, "shin": {"en": "that the good things are theirs, not on loan from you. They have noticed that life runs better with you in it, and a quiet part of them has started to wonder whether they could manage alone, and what you would think of them if they couldn't. So tell them plainly what you see: they did the work, and you were only nearby. Then tell them you are staying anyway. You only need to say it once. They will keep it for years.", "ja": "「うまくいっているのは、あなた自身の力だ」というひと言です。相手は、あなたがいると物事がうまく回ることに気づいています。そして心のどこかで、「一人ではできないのかもしれない」「そう思われたらどうしよう」と考え始めています。だから、あなたに見えていることを、そのまま伝えてください。「やったのはあなたで、こちらは近くにいただけ」。そのうえで、「それでも、そばにいる」と。言うのは一度で十分です。相手はその言葉を、何年も持ち続けます。"}, "yu": {"en": "for you to go first, once, without being prompted. To suggest the place. To remember the date. To ask a second question after \"how are you?\" They are not keeping score, and they would be embarrassed to learn you had noticed. But every time you take the lead before they do, something in them relaxes. It tells them the ease runs in both directions, and that they are not the only one holding this up. Do it this week, and don't announce it.", "ja": "あなたが一度、言われる前に先に動くことです。行き先を提案する。日付を覚えておく。「元気？」の後に、もう一つ質問する。相手は数えているわけではありませんし、あなたに気づかれていたと知ったら、きっと照れます。それでも、あなたが先に動くたびに、相手の中で何かがほどけます。「楽なのは、お互いさまなんだ」「支えているのは自分だけじゃない」。そう伝わるからです。今週、やってみてください。宣言はせずに。"}, "sui": {"en": "let them look after you, and don't soften it. Tell them you are tired before you are exhausted. Ask for an evening off. Hand them a decision and leave it handed. Right now you are so good at carrying things that they have never had the chance to carry you, and people who are never allowed to give start to feel like guests in their own relationship. Your tiredness is not a burden to them. It is the first real opening you have offered.", "ja": "相手に世話を焼かせること。それも、遠慮なしに。限界の前に「疲れた」と言う。一晩、何もしない時間をもらう。決めごとを一つ任せて、任せたままにする。今のあなたは支えるのが上手すぎて、相手にはあなたを支える機会がありませんでした。与えることを許されない人は、自分の関係の中で「お客さん」のように感じ始めます。あなたの疲れは、相手にとって重荷ではありません。あなたが初めて開けてくれた、入口です。"}, "an": {"en": "change direction. Before you cancel. Before you go quiet for a day. Before you make the joke. One line is enough: \"I'm going to be busy this week, and it's not about you.\" To you this will sound unnecessary, almost silly. To them it is the difference between weather they can dress for and weather that just hits. They are not asking you to be less yourself. They are asking for a forecast.", "ja": "予定を取りやめる前。一日、連絡が途切れる前。からかう冗談を言う前。ひと言で足ります。「今週は忙しくなる。あなたのせいじゃないよ」。あなたには、言うまでもない、少し大げさなことに聞こえるでしょう。相手にとっては、「備えられる天気」と「いきなり降ってくる天気」ほどの違いがあります。相手は、あなたに変わってほしいわけではありません。欲しいのは、予報です。"}, "kai": {"en": "something they did reached you, in the good direction too. They know they can upset you. They rarely find out when they have moved you, made your day or changed your mind. You keep those to yourself, the same way you keep the stings. So they are steering half blind, sure of their effect on you only when it goes wrong. Tell them when it goes right. \"That thing you said on Tuesday stayed with me.\" It will make them more careful with you than any complaint could.", "ja": "「今のは、心に届いた」と。悪い方だけでなく、良い方も。相手は、自分があなたを傷つけることがあると知っています。でも、あなたの心を動かした時、一日を明るくした時、考えを変えた時のことは、ほとんど知りません。あなたが、痛みと同じように、それも胸にしまっているからです。相手は、うまくいかなかった時にしか自分の影響を知らないまま、手探りで進んでいます。うまくいった時に、伝えてください。「火曜日に言ってくれたこと、ずっと残ってる」。どんな不満よりも、相手はあなたを大切に扱うようになります。"}, "ki": {"en": "they have fallen short. Because you raise their game, they have started to feel that your regard depends on it. On the days they miss the mark, are tired, or simply have nothing to show, they brace for your disappointment. Be glad to see them on exactly those days. Sit through an evening where nothing gets done and call it a good one. To you it is nothing. To them it is proof that you like the person, not only the progress.", "ja": "うまくいかなかった日に。あなたといると成長できる。だからこそ相手は、「成長していない自分は、がっかりされる」と感じ始めています。失敗した日、疲れている日、何も見せるものがない日。相手は、あなたの反応に身構えています。まさにそういう日に、会えたことを喜んでください。何も進まなかった夜を一緒に過ごして、「いい夜だったね」と言う。あなたにとっては何でもないこと。相手にとっては、「見てくれているのは成果ではなく、自分自身なんだ」という証拠になります。"}, "sei": {"en": "moves, whatever else does. It can be small. The call on Sunday night. The way you always come back after an argument. The seat you keep for them. They love that you are hard to predict, but nobody can rest on surprise alone. Pick one thing and make it boringly reliable. You will lose none of your mystery. You will give them a floor to stand on while they enjoy the rest of you.", "ja": "変わらないもの。ほかの何が変わっても、です。小さなことで構いません。日曜の夜の電話。喧嘩の後、必ず戻ってくること。いつも相手のために空けておく席。相手は、あなたの読めなさが好きです。ただ、人は驚きだけでは休めません。一つ選んで、それだけは退屈なほど確実にしてください。あなたの魅力は少しも減りません。相手は、足場を得たうえで、あなたの残りの部分を楽しめるようになります。"}, "go": {"en": "alone. You accept their help with the visible things and keep the real weight to yourself: the money worry, the family matter, the plan you are not sure about. They can tell there is a door they have not been shown. For someone who gives as naturally as they do, being kept out of the one place where help would matter most is its own kind of hurt. You don't have to hand it over. Just tell them it exists, and let them stand next to you while you carry it.", "ja": "入れてもらうことです。あなたは、目に見えることでは相手の助けを受け取っています。でも本当に重いもの、お金の心配、家族のこと、自信のない計画は、自分だけで持っています。相手は、まだ見せてもらっていない扉があることに気づいています。与えることが自然な人にとって、「いちばん力になれる場所」に入れてもらえないのは、それだけでつらいことです。渡す必要はありません。「ある」と伝えて、あなたがそれを運ぶ間、隣にいてもらうだけでいいのです。"}, "tai": {"en": "probably something you have never put into words, even for yourself. Maybe supporting them makes you feel needed. Maybe it is simply who you are around them. Whatever it is, say it, because silence leaves them guessing, and the guess is usually darker than the truth: that you are being patient, or dutiful, or quietly keeping a list. \"I like who I am when I look after you\" is enough. It turns what they receive from a debt into a gift, and lets them take it without flinching.", "ja": "おそらく、あなた自身もまだ言葉にしたことがないものです。支えることで、必要とされていると感じるのかもしれない。相手の前では、それが自然な自分なのかもしれない。何であれ、言葉にしてください。黙っていると相手は想像するしかなく、その想像はたいてい、本当のことより暗いからです。「我慢しているのでは」「義務でやっているのでは」「心の中で数えているのでは」。「あなたを支えている時の自分が、好きなんだ」。それだけで十分です。相手が受け取っているものは「借り」から「贈り物」に変わり、相手は安心して受け取れるようになります。"}, "mei": {"en": "to give the thing you are waiting to receive. Both of you are holding out for the same gesture: the first apology, the first compliment, the first \"I missed you.\" You know exactly what they need, because it is what you need. That makes you the only person who can get it right on the first try. Go first, and say why: \"I'm doing this because it's what I'd want from you.\" In a pair like yours, generosity comes back fast. They cannot help answering in kind.", "ja": "自分が待っているものを、先に差し出すことです。二人とも、同じ一歩を待っています。最初の「ごめん」、最初のほめ言葉、最初の「会いたかった」。相手が何を求めているか、あなたは正確に知っています。あなたが求めているものと同じだからです。つまり、一度で正解できるのは、あなただけです。先に動いて、理由も伝えてください。「自分がしてほしいことだから、先にするね」。同じ宿の二人では、優しさは早く返ってきます。相手は、同じように返さずにはいられません。"}}, "LIFE_O": {"栄親": {"en": "the long, shared project. Romance comes easily here, so people assume romance is the heart of it. But this bond shows its real strength when you build something together: a home, a business, a family, a plan that takes years.", "ja": "「二人で長く育てるもの」です。恋愛は自然にうまくいくので、恋がこの相性の中心だと思われがちです。でも本当の強さが出るのは、何かを一緒に作る時。家、仕事、家族、何年もかかる計画です。"}, "友衰": {"en": "the friendship inside the relationship. You may be lovers or partners, but what carries you through the hard years is that you truly enjoy talking to each other.", "ja": "恋人や夫婦である前に、「いちばんの友だち」でいられること。つらい時期を越えさせてくれるのは、二人が心から会話を楽しめる、という一点です。"}, "安壊": {"en": "the beginning, and anything that feels like one. This bond is at its most powerful in the first pull, and again whenever life opens a new chapter: a move, a new job, a child.", "ja": "「始まり」と、始まりに似た時期です。この相性は、惹かれ合う最初の時期にいちばん強く、その後も、引っ越し・転職・出産など、人生の新しい章が始まるたびに力を取り戻します。"}, "危成": {"en": "working on something together. Put the two of you on the same problem and you are better than either of you alone, because one sees what the other misses.", "ja": "「一緒に何かに取り組む時」です。同じ課題に向かうと、二人は一人ずつの時より強くなります。片方が見落としたものを、もう片方が見つけるからです。"}, "業胎": {"en": "the hard times. When things are easy, this can feel like any other close relationship. When one of you is in trouble, the other simply turns up, and that is when you both understand what this is.", "ja": "「つらい時」です。順調な時は、ほかの親しい関係と変わらなく見えるかもしれません。どちらかが困った時、もう片方が当たり前のようにそばに来る。その時に、二人ともこの縁の意味を知ります。"}, "命": {"en": "being understood. Not romance, not teamwork: the plain relief of being with someone who needs no explanation.", "ja": "「分かってもらえること」です。恋のときめきでも、協力でもなく、説明がいらない相手といる、あの安心感です。"}}, "LIFE_love": {"栄親": {"n": 4, "en": "Warm and natural. A little effort to delight each other keeps it fresh for years.", "ja": "温かく、自然体でいられる恋。ときどき相手を喜ばせる工夫をすると、いつまでも新鮮です。"}, "友衰": {"n": 3, "en": "Gentle, and more restful the longer you are together. Plan a special day now and then and the spark lasts too.", "ja": "穏やかで、一緒にいるほど心が安らぐ恋。ときどき特別な日を用意すると、ときめきも長く続きます。"}, "安壊": {"n": 5, "en": "Intense. Few bonds feel this alive. Put the feeling into words and the thrill grows into something you can rest on.", "ja": "とても強く惹かれ合います。ここまで心が動く相性は多くありません。気持ちを言葉で伝え合うほど、ときめきは安心へと育っていきます。"}, "危成": {"n": 3, "en": "Fascination more than ease. You stay interested because you never fully figure each other out.", "ja": "安らぎよりも、興味が続く関係。相手のことが最後まで分かりきらないので、飽きません。"}, "業胎": {"n": 4, "en": "Deep, and a little fated. A sense that it was always meant to be surrounds you both.", "ja": "深く、どこか運命的な恋。最初から決まっていたような安心感が、二人を包みます。"}, "命": {"n": 3, "en": "Instant recognition, and a love that feels safe. Start something new together and you will still find sides of each other you had not seen.", "ja": "出会ってすぐに通じ合える、安心感のある恋。新しいことを一緒に始めると、知らなかった一面にも出会えます。"}}, "LIFE_marriage": {"栄親": {"n": 5, "en": "The classic strength of this bond. Shared goals hold, and tradition says luck gathers around the household.", "ja": "この相性がいちばん力を出す場面。同じ目標を持ち続けられ、家庭に運が集まりやすいとされます。"}, "友衰": {"n": 3, "en": "A relationship full of kindness. Let the one who gives more rest now and then, and the quiet happiness lasts.", "ja": "優しさに満ちた関係。多く与える側をときどき休ませてあげると、穏やかな幸せが長く続きます。"}, "安壊": {"n": 3, "en": "The room that grows with words. When the calm one keeps reassuring and the shaken one keeps speaking up, the pull between you settles into deep trust.", "ja": "気持ちを言葉にし合うほど、深い信頼に育つ場面。落ち着いている側が安心を伝え、揺さぶられる側が素直に話すことで、強い絆になります。"}, "危成": {"n": 3, "en": "Grows stronger the clearer your roles and shared goal. Two people with different strengths make a dependable team.", "ja": "役割と共通の目標がはっきりするほど、強くなる関係。違う強みを持つ二人は、頼もしいチームになります。"}, "業胎": {"n": 5, "en": "Very durable. The tie holds through years that would end other pairs.", "ja": "とても長続きします。ほかの二人なら離れてしまうような時期も、この縁は切れません。"}, "命": {"n": 3, "en": "The more you divide the roles, the better you move together. Shared values make a solid base for a home.", "ja": "役割を分けるほど、息の合った良い関係に。同じ価値観が、家庭の土台になります。"}}, "LIFE_daily": {"栄親": {"n": 4, "en": "Smooth and easy. A regular moment to talk through small things makes it more comfortable still.", "ja": "穏やかに回る暮らし。小さなことを話す時間を決めておくと、さらに心地よくなります。"}, "友衰": {"n": 5, "en": "Your best room. Meals, errands, long conversations about nothing: this is where the bond lives.", "ja": "この相性がいちばん輝く場面。食事、買い物、とりとめのない長話。そこに二人の良さがあります。"}, "安壊": {"n": 3, "en": "Good weeks are very good. One steady routine brings more of the calm ones.", "ja": "良い週はとても良い。決まった習慣を一つ作ると、穏やかな時間が増えていきます。"}, "危成": {"n": 3, "en": "Where your differences show most. Agree on a few house rules and those differences turn into a natural split of roles.", "ja": "二人の違いがいちばん表に出る場面。いくつかルールを決めておくと、違いは「役割分担」に変わり、暮らしが楽しくなります。"}, "業胎": {"n": 3, "en": "A calm, steady daily life. Say thank you for ordinary things and each day gets warmer.", "ja": "穏やかに続く暮らし。ふだんのことにも「ありがとう」を伝えると、毎日がもっと温かくなります。"}, "命": {"n": 4, "en": "Easy. Same pace, same habits, same sense of what matters.", "ja": "楽です。ペースも習慣も、大事にしたいことも似ています。"}}, "LIFE_work": {"栄親": {"n": 5, "en": "Excellent. Things you start together tend to grow.", "ja": "とても良い組み合わせ。二人で始めたことは育ちやすいとされます。"}, "友衰": {"n": 3, "en": "A comfortable team. A frank word now and then makes the results even better.", "ja": "居心地の良いチーム。ときには率直なひと言を交わすと、さらに良い結果が出ます。"}, "安壊": {"n": 3, "en": "A lot of power in short bursts. Decide in advance who has the final say and you get even more out of it.", "ja": "短い期間に大きな力が出ます。最後に誰が決めるかを先に決めておくと、さらに力を発揮します。"}, "危成": {"n": 5, "en": "Your strongest room. You cover each other's blind spots.", "ja": "いちばん強い場面。お互いの見落としを補い合えます。"}, "業胎": {"n": 4, "en": "One supports, one leads. Strong when you both accept which is which.", "ja": "片方が支え、片方が前に出る形。その役割を二人が受け入れていると、強い組み合わせです。"}, "命": {"n": 3, "en": "Same strengths, so you move fast. Add a third opinion for big decisions and you are well covered.", "ja": "強みが同じで、話が早い二人。大きな決断の時に、もう一人の意見を入れると万全です。"}}, "LAST1T": {"栄親": {"en": "say the uncomfortable thing early.", "ja": "言いにくいことを、早めに言うこと。"}, "友衰": {"en": "take turns.", "ja": "順番を決めること。"}, "安壊": {"en": "say small things on the day they happen.", "ja": "小さなことを、その日のうちに言うこと。"}, "危成": {"en": "ask \"why\" before you argue \"what\".", "ja": "「何を」の前に「なぜ」を聞くこと。"}, "業胎": {"en": "say thank you for ordinary things.", "ja": "当たり前のことに「ありがとう」を言うこと。"}, "命": {"en": "go first.", "ja": "先に動くこと。"}}, "LAST1": {"栄親": {"en": "Your bond is so pleasant that honesty feels like a risk. It is the opposite. This is one of the few bonds that can take a hard sentence without damage, as long as it comes early.", "ja": "居心地が良すぎて、正直に言うことが危険に思えます。実際は逆です。早いうちであれば、きついひと言も受け止められる、数少ない相性です。"}, "友衰": {"en": "Decide whose turn it is to choose, to plan, to be looked after. Out loud, the way children do. It keeps the giving even without anyone keeping score.", "ja": "行き先を決める番、計画する番、甘える番。子どものように、口に出して決めてください。数えなくても、与える量がそろいます。"}, "安壊": {"en": "Nothing in this bond stays small once it is stored. One sentence the same evening saves a week of distance.", "ja": "この相性では、ため込んだものは小さいままではいられません。その夜のひと言が、一週間の距離を防ぎます。"}, "危成": {"en": "You disagree on methods because you start from different values. Hearing the reason first turns most fights into a short exchange of information.", "ja": "やり方で食い違うのは、出発点の価値観が違うからです。先に理由を聞くと、ほとんどの言い合いは、短い情報交換で終わります。"}, "業胎": {"en": "The giving in this bond is so natural that it turns invisible. Naming it keeps it a gift.", "ja": "この相性では、与えることが自然すぎて、見えなくなります。言葉にすることで、それは贈り物のままでいられます。"}, "命": {"en": "You are both waiting for the same gesture. Whoever offers it first ends the standoff, and it comes straight back.", "ja": "二人とも、同じ一歩を待っています。先に差し出した方が、にらみ合いを終わらせます。そして、すぐに返ってきます。"}}, "LAST2T": {"栄親": {"en": "Keep building something.", "ja": "二人で何かを作り続ける。"}, "友衰": {"en": "Protect the talking.", "ja": "話す時間を守る。"}, "安壊": {"en": "Let the calm one reassure, often.", "ja": "落ち着いている側が、何度でも安心させる。"}, "危成": {"en": "Share a goal.", "ja": "同じ目標を持つ。"}, "業胎": {"en": "Let the giver rest.", "ja": "与える側を休ませる。"}, "命": {"en": "Take different roles.", "ja": "役割を分ける。"}}, "LAST2": {"栄親": {"en": "This bond feeds on shared projects. When one ends, start the next, even a small one.", "ja": "この相性は、共同作業を栄養にします。一つ終わったら、小さくても次を始めてください。"}, "友衰": {"en": "Conversation is the heart of this bond. Guard an hour a week with no screens and no errands.", "ja": "会話がこの相性の中心です。週に一時間、スマホも用事もない時間を確保してください。"}, "安壊": {"en": "If you are the settled one, say what you feel more often than seems necessary. To them it is never too much.", "ja": "あなたが落ち着いている側なら、「言いすぎかな」と思うくらい気持ちを伝えてください。相手にとって、多すぎることはありません。"}, "危成": {"en": "Give the two of you something to aim at together. Side by side, your differences become an advantage.", "ja": "二人で目指すものを一つ決めてください。同じ方向を向くと、違いは強みに変わります。"}, "業胎": {"en": "Whoever gives more needs permission to stop sometimes. Offer it before they have to ask.", "ja": "多く与えている側には、「休んでいい」という許しが必要です。頼まれる前に、こちらから伝えてください。"}, "命": {"en": "Two people with the same strength in the same seat will compete. Split the territory on purpose.", "ja": "同じ強みを持つ二人が同じ席に座ると、競い合ってしまいます。担当を、意識して分けてください。"}}, "LAST3T": {"栄親": {"en": "Keep courting each other.", "ja": "恋人同士の時間を続ける。"}, "友衰": {"en": "Add a little risk.", "ja": "少しだけ冒険する。"}, "安壊": {"en": "Keep lives of your own.", "ja": "それぞれの世界を持つ。"}, "危成": {"en": "Keep some time that asks nothing of anyone.", "ja": "何も求めない時間を作る。"}, "業胎": {"en": "Don't keep accounts.", "ja": "貸し借りを数えない。"}, "命": {"en": "Bring in other voices.", "ja": "ほかの人の声を入れる。"}}, "LAST3": {"栄親": {"en": "Comfort came early for you. Dates, compliments and small surprises are not only for new couples.", "ja": "早くから落ち着いた二人です。デートやほめ言葉、小さなサプライズは、付き合い始めだけのものではありません。"}, "友衰": {"en": "Do something new together a few times a year. Ease is what you already have. Novelty is what you have to bring in from outside.", "ja": "年に数回、二人で初めてのことをしてください。居心地の良さは元からあるもの。新鮮さは、外から持ち込むものです。"}, "安壊": {"en": "The pull here is strong enough to swallow everything else. Friends, work and interests outside the pair make the bond lighter to carry.", "ja": "引き合う力が強く、ほかのすべてを飲み込みがちです。二人の外にある友人・仕事・趣味が、この関係を軽くします。"}, "危成": {"en": "Not every evening has to improve someone. Protect the hours where nobody is being sharpened.", "ja": "毎晩、成長する必要はありません。誰も磨かれなくていい時間を、守ってください。"}, "業胎": {"en": "The moment either of you starts listing who did what, step back. This bond was never a ledger.", "ja": "どちらかが「誰が何をしたか」を並べ始めたら、一歩引いてください。この縁は、もともと帳簿ではありません。"}, "命": {"en": "You share the same blind spots. Friends who see things differently are good for this pair.", "ja": "見落とす場所も同じです。違う見方をする友人は、この二人にとって貴重です。"}}, "CLOSE": {"栄親": {"en": "When you are together, things tend to move the right way. That is not chance. It is what happens when two people lift each other. What you build side by side becomes the place you both come home to, and the moments of thinking \"I'm glad it's you\" only add up with time.", "ja": "二人でいると、物事が自然と良い方へ動き出します。それは偶然ではなく、互いを引き上げ合える相性だからです。一緒に育てたものが、やがて二人の居場所になっていきます。時間を重ねるほど、「この人で良かった」と思える瞬間が増えていく関係です。"}, "友衰": {"en": "Someone you never run out of things to say to is a happiness many people look for and few find. You don't need big occasions. The ordinary hours you spend together are the treasure. This is a bond that grows more comfortable, and more dear, with every year.", "ja": "何年たっても、話したいことが尽きない相手。それは、探しても簡単には見つからない幸せです。特別な出来事がなくても、二人でいる何気ない時間そのものが宝物になります。年を重ねるほど、隣にいることが心地よくなっていく関係です。"}, "安壊": {"en": "You do not meet many people in a lifetime who move you this much. Each of you brings new color into the other's life and leaves the other richer than before. Every time you put a feeling into words, that strong pull turns a little more into deep trust. Yours is a story neither of you will forget, and you get to write it together.", "ja": "ここまで心を動かされる相手には、一生のうちに何度も出会えません。二人は互いの人生に新しい色を持ち込み、出会う前より豊かな自分へと変えていきます。気持ちを言葉にするたびに、強く惹かれ合う力は、深い信頼へと育っていきます。忘れられない物語を、二人で紡いでいける関係です。"}, "危成": {"en": "Your differences are not a wall to get over. They are a gift that widens each other's world. The more you learn about each other, the more there is to love, and the longer you are together, the more you each meet a self you had not known. This is a bond that deepens with every year you give it.", "ja": "二人の違いは、乗り越えるべき壁ではなく、互いの世界を広げてくれる贈り物です。知れば知るほど新しい魅力に気づき、一緒にいるほど、出会う前には知らなかった自分に出会えます。時間を重ねるほど、二人だけの深い絆へと育っていく関係です。"}, "業胎": {"en": "It felt familiar from the first moment. Shukuyō sees your tie as something special, bound over a very long time. To have someone who simply turns up when things are hard is one of the great comforts in life. Every thank-you makes this bond warmer and deeper.", "ja": "出会った瞬間から、どこか懐かしい。宿曜では、二人の縁は長い時間をかけて結ばれてきた特別なものとされます。困った時に、当たり前のようにそばにいてくれる人がいる。それは何よりも心強い幸せです。「ありがとう」を重ねるほど、この縁はいっそう温かく、深くなっていきます。"}, "命": {"en": "Someone who understands you without a word is rare and precious. In each other you find your own best qualities, and through each other you learn to like yourselves more. Because you are alike, you can share the same joy at the same depth. The longer you are together, the more you become each other's truest ally.", "ja": "言葉にしなくても分かり合える相手は、かけがえのない存在です。二人は互いの中に自分の良さを見つけ、互いを通して自分をもっと好きになっていけます。似ているからこそ、同じ喜びを同じ深さで分かち合えます。一緒にいるほど、「いちばんの理解者」になっていく関係です。"}}, "DIST_UP": {"d0": {"en": "You came together fast because the pull between you is that strong. Add slow time to that momentum, and what you have becomes the real thing.", "ja": "一気に近づけたのは、それだけ強く引き合う二人だからです。その勢いに、ゆっくり育てる時間が加わった時、二人の絆は本物になっていきます。"}, "d1": {"en": "A bond that lasts without strain is the best kind to walk a long life with. The more rhythm you share, the more your ordinary days fill with quiet happiness.", "ja": "無理をしなくても続いていく。それは、長い人生を一緒に歩くうえで、いちばん頼もしい相性です。リズムを重ねるほど、二人の毎日は穏やかな幸せで満たされていきます。"}, "d2": {"en": "A bond that took time to grow shines more as time passes. Your best years are still ahead of you.", "ja": "時間をかけて育った絆は、時間がたつほど輝きます。二人のいちばん良い時期は、これからです。"}, "mei": {"en": "To accept them is to accept yourself. Simply by being together, you help each other become someone you both like more.", "ja": "相手を受け入れることは、自分を受け入れること。二人は一緒にいるだけで、互いを「もっと好きな自分」へ変えていけます。"}, "karmic": {"en": "To have met someone you want to cherish for no reason at all is itself the good fortune you two were given.", "ja": "理由がなくても大切にしたいと思える相手に出会えたこと。それ自体が、二人に贈られた幸運です。"}}, "CLASH_UP": {"ei": {"en": "Once you can say the small thing early, very little can shake you. An easy bond becomes a trust that holds.", "ja": "早めのひと言が言えるようになった二人は、もう揺らぎません。恵まれた相性が、確かな信頼に変わっていきます。"}, "shin": {"en": "Every time you ask, you find something new. Because you are this close, you get to keep discovering each other for years.", "ja": "聞くたびに、相手の新しい一面が見つかります。家族のように近い二人だからこそ、何年たっても「知らなかった」を楽しめます。"}, "yu": {"en": "Each step you take toward them makes the ease mutual. Two people who simply get along become each other's strongest support.", "ja": "あなたが一歩踏み出すたびに、二人の心地よさは「お互いさま」になります。気の合う二人が、いちばんの味方同士になっていきます。"}, "sui": {"en": "Your generosity is the treasure of this relationship. Add words to it, and it finally lands, and starts coming back with the same warmth.", "ja": "あなたの優しさは、この関係の宝物です。言葉が加わった時、その優しさはちゃんと相手に届き、同じ温かさで返ってくるようになります。"}, "an": {"en": "With one line of warning, they can love you without bracing. Your calm becomes the thing that keeps your shared place safe.", "ja": "先のひと言があるだけで、相手は安心してあなたを好きでいられます。あなたの落ち着きは、二人の居場所を守る力になります。"}, "kai": {"en": "The more easily you can name a feeling, the more that strong pull turns into deep understanding. Someone who moves you this much is someone who makes your life larger.", "ja": "気持ちを短く伝えられるようになるほど、強く惹かれる力は、深く理解し合う力へと変わっていきます。ここまで心を動かしてくれる相手は、あなたの人生を豊かにしてくれる人です。"}, "ki": {"en": "Two people who value the same thing for different reasons can see what neither would see alone. From the day you have that talk, your differences work for you.", "ja": "違う理由で同じものを大切にできる二人は、一人では見られない景色を見られます。その話ができた日から、違いは二人の強みになります。"}, "sei": {"en": "With one signal, the force that pushes you forward can also be the kindness that holds you. Having someone beside you who truly believes in you is no small happiness.", "ja": "合図ひとつで、相手の「背中を押す力」は、あなたを包む優しさにもなります。あなたを本気で信じてくれる人が、隣にいる。それは大きな幸せです。"}, "go": {"en": "Each spoken thank-you turns their kindness into joy. One who loves to give and one who can receive with grace make a very happy pairing.", "ja": "「ありがとう」が言葉になるたびに、相手の優しさは喜びに変わります。与えたい人と、素直に受け取れる人。二人は、とても幸せな組み合わせです。"}, "tai": {"en": "Once the weight is shared, the joy of supporting becomes something you both have. Your depth of care is a lifelong support to them.", "ja": "重さを分け合えるようになった時、支える喜びは二人のものになります。あなたの深い愛情は、相手にとって一生の支えです。"}, "mei": {"en": "Two people with the same reflex can also make up at the same speed. Every time you end up laughing, you come out stronger.", "ja": "同じ反射を持つ二人は、同じ速さで仲直りもできます。笑い合えた回数だけ、二人は強くなっていきます。"}}, "NEED_UP": {"ei": {"en": "Welcomed into your world, they will only want to do more for you. That is how the home you share keeps getting bigger.", "ja": "あなたの世界に迎え入れられた相手は、もっとあなたの力になりたいと思うはずです。二人の「帰る場所」は、そうして少しずつ広がっていきます。"}, "shin": {"en": "With those words, they can stand beside you with confidence. You become two people who bring each other luck.", "ja": "その言葉を受け取った相手は、自信を持ってあなたの隣に立てるようになります。互いに幸運を運び合う二人になっていきます。"}, "yu": {"en": "A small step from you is a large gift to them. That is how the ease between you deepens year after year.", "ja": "小さな一歩が、相手にとっては大きな贈り物になります。そうやって、二人の心地よさは年々深まっていきます。"}, "sui": {"en": "When support runs both ways, neither of you has to strain, and you can be together for a long time. The person you can lean on is already right there.", "ja": "支え合えるようになった二人は、どちらも無理をせずに、長く一緒にいられます。あなたが甘えられる相手は、ちゃんと隣にいます。"}, "an": {"en": "Given a forecast, they can relax, and love you more freely than they do now.", "ja": "予報をもらえた相手は、安心して、今よりもっとのびのびとあなたを愛せるようになります。"}, "kai": {"en": "Two people who tell each other the good things can turn the pull between them straight into happiness.", "ja": "良いことを伝え合える二人は、惹かれ合う力をそのまま幸せに変えていけます。"}, "ki": {"en": "People grow most where it is safe to fall short. You can be the rare person who gives them both growth and rest.", "ja": "安心して失敗できる場所があると、人はもっと伸びます。あなたは相手にとって、成長と安らぎの両方をくれる、かけがえのない人になれます。"}, "sei": {"en": "With one thing that never changes, your freedom becomes a charm they can enjoy without worry.", "ja": "変わらないものが一つあるだけで、あなたの自由さは、相手にとって安心して楽しめる魅力になります。"}, "go": {"en": "From the day you open that door, you stop being helper and helped. You become two people carrying the same load.", "ja": "扉を開けた日から、二人は「助ける人と助けられる人」ではなく、同じ荷物を持つ仲間になります。"}, "tai": {"en": "Your honest answer is the best gift you can give them. Supporting them becomes a joy you share.", "ja": "あなたの正直な気持ちは、相手への何よりの贈り物です。支えることが、二人の喜びになっていきます。"}, "mei": {"en": "The kindness you offer first comes back in the same shape. You are the two people best placed to make each other happy.", "ja": "先に差し出した優しさは、同じ形で返ってきます。二人は、互いをいちばん幸せにできる相手です。"}}};
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function nm(i){ return lang === 'ja' ? M[i][0] + '宿' : M[i][2]; }
+function dateText(o){ return L(o.d + ' ' + MONTH_NAMES[o.m - 1] + ' ' + o.y, o.y + '年' + o.m + '月' + o.d + '日'); }
+function todayJST(){ var t = new Date(Date.now() + 9*3600000); return {y:t.getUTCFullYear(), m:t.getUTCMonth() + 1, d:t.getUTCDate()}; }
+function F(sec, key){ var e = FULL[sec][key]; return L(e.en, e.ja); }
+/* the free page shows each opener cut off; here the opener and its continuation read as one passage */
+function join(open, sec, key){ return L(open[0] + ' ' + FULL[sec][key].en, open[1] + FULL[sec][key].ja); }
+function fillDate(prefix, y, m, d){
+  var ms = $(prefix + 'Month'), ds = $(prefix + 'Day'), ys = $(prefix + 'Year'), i, o;
+  for (i = 1; i <= 12; i++){ o = document.createElement('option'); o.value = i; ms.appendChild(o); }
+  for (i = 1; i <= 31; i++){ o = document.createElement('option'); o.value = i; o.textContent = i; ds.appendChild(o); }
+  for (i = todayJST().y; i >= 1920; i--){ o = document.createElement('option'); o.value = i; o.textContent = i; ys.appendChild(o); }
+  ms.value = m; ds.value = d; ys.value = y;
+}
+function readDate(prefix){
+  var y = +$(prefix + 'Year').value, m = +$(prefix + 'Month').value, d = +$(prefix + 'Day').value;
+  var t = new Date(Date.UTC(y, m - 1, d));
+  if (t.getUTCMonth() !== m - 1) return {err:L(MONTH_NAMES[m-1] + ' ' + y + ' has no day ' + d + '. Pick another day.', y + '年' + m + '月に' + d + '日はありません。別の日を選んでください。')};
+  var now = todayJST();
+  if (dayNum(y, m, d) > dayNum(now.y, now.m, now.d) + 1) return {err:L('That date is in the future. Pick a birthday up to today.', 'その日付は未来です。今日までの誕生日を選んでください。')};
+  var s = shukuOf(y, m, d);
+  if (!s) return {err:L('That date is outside the calendar we cover. Pick a year from 1920 onward.', '対応していない日付です。1920年以降を選んでください。')};
+  return {y:y, m:m, d:d, idx:s.idx};
+}
+var mine = null, partner = null;
+var CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#d4472a"/><path d="M7.5 12.5l3 3 6-6.5" fill="none" stroke="#fff6ea" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+/* Five-level sketch shown as a percentage. The level sets the range; a small fixed offset from the two mansions keeps each pair's numbers its own. */
+var PCT_BASE = [0, 34, 50, 66, 80, 92];
+function pctOf(v, a, b, i){ var o = ((a*31 + b*17 + i*11 + 3) % 9) - 4; return Math.max(20, Math.min(98, PCT_BASE[v] + o)); }
+function pbar(p, label){ return '<span class="pbar" role="img" aria-label="' + label + ' ' + p + '%"><i style="width:' + p + '%"></i></span><span class="pct">' + p + '<small>%</small></span>'; }
+var SPARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.2 6.6 6.8 2.4-6.8 2.4L12 20.5l-2.2-6.6L3 11.5l6.8-2.4z" fill="#d6b05a"/></svg>';
+function gift(sec, key){ return '<div class="gift">' + SPARK + '<div><span class="mini">' + L('What this becomes', '二人のこれから') + '</span><p>' + esc(F(sec, key)) + '</p></div></div>'; }
+function chapter(n, title, body){
+  return '<section class="ch"><div class="ch-head"><span class="ch-num" aria-hidden="true">' + n + '</span><div><p class="ch-label">' + L('Chapter ' + n, '第' + n + '章') + '</p><h2>' + esc(title) + '</h2></div></div>' + body + '</section>';
+}
+function wheelSVG(a, b, same, kanji, label){
+  var cx = 170, cy = 170, rad = 128, svg = '', i;
+  var pt = function(k, q){ var an = -Math.PI/2 + k*2*Math.PI/27; return [cx + q*Math.cos(an), cy + q*Math.sin(an)]; };
+  svg += '<circle cx="170" cy="170" r="128" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1"/>';
+  var pa = pt(a, rad), pb = pt(b, rad);
+  if (!same) svg += '<line x1="' + pa[0].toFixed(1) + '" y1="' + pa[1].toFixed(1) + '" x2="' + pb[0].toFixed(1) + '" y2="' + pb[1].toFixed(1) + '" stroke="#d6b05a" stroke-width="1.5" stroke-dasharray="4 4"/>';
+  for (i = 0; i < 27; i++){
+    var p = pt(i, rad), cls = i === a ? 'a' : (i === b ? 'b' : '');
+    if (cls){ svg += '<g class="' + cls + '"><circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="14" fill="' + (i === a ? '#d6b05a' : '#d4472a') + '"/><text x="' + p[0].toFixed(1) + '" y="' + (p[1] + 0.5).toFixed(1) + '" text-anchor="middle" dominant-baseline="central" style="font-size:15px;font-weight:800">' + M[i][0] + '</text></g>'; }
+    else { var q = pt(i, rad + 22); svg += '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="2.5" fill="#bcc8e2"/><text x="' + q[0].toFixed(1) + '" y="' + q[1].toFixed(1) + '" text-anchor="middle" dominant-baseline="central">' + M[i][0] + '</text>'; }
+  }
+  svg += '<text class="mid1" x="170" y="160" text-anchor="middle" dominant-baseline="central">' + kanji + '</text><text class="mid2" x="170" y="198" text-anchor="middle" dominant-baseline="central">' + esc(label) + '</text>';
+  return '<svg id="wheel" viewBox="0 0 340 340" role="img" aria-label="' + L('Wheel of the 27 mansions. You are ' + M[a][2] + ', they are ' + M[b][2] + '.', '27宿の輪。あなたは' + M[a][0] + '宿、相手は' + M[b][0] + '宿。') + '">' + svg + '</svg>';
+}
+function render(){
+  if (!mine || !partner) return;
+  var a = mine.idx, b = partner.idx, r = relOf(a, b), back = relOf(b, a), R = REL[r.key], RB = REL[back.key], RJ = RELJ[r.key], RBJ = RELJ[back.key];
+  var pr = PAIR[r.key], k = pr[1], same = a === b, label = L(pr[0], PAIRJ[r.key]);
+  var di = DIST[r.key] ? DIST[r.key].indexOf(r.steps) : -1, dk = same ? 'mei' : (di >= 0 ? 'd' + di : 'karmic');
+  var An = nm(a), Bn = nm(b), h = '';
+  var sub = function(s){ return s.replace(/\{A\}/g, An).replace(/\{B\}/g, Bn); };
+  /* cover */
+  h += '<section class="cover"><div class="cover-cats" aria-hidden="true"><img src="art/cat-a.webp" alt=""><img src="art/cat-b.webp" alt=""></div>' +
+    '<p class="cover-for">' + L('A reading for two', '二人のための鑑定') + '</p>' +
+    '<p class="cover-names">' + L(M[a][2] + ' × ' + M[b][2], M[a][0] + '宿 × ' + M[b][0] + '宿') + '</p>' +
+    '<p class="cover-for">' + dateText(mine) + ' · ' + dateText(partner) + '</p>' +
+    '<p class="cover-bond">' + L(k + ' · ' + label, k + '（' + PAIRYOMI[k] + '）· ' + label) + '</p>' +
+    '<p class="cover-title">' + esc(L(VERDICT[k][0], VERDICT[k][2])) + '</p><p class="cover-sub">' + esc(L(VERDICT[k][1], VERDICT[k][3])) + '</p>' +
+    wheelSVG(a, b, same, k, label) +
+    '<div class="legend"><span><i style="background:var(--kin)"></i>' + L('You', 'あなた') + '</span><span><i style="background:var(--shu)"></i>' + L('Them', '相手') + '</span></div></section>';
+  /* 1 */
+  var mv = METER[k].slice();
+  if (di === 0){ mv[0] = Math.min(5, mv[0] + 1); mv[2] = Math.min(5, mv[2] + 1); }
+  if (di === 2){ mv[0] = Math.max(1, mv[0] - 1); mv[4] = Math.min(5, mv[4] + 1); }
+  var b2 = b; h += chapter(1, L('Your bond, and how you see each other', '二人の相性と、お互いの見え方'),
+    '<div class="sides"><div class="side"><span class="mini">' + L('How you see them', 'あなたから見た相手') + '</span><p class="side-name">' + L(R[0] + ' ' + R[1] + ' · ' + ROLE[r.key][0], R[0] + '（' + RJ[0] + '）· ' + ROLE[r.key][1]) + '</p><p>' + esc(L(SIDE[r.key].a[0], SIDE[r.key].a[1])) + '</p></div>' +
+    '<div class="side"><span class="mini">' + L('How they see you', '相手から見たあなた') + '</span><p class="side-name">' + L(RB[0] + ' ' + RB[1] + ' · ' + ROLE[back.key][0], RB[0] + '（' + RBJ[0] + '）· ' + ROLE[back.key][1]) + '</p><p>' + esc(L(SIDE[back.key].b[0], SIDE[back.key].b[1])) + '</p></div></div>' +
+    '<div class="meter">' + mv.map(function(v, i){ var lb = L(METER_L[i][0], METER_L[i][1]); return '<div class="meter-row"><span>' + lb + '</span>' + pbar(pctOf(v, a, b2, i), lb) + '</div>'; }).join('') + '</div>');
+  /* 2 */
+  var who = function(idx, cls, tag, text){
+    var kw = lang === 'ja' ? MJ[idx][2] : M[idx][5];
+    return '<div class="who-card"><div class="who-top"><span class="who-disc ' + cls + '" lang="ja">' + M[idx][0] + '</span><div><p class="who-tag">' + tag + '</p><p class="who-name">' + L(M[idx][2] + ' Mansion', M[idx][0] + '宿（' + YOMI[idx] + '）') + '</p><p class="who-arch">' + esc(L(M[idx][3], MJ[idx][0])) + '</p></div></div>' +
+      '<ul class="chips">' + kw.map(function(x){ return '<li class="chip">' + esc(x) + '</li>'; }).join('') + '</ul>' + text + '</div>';
+  };
+  h += chapter(2, L('Who you two are', '二人はこんな人'),
+    who(a, 'a', L('You', 'あなた'), '<p>' + esc(L(M[a][6], MJ[a][3])) + '</p><p><span class="mini">' + L('In love', '恋愛では') + '</span><br>' + esc(L(LOVE[a][0], LOVE[a][1])) + '</p>') +
+    who(b, 'b', L('Them', '相手'), '<p><span class="mini">' + L('In love', '恋愛では') + '</span><br>' + esc(L(LOVE[b][0], LOVE[b][1])) + '</p>'));
+  /* 3 */
+  h += chapter(3, L('What tends to happen between you', '二人に起きやすいこと'),
+    '<ul class="dots">' + SCENES[r.key].map(function(s){ return '<li>' + CHECK + '<span>' + esc(L(s[0], s[1])) + '</span></li>'; }).join('') + '</ul>' +
+    '<div class="try"><span class="mini">' + L('One thing to try this week', '今日からできること') + '</span><p>' + esc(L(TIP[k][0], TIP[k][1])) + '</p></div>');
+  /* 4 */
+  h += chapter(4, L(TDIST[dk].t[0], TDIST[dk].t[1]), '<p>' + esc(join(TDIST[dk].o, 'DIST', dk)) + '</p>' + gift('DIST_UP', dk));
+  /* 5 */
+  h += chapter(5, L(TT.clash[0], TT.clash[1]), '<p>' + esc(join(TCLASH[r.key], 'CLASH', r.key)) + '</p>' +
+    '<div class="try"><span class="mini">' + L('Try this', 'やってみること') + '</span><p>' + esc(F('CLASH_DO', r.key)) + '</p></div>' + gift('CLASH_UP', r.key));
+  /* 6 */
+  h += chapter(6, L(TT.need[0], TT.need[1]), '<p>' + esc(join(TNEED[r.key], 'NEED', r.key)) + '</p>' + gift('NEED_UP', r.key));
+  /* 7 */
+  var rooms = [['love', L('Love', '恋愛')], ['marriage', L('Marriage and the long term', '結婚・長い付き合い')], ['daily', L('Daily life', '日常の暮らし')], ['work', L('Working together', '一緒に取り組むこと')]];
+  h += chapter(7, L(TT.life[0], TT.life[1]), '<p>' + esc(sub(join(TT.lifeO, 'LIFE_O', k))) + '</p><div class="rooms">' +
+    rooms.map(function(rm, ri){ var e = FULL['LIFE_' + rm[0]][k]; return '<div class="room"><span class="room-name">' + rm[1] + '</span><div class="room-bar">' + pbar(pctOf(e.n, a, b2, ri + 5), rm[1]) + '</div><p>' + esc(L(e.en, e.ja)) + '</p></div>'; }).join('') + '</div>');
+  /* 8 */
+  h += chapter(8, L(TT.last[0], TT.last[1]), '<div class="steps">' +
+    '<div class="step"><span class="step-n">1</span><div><span class="step-lead">' + esc(L(TT.lastO[0], TT.lastO[1])) + '</span><strong>' + esc(L(FULL.LAST1T[k].en.charAt(0).toUpperCase() + FULL.LAST1T[k].en.slice(1), FULL.LAST1T[k].ja)) + '</strong><p>' + esc(F('LAST1', k)) + '</p></div></div>' +
+    '<div class="step"><span class="step-n">2</span><div><strong>' + esc(F('LAST2T', k)) + '</strong><p>' + esc(F('LAST2', k)) + '</p></div></div>' +
+    '<div class="step"><span class="step-n">3</span><div><strong>' + esc(F('LAST3T', k)) + '</strong><p>' + esc(F('LAST3', k)) + '</p></div></div></div>');
+  h += '<section class="closing"><img src="art/moon.webp" alt="" width="330" height="328"><p class="for">' + L('For the two of you', '二人へ') + '</p><p class="line">' + esc(F('CLOSE', k)) + '</p>' +
+    '<p class="fine">' + L('A reading for reflection and fun. It describes tendencies drawn from the Shukuyō tradition and promises no outcome.', '楽しみと振り返りのための読み物です。宿曜の伝統にもとづく傾向をお伝えするもので、結果を約束するものではありません。') + '</p></section>';
+  $('reading').innerHTML = h; $('reading').hidden = false;
+}
+function applyLang(){
+  document.documentElement.lang = lang;
+  $('langEn').setAttribute('aria-pressed', String(lang === 'en')); $('langJa').setAttribute('aria-pressed', String(lang === 'ja'));
+  document.title = L('Shukuyō Full Reading', '宿曜 くわしい相性鑑定');
+  $('tH1').textContent = L('The full reading', 'くわしい相性鑑定');
+  $('tSub').textContent = L('All eight chapters, written for one exact pairing.', '全8章。二人の組み合わせに合わせた鑑定です。');
+  $('tYou').textContent = L('Your birthday', 'あなたの誕生日'); $('tThem').textContent = L('Their birthday', '相手の誕生日');
+  $('tGo').textContent = L('Show the reading', '鑑定を表示する');
+  var set = function(c, t){ var e = document.querySelectorAll('.' + c); for (var i = 0; i < e.length; i++) e[i].textContent = t; };
+  set('lm', L('Month', '月')); set('ld', L('Day', '日')); set('ly', L('Year', '年'));
+  ['bMonth','pMonth'].forEach(function(id){ var os = $(id).options; for (var i = 0; i < os.length; i++) os[i].textContent = L(MONTH_NAMES[i], (i + 1) + '月'); });
+  render();
+}
+function init(){
+  try { var s = localStorage.getItem('tsukiyado-lang'); if (s === 'ja' || s === 'en') lang = s; } catch (e) {}
+  fillDate('b', 1995, 11, 14); fillDate('p', 1996, 3, 3);
+  $('langEn').addEventListener('click', function(){ lang = 'en'; try { localStorage.setItem('tsukiyado-lang', 'en'); } catch (e) {} applyLang(); });
+  $('langJa').addEventListener('click', function(){ lang = 'ja'; try { localStorage.setItem('tsukiyado-lang', 'ja'); } catch (e) {} applyLang(); });
+  $('birthForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var A = readDate('b'), B = readDate('p');
+    if (A.err || B.err){ $('err').textContent = A.err || B.err; return; }
+    $('err').textContent = ''; mine = A; partner = B; render();
+    $('reading').scrollIntoView({behavior: (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) ? 'auto' : 'smooth', block:'start'});
+  });
+  applyLang();
+}
+init();
+</script>
+</body>
+</html>
