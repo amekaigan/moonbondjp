@@ -629,7 +629,7 @@ function render(){
   var b2 = b; h += chapter(1, L('Your bond, and how you see each other', '二人の相性と、お互いの見え方'),
     '<div class="sides"><div class="side"><span class="mini">' + L('How you see them', 'あなたから見た相手') + '</span><p class="side-name">' + L(R[0] + ' ' + R[1] + ' · ' + ROLE[r.key][0], R[0] + '（' + RJ[0] + '）· ' + ROLE[r.key][1]) + '</p><p>' + esc(L(SIDE[r.key].a[0], SIDE[r.key].a[1])) + '</p></div>' +
     '<div class="side"><span class="mini">' + L('How they see you', '相手から見たあなた') + '</span><p class="side-name">' + L(RB[0] + ' ' + RB[1] + ' · ' + ROLE[back.key][0], RB[0] + '（' + RBJ[0] + '）· ' + ROLE[back.key][1]) + '</p><p>' + esc(L(SIDE[back.key].b[0], SIDE[back.key].b[1])) + '</p></div></div>' +
-    '<div class="meter">' + mv.map(function(v, i){ var lb = L(METER_L[i][0], METER_L[i][1]); return '<div class="meter-row"><span>' + lb + '</span>' + pbar(pctOf(v, a, b2, i), lb) + '</div>'; }).join('') + '</div>');
+    '<div class="meter">' + mv.map(function(v, i){ var lb = L(METER_L[i][0], METER_L[i][1]); return '<div class="meter-row"><span>' + lb + '</span>' + pbar(pctOf(v, a, b2, i), lb) + '</div>'; }).join('') + '</div><p style="font-size:12.5px;opacity:.75;margin:8px 0 0">' + L('Scores are Moonbond\'s own reading of this bond in the Shukuyō tradition, not statistics.', '数値は宿曜の伝統をもとにしたMoonbond独自の目安で、統計ではありません。') + '</p>');
   /* 2 */
   var who = function(idx, cls, tag, text){
     var kw = lang === 'ja' ? MJ[idx][2] : M[idx][5];

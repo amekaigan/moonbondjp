@@ -9,7 +9,8 @@
   s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
   document.head.appendChild(s);
   gtag('js', new Date());
-  gtag('config', GA_ID);
+  /* Never send the query string: /full/?a=..&b=.. carries birthdays. */
+  gtag('config', GA_ID, { page_location: location.origin + location.pathname, page_referrer: document.referrer ? document.referrer.split('?')[0] : '' });
   var isFull = /^\/full\/?/.test(location.pathname);
   window.mbTrack = function (name, params) { try { gtag('event', name, params || {}); } catch (e) {} };
   function lang() { return document.documentElement.lang === 'ja' ? 'ja' : 'en'; }
