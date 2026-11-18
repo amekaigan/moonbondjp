@@ -21,7 +21,9 @@
     if (t.id === 'compareBtn') { mbTrack('compare_click', { lang: lang() }); return; }
     if (t.id === 'langEn' || t.id === 'langJa') { mbTrack('lang_switch', { to: t.id === 'langJa' ? 'ja' : 'en' }); return; }
     if (t.classList.contains('hero-btn')) { mbTrack('hero_cta_click', { lang: lang() }); return; }
-    if (t.id === 'copyBtn') { mbTrack('share_copy', { lang: lang() }); return; }
+    if (t.id === 'copyBtn' || t.id === 'pairCopyBtn') { mbTrack('share_copy', { card: t.id === 'copyBtn' ? 'mansion' : 'bond', lang: lang() }); return; }
+    if (t.id === 'saveBtn' || t.id === 'pairSaveBtn') { mbTrack('share_save', { card: t.id === 'saveBtn' ? 'mansion' : 'bond', lang: lang() }); return; }
+    if (t.id === 'shareBtn' || t.id === 'pairShareBtn') { mbTrack('share_open', { card: t.id === 'shareBtn' ? 'mansion' : 'bond', lang: lang() }); return; }
     if (t.classList.contains('tile')) { mbTrack('mansion_tile_click', { lang: lang() }); }
   }, true);
   document.addEventListener('submit', function (e) {

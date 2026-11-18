@@ -471,6 +471,7 @@ html[lang="ja"] .sub{font-size:16px}
         <div class="share-grid">
           <img id="pairImg" alt="Tall story card showing the bond between the two mansions" width="1080" height="1920">
           <div class="share-side">
+            <button class="btn" id="pairShareBtn" type="button" data-i="shareNow" hidden>Share</button>
             <button class="btn" id="pairSaveBtn" type="button" data-i="saveStory">Save image</button>
             <button class="btn line" id="pairCopyBtn" type="button" data-i="copyCap">Copy caption</button>
             <p class="msg" id="pairMsg" role="status"></p>
@@ -533,6 +534,7 @@ html[lang="ja"] .sub{font-size:16px}
           <div class="share-grid">
             <img id="shareImg" alt="Shareable card showing this moon mansion" width="1080" height="1350">
             <div class="share-side">
+              <button class="btn" id="shareBtn" type="button" data-i="shareNow" hidden>Share</button>
               <button class="btn" id="saveBtn" type="button" data-i="saveImg">Save image</button>
               <button class="btn line" id="copyBtn" type="button" data-i="copyCap">Copy caption</button>
               <p class="msg" id="shareMsg" role="status"></p>
@@ -866,7 +868,7 @@ var JA = {
   inLove:'恋愛では',
   kimH:'あなたに似合う着物の色',
   kimFine:'日本の伝統色と着物の文様から選んだ、当サイト独自の提案です。古典の宿曜にはない、オリジナルの組み合わせです。',
-  shareMineH:'あなたの宿をシェア', saveImg:'画像を保存',
+  shareMineH:'あなたの宿をシェア', saveImg:'画像を保存', shareNow:'シェアする',
   omiH:'今日のおみくじ',
   omiSub:'今日の運勢を、1日1回引けます。',
   allH:'二十七宿の一覧', allSub:'気になる宿をタップすると、性格が読めます。色は、その宿の着物の色です。',
@@ -938,10 +940,10 @@ var TNEED = {
 /* ---------- free result: roles, both-side texts, scenes, tips, meter. All [English, Japanese]. Drafts written for this site from the traditional meaning of each bond. ---------- */
 var PAIRYOMI = {'命':'めい','業胎':'ぎょうたい','栄親':'えいしん','友衰':'ゆうすい','安壊':'あんかい','危成':'きせい'};
 var ROLE = {
-  mei:['The Mirror','もう一人の自分'], go:['The Giver','尽くしてくれる人'], tai:['The One to Look After','支えたくなる人'],
-  ei:['The Lucky Charm','運を運んでくれる人'], shin:['Family','家族のような人'], yu:['The Easy Friend','気の合う友'],
-  sui:['The One to Give To','尽くしたくなる人'], an:['The Safe Place','安らげる人'], kai:['The Disruptor','心を揺さぶる人'],
-  ki:['The Wild Card','別世界の人'], sei:['The Sharpener','成長させてくれる人']
+  mei:['The Mirror','もう一人の自分'], go:['The Guardian','尽くしてくれる人'], tai:['The One You Protect','支えたくなる人'],
+  ei:['The Lucky Charm','運を運んでくれる人'], shin:['Chosen Family','家族のような人'], yu:['A Kindred Spirit','気の合う友'],
+  sui:['The One You Pour Into','尽くしたくなる人'], an:['The Safe Harbor','安らげる人'], kai:['The Storm','心を揺さぶる人'],
+  ki:['The Wild Card','別世界の人'], sei:['The Whetstone','成長させてくれる人']
 };
 /* a: what they are to you. b: what you are to them. */
 var SIDE = {
@@ -1319,7 +1321,7 @@ function drawShare(idx){
   var job = ++shareJob, m = M[idx], j = MJ[idx], c1 = m[8][2], c2 = m[9][2], on = onColor(c1);
   var s = {
     top:L('MY JAPANESE MOON SIGN', '私の宿 · 宿曜占星術'), name:nmFull(idx), sub:L(m[0] + '宿  ·  ' + m[1], YOMI[idx]),
-    arch:L(m[3], j[0]), kw:L(m[5], j[2]).join('  ·  '), foot:L('Moonbond 月の縁  ·  Japanese moon signs', 'Moonbond 月の縁  ·  日本の月の占星術')
+    arch:L(m[3], j[0]), kw:L(m[5], j[2]).join('  ·  '), foot:L('moonbondjp.win  ·  Japanese moon signs', 'moonbondjp.win  ·  日本の月の占星術')
   };
   var paint = function(){
     if (job !== shareJob) return;
@@ -1483,7 +1485,7 @@ function renderBond(){
     la:L('I SEE THEM AS', '私から見た相手'), lb:L('THEY SEE ME AS', '相手から見た私'),
     ka:R[0], kb:RB[0], na:L(ROLE[r.key][0], ROLE[r.key][1]), nb:L(ROLE[back.key][0], ROLE[back.key][1]),
     rare:An + ' × ' + Bn, ask:L('What are you two?', 'あなたたちは？'),
-    foot:L('Moonbond 月の縁  ·  #shukuyo  #japanesemoonsign', 'Moonbond 月の縁  ·  #宿曜  #宿曜占星術')
+    foot:L('moonbondjp.win  ·  #shukuyo  #japanesemoonsign', 'moonbondjp.win  ·  #宿曜  #宿曜占星術')
   };
   drawPair();
   $('pairMsg').textContent = ''; $('buyMsg').textContent = ''; $('buyMsg2').textContent = '';
@@ -1600,16 +1602,30 @@ function init(){
   var slug = function(t){ return t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); };
   $('copyBtn').addEventListener('click', function(){
     var m = M[viewIdx], j = MJ[viewIdx];
-    copyText(L('My Japanese moon sign is ' + m[2] + ' Mansion (' + m[0] + '宿), ' + m[3] + '. #japanesemoonsign #shukuyo', '私の宿は' + m[0] + '宿（' + YOMI[viewIdx] + '）、「' + j[0] + '」。 #宿曜 #宿曜占星術'), $('shareMsg'));
+    copyText(L('My Japanese moon sign is ' + m[2] + ' Mansion (' + m[0] + '宿), ' + m[3] + '. Find yours: https://moonbondjp.win #japanesemoonsign #shukuyo', '私の宿は' + m[0] + '宿（' + YOMI[viewIdx] + '）、「' + j[0] + '」。 診断はこちら https://moonbondjp.win #宿曜 #宿曜占星術'), $('shareMsg'));
   });
   $('saveBtn').addEventListener('click', function(){ saveCanvas(shareCanvas, 'moon-sign-' + slug(M[viewIdx][2]) + '.png', $('shareMsg')); });
   $('pairCopyBtn').addEventListener('click', function(){
     var f = pairInfo;
     copyText(L(
-      'Our Japanese moon bond is ' + f.kanji + ' ' + f.label + (f.same ? '' : ', ' + f.steps + (f.steps === 1 ? ' step' : ' steps') + ' apart on the wheel of 27') + '. I see them as ' + f.na + ', they see me as ' + f.nb + '. What are you two? #shukuyo #japanesemoonsign',
-      '二人の相性は' + f.kanji + '（' + f.label + '）' + (f.same ? '' : '、27宿の輪で' + f.steps + '宿ぶん離れています') + '。私から見た相手は「' + f.na + '」、相手から見た私は「' + f.nb + '」。あなたたちは？ #宿曜 #宿曜占星術'
+      'Our Japanese moon bond is ' + f.kanji + ' ' + f.label + (f.same ? '' : ', ' + f.steps + (f.steps === 1 ? ' step' : ' steps') + ' apart on the wheel of 27') + '. I see them as ' + f.na + ', they see me as ' + f.nb + '. What are you two? https://moonbondjp.win #shukuyo #japanesemoonsign',
+      '二人の相性は' + f.kanji + '（' + f.label + '）' + (f.same ? '' : '、27宿の輪で' + f.steps + '宿ぶん離れています') + '。私から見た相手は「' + f.na + '」、相手から見た私は「' + f.nb + '」。あなたたちは？ https://moonbondjp.win #宿曜 #宿曜占星術'
     ), $('pairMsg'));
   });
+  var shareFile = function(cv, name, text, msg){
+    cv.toBlob(function(blob){
+      if (!blob) return;
+      var file = new File([blob], name, {type:'image/png'});
+      navigator.share({files:[file], text:text}).catch(function(){});
+    }, 'image/png');
+  };
+  try {
+    if (navigator.canShare && navigator.canShare({files:[new File([new Blob(['x'], {type:'image/png'})], 'a.png', {type:'image/png'})]})){
+      $('shareBtn').hidden = false; $('pairShareBtn').hidden = false;
+    }
+  } catch (e) {}
+  $('shareBtn').addEventListener('click', function(){ var m = M[viewIdx]; shareFile(shareCanvas, 'moon-sign-' + slug(m[2]) + '.png', L('My Japanese moon sign is ' + m[2] + ' Mansion (' + m[0] + '宿). Find yours: https://moonbondjp.win', '私の宿は' + m[0] + '宿。診断はこちら https://moonbondjp.win'), $('shareMsg')); });
+  $('pairShareBtn').addEventListener('click', function(){ var f = pairInfo; shareFile(pairCanvas, 'moon-bond-' + slug(f.slug) + '.png', L('Our Japanese moon bond is ' + f.kanji + ' ' + f.label + '. What are you two? https://moonbondjp.win', '二人の相性は' + f.kanji + '（' + f.label + '）。あなたたちは？ https://moonbondjp.win'), $('pairMsg')); });
   $('pairSaveBtn').addEventListener('click', function(){ saveCanvas(pairCanvas, 'moon-bond-' + slug(pairInfo.slug) + '.png', $('pairMsg')); });
   $('scenes').addEventListener('click', function(e){ var b = e.target.closest ? e.target.closest('.scene-btn') : null; if (!b) return; b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true')); scenesCount(); });
   $('compareBtn').addEventListener('click', function(){ $('editions').scrollIntoView({behavior:reduce() ? 'auto' : 'smooth', block:'start'}); });
