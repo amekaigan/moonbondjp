@@ -689,6 +689,18 @@ function init(){
     $('reading').scrollIntoView({behavior: (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) ? 'auto' : 'smooth', block:'start'});
   });
   applyLang();
+  /* Prefill from the order tool: ?a=YYYY-MM-DD&b=YYYY-MM-DD&lang=en|ja&t=file-title */
+  try {
+    var q = new URLSearchParams(location.search), pa = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(q.get('a') || ''), pb = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(q.get('b') || '');
+    if (q.get('lang') === 'ja' || q.get('lang') === 'en') { lang = q.get('lang'); applyLang(); }
+    if (pa && pb) {
+      ['b','p'].forEach(function(pf, i){ var x = i ? pb : pa; $(pf + 'Year').value = +x[1]; $(pf + 'Month').value = +x[2]; $(pf + 'Day').value = +x[3]; });
+      var A = readDate('b'), B = readDate('p');
+      if (!(A.err || B.err)) { mine = A; partner = B; render(); }
+      else $('err').textContent = A.err || B.err;
+    }
+    if (q.get('t')) document.title = q.get('t');
+  } catch (e) {}
 }
 init();
 </script>

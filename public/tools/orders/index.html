@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Moonbond 注文処理</title>
+<style>
+:root{--night:#12264f;--night-2:#1b3668;--paper:#f6f0e1;--paper-2:#e9e0ca;--ink:#1d1b27;--ink-2:#5a566c;--shu:#d4472a;--kin:#d6b05a;--mist:#bcc8e2;--ok:#2f7d5b;--warn:#b86b00;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--night);color:var(--paper);font:16px/1.7 -apple-system,"Hiragino Sans","Helvetica Neue",Arial,sans-serif}
+.wrap{max-width:640px;margin:0 auto;padding:16px 16px 48px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:22px;margin:8px 0 0}h2{font-size:18px;margin:0}
+.sub{color:var(--mist);font-size:14px;margin:0}
+.card{background:var(--paper);color:var(--ink);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.step{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:14px;font-weight:700;margin-right:8px}
+textarea,input[type=date],input[type=text]{width:100%;font:inherit;padding:12px;border:2px solid #cfc5ac;border-radius:10px;background:#fff;color:var(--ink)}
+textarea{min-height:110px;resize:vertical}
+label{font-size:14px;font-weight:700;display:flex;flex-direction:column;gap:4px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{display:block;width:100%;text-align:center;border:0;border-radius:12px;padding:15px 18px;font:inherit;font-weight:700;color:#fff6ea;background:var(--shu);text-decoration:none;cursor:pointer}
+.btn.sub2{background:var(--ink)}
+.btn:active{filter:brightness(.92)}
+.seg{display:flex;gap:8px}
+.seg label{flex:1;flex-direction:row;align-items:center;justify-content:center;gap:6px;border:2px solid #cfc5ac;border-radius:10px;padding:10px;background:#fff;font-weight:700}
+.seg input{accent-color:var(--shu)}
+.flag{border-radius:10px;padding:10px 12px;font-size:14px;font-weight:700}
+.flag.ok{background:#dcefe4;color:var(--ok)}
+.flag.warn{background:#fbe9c9;color:var(--warn)}
+.flag.ng{background:#f8d9d2;color:#a5321b}
+.res{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:15px}
+.res b{color:var(--ink-2)}
+.msg{background:var(--paper-2);border-radius:12px;padding:12px;white-space:pre-wrap;font-size:14px}
+.small{font-size:13px;color:var(--ink-2)}
+ol.todo{margin:0;padding-left:1.3em;font-size:15px}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Moonbond 注文処理</h1>
+  <p class="sub">Etsyの注文文を貼る → 誕生日を確認 → 鑑定ページを開く → PDFに保存、の4手順です。</p>
+
+  <section class="card">
+    <h2><span class="step">1</span>注文の文を貼る</h2>
+    <label>Etsyの「Personalization」欄の文章
+      <textarea id="raw" placeholder="例：My birthday is 14 Nov 1995, partner 3 March 1996. English please"></textarea>
+    </label>
+    <label>注文番号（ファイル名に使います）
+      <input type="text" id="order" inputmode="numeric" placeholder="例：3912345678">
+    </label>
+    <button class="btn" id="read" type="button">読み取る</button>
+  </section>
+
+  <section class="card hide" id="confirm">
+    <h2><span class="step">2</span>読み取り結果を確認</h2>
+    <div id="flags"></div>
+    <div class="row">
+      <label>あなた（買った人）<input type="date" id="a"></label>
+      <label>お相手<input type="date" id="b"></label>
+    </div>
+    <div class="seg" role="group" aria-label="言語">
+      <label><input type="radio" name="lang" value="en" checked>English</label>
+      <label><input type="radio" name="lang" value="ja">日本語</label>
+    </div>
+    <div class="res" id="sum"></div>
+    <p class="small">日付が違うときは、上の日付欄を直してください。曖昧な書き方（例：3/4/1995）は、日・月の順と見なしています。違うときは入れ替えてください。</p>
+    <button class="btn sub2" id="swap" type="button">日と月を入れ替える</button>
+  </section>
+
+  <section class="card hide" id="out">
+    <h2><span class="step">3</span>鑑定ページを開く</h2>
+    <a class="btn" id="open" href="#" target="_blank" rel="noopener">鑑定ページを開く</a>
+    <h2><span class="step">4</span>PDFに保存</h2>
+    <ol class="todo">
+      <li>開いたページで、ブラウザの「共有」または「印刷」を選ぶ</li>
+      <li>「PDFとして保存」を選ぶ（用紙はA4）</li>
+      <li>ファイル名はこちらを使う</li>
+    </ol>
+    <div class="msg" id="fname"></div>
+    <button class="btn sub2" id="copyName" type="button">ファイル名をコピー</button>
+    <h2>購入者へのメッセージ</h2>
+    <div class="msg" id="msg"></div>
+    <button class="btn sub2" id="copyMsg" type="button">メッセージをコピー</button>
+    <p class="small">Etsyの注文ページで「Add file」からPDFを添付し、メッセージを送って「発送済み」にします。</p>
+  </section>
+</div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var MON = {jan:1,january:1,feb:2,february:2,mar:3,march:3,apr:4,april:4,may:5,jun:6,june:6,jul:7,july:7,aug:8,august:8,sep:9,sept:9,september:9,oct:10,october:10,nov:11,november:11,dec:12,december:12};
+  function pad(n){ return (n < 10 ? '0' : '') + n; }
+  function valid(y, m, d){ if (y < 1920 || m < 1 || m > 12 || d < 1 || d > 31) return false; var t = new Date(Date.UTC(y, m - 1, d)); return t.getUTCMonth() === m - 1; }
+  function iso(y, m, d){ return y + '-' + pad(m) + '-' + pad(d); }
+  function z2h(s){ return s.replace(/[０-９]/g, function(c){ return String.fromCharCode(c.charCodeAt(0) - 65248); }); }
+
+  /* Find dates in free text. Returns [{pos, y, m, d, ambiguous}] in order of appearance. */
+  function findDates(t){
+    var found = [], taken = [], mm;
+    function free(i, n){ for (var k = 0; k < taken.length; k++) if (i < taken[k][1] && i + n > taken[k][0]) return false; return true; }
+    function add(i, n, y, m, d, amb){ if (valid(y, m, d) && free(i, n)){ taken.push([i, i + n]); found.push({pos:i, y:y, m:m, d:d, amb:!!amb}); } }
+    var re;
+    re = /(\d{4})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日?/g;
+    while ((mm = re.exec(t))) add(mm.index, mm[0].length, +mm[1], +mm[2], +mm[3]);
+    re = /(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/g;
+    while ((mm = re.exec(t))) add(mm.index, mm[0].length, +mm[1], +mm[2], +mm[3]);
+    re = /(\d{1,2})(?:st|nd|rd|th)?[\s.,\-]*(?:of\s+)?([A-Za-z]{3,9})\.?[\s.,\-]*(\d{4})/g;
+    while ((mm = re.exec(t))){ var mo = MON[mm[2].toLowerCase()]; if (mo) add(mm.index, mm[0].length, +mm[3], mo, +mm[1]); }
+    re = /([A-Za-z]{3,9})\.?[\s.,\-]*(\d{1,2})(?:st|nd|rd|th)?[\s.,\-]+(\d{4})/g;
+    while ((mm = re.exec(t))){ var mo2 = MON[mm[1].toLowerCase()]; if (mo2) add(mm.index, mm[0].length, +mm[3], mo2, +mm[2]); }
+    re = /(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})/g;
+    while ((mm = re.exec(t))){
+      var p = +mm[1], q = +mm[2], y = +mm[3];
+      if (p > 12) add(mm.index, mm[0].length, y, q, p);
+      else if (q > 12) add(mm.index, mm[0].length, y, p, q);
+      else add(mm.index, mm[0].length, y, q, p, p !== q);
+    }
+    found.sort(function(x, y){ return x.pos - y.pos; });
+    return found;
+  }
+  function findLang(t){ return /日本語|japanese|\bja\b|\bjp\b|にほんご/i.test(t) ? 'ja' : 'en'; }
+
+  var current = {};
+  function flag(cls, txt){ var d = document.createElement('div'); d.className = 'flag ' + cls; d.textContent = txt; d.style.marginBottom = '6px'; $('flags').appendChild(d); }
+
+  $('read').addEventListener('click', function(){
+    var t = z2h($('raw').value || '');
+    $('flags').innerHTML = '';
+    var ds = findDates(t);
+    $('confirm').classList.remove('hide');
+    if (ds.length < 2) flag('ng', '誕生日を ' + ds.length + ' 件しか読み取れませんでした。下の日付欄に手で入れてください。');
+    else if (ds.length > 2) flag('warn', '日付が ' + ds.length + ' 件ありました。先に出てきた2件を使っています。確認してください。');
+    else flag('ok', '誕生日を2件、読み取れました。');
+    if (ds.some(function(x){ return x.amb; })) flag('warn', '日と月の順番がはっきりしない書き方でした。日・月の順と見なしています。合っているか確認してください。');
+    if (ds[0]) $('a').value = iso(ds[0].y, ds[0].m, ds[0].d); else $('a').value = '';
+    if (ds[1]) $('b').value = iso(ds[1].y, ds[1].m, ds[1].d); else $('b').value = '';
+    var lg = findLang(t);
+    document.querySelector('input[name=lang][value=' + lg + ']').checked = true;
+    update();
+    $('confirm').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  $('swap').addEventListener('click', function(){
+    ['a', 'b'].forEach(function(id){
+      var v = $(id).value; if (!v) return;
+      var p = v.split('-'), y = +p[0], m = +p[1], d = +p[2];
+      if (valid(y, d, m)) $(id).value = iso(y, d, m);
+    });
+    update();
+  });
+
+  function getLang(){ return document.querySelector('input[name=lang]:checked').value; }
+  function update(){
+    var a = $('a').value, b = $('b').value;
+    if (!a || !b){ $('out').classList.add('hide'); $('sum').innerHTML = ''; return; }
+    var lg = getLang(), order = ($('order').value || '').replace(/[^0-9A-Za-z-]/g, '');
+    var fname = 'Moonbond-Reading-' + (order || 'order') + '-' + a.replace(/-/g, '') + '-' + b.replace(/-/g, '');
+    var url = '/full/?a=' + a + '&b=' + b + '&lang=' + lg + '&t=' + encodeURIComponent(fname);
+    $('sum').innerHTML = '<b>あなた</b><span>' + a + '</span><b>お相手</b><span>' + b + '</span><b>言語</b><span>' + (lg === 'ja' ? '日本語' : 'English') + '</span>';
+    $('open').href = url;
+    $('fname').textContent = fname + '.pdf';
+    $('msg').textContent = lg === 'ja'
+      ? 'ご注文ありがとうございます。お二人の誕生日をもとにした相性鑑定のPDFをお届けします。添付のファイルをご確認ください。\n\nこの鑑定は宿曜の伝統にもとづく読み物で、結果を保証するものではありません。楽しんで読んでいただけたらうれしいです。\n\nMoonbond'
+      : 'Thank you for your order! Your Shukuyō compatibility reading for the two of you is attached as a PDF.\n\nThis is a reading for reflection and fun, drawn from the Shukuyō tradition. It promises no outcome. I hope you enjoy it.\n\nIf anything looks off, just message me and I will fix it.\n\nMoonbond';
+    $('out').classList.remove('hide');
+  }
+  ['a', 'b', 'order'].forEach(function(id){ $(id).addEventListener('input', update); });
+  document.querySelectorAll('input[name=lang]').forEach(function(r){ r.addEventListener('change', update); });
+  function copy(id, btn){
+    var txt = $(id).textContent, done = function(){ var o = btn.textContent; btn.textContent = 'コピーしました'; setTimeout(function(){ btn.textContent = o; }, 1500); };
+    if (navigator.clipboard) navigator.clipboard.writeText(txt).then(done, function(){}); else { var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); done(); }
+  }
+  $('copyName').addEventListener('click', function(){ copy('fname', this); });
+  $('copyMsg').addEventListener('click', function(){ copy('msg', this); });
+})();
+</script>
+</body>
+</html>
