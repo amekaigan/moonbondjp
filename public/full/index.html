@@ -700,6 +700,8 @@ function init(){
       else $('err').textContent = A.err || B.err;
     }
     if (q.get('t')) document.title = q.get('t');
+    /* Paid link (k=…): the reading is for this pair only, so hide the date form */
+    if (q.get('k') && pa && pb) $('birthForm').style.display = 'none';
   } catch (e) {}
 }
 init();

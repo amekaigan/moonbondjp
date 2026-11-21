@@ -1633,9 +1633,74 @@ function init(){
   for (var bi = 0; bi < buys.length; bi++){
     buys[bi].addEventListener('click', function(e){
       var note = e.currentTarget.closest('.locked') ? $('buyMsg') : $('buyMsg2');
-      if (SHOP_URL){ note.innerHTML = '<a href="' + SHOP_URL + '" style="color:inherit">' + L('Open the full reading', 'くわしい鑑定のページを開く') + '</a>'; }
-      else { note.textContent = L('Coming soon. We are still getting this ready.', 'ただいま準備中です。もうしばらくお待ちください。'); }
+      startCheckout(note);
     });
+  }
+
+  /* ---------- PayPal（支払いの確認はCloudflare側の /api/paypal/ で行う） ---------- */
+  function ymd(x){ return x.y + '-' + (x.m < 10 ? '0' : '') + x.m + '-' + (x.d < 10 ? '0' : '') + x.d; }
+  function ppBox(note){
+    var box = note.previousElementSibling;
+    if (!box || !box.classList.contains('pp-box')){
+      box = document.createElement('div'); box.className = 'pp-box'; box.style.cssText = 'margin-top:10px;min-height:0';
+      note.parentNode.insertBefore(box, note);
+    }
+    return box;
+  }
+  var ppLoading = null;
+  function loadPayPal(id){
+    if (window.paypal) return Promise.resolve();
+    if (ppLoading) return ppLoading;
+    ppLoading = new Promise(function(ok, ng){
+      var s = document.createElement('script');
+      s.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(id) + '&currency=USD&intent=capture&components=buttons';
+      s.onload = ok; s.onerror = function(){ ppLoading = null; ng(); };
+      document.head.appendChild(s);
+    });
+    return ppLoading;
+  }
+  function startCheckout(note){
+    var saved = null;
+    try { saved = localStorage.getItem('mbReading'); } catch (e) {}
+    if (!mine || !partner || mine.example || partner.example){
+      note.textContent = L('First enter your two birthdays above. The full reading is written for that exact pair.', 'まず上で二人の誕生日を入れてください。くわしい鑑定は、その二人の組み合わせに合わせて書かれます。');
+      $('heroBox').scrollIntoView({behavior:reduce() ? 'auto' : 'smooth', block:'start'});
+      return;
+    }
+    var a = ymd(mine), b = ymd(partner);
+    note.textContent = L('Opening secure checkout…', 'お支払い画面を準備しています…');
+    fetch('/api/paypal/config').then(function(r){ return r.json(); }).then(function(cfg){
+      if (!cfg.clientId){ note.textContent = L('Coming soon. We are still getting this ready.', 'ただいま準備中です。もうしばらくお待ちください。'); return; }
+      return loadPayPal(cfg.clientId).then(function(){
+        var box = ppBox(note); box.innerHTML = '';
+        note.textContent = L('Pay with PayPal or a card. Your reading opens right after payment.', 'PayPalかカードでお支払いいただけます。お支払いが終わると、すぐに鑑定が開きます。');
+        if (window.mbTrack) mbTrack('begin_checkout', {currency:'USD', value:9.99});
+        paypal.Buttons({
+          style:{shape:'pill', label:'pay', height:48},
+          createOrder: function(){
+            return fetch('/api/paypal/order', {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({a:a, b:b, lang:lang})})
+              .then(function(r){ return r.json(); }).then(function(j){ if (!j.id) throw new Error('order'); return j.id; });
+          },
+          onApprove: function(data){
+            note.textContent = L('Payment received. Opening your reading…', 'お支払いを確認しました。鑑定を開いています…');
+            return fetch('/api/paypal/capture', {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({id:data.orderID})})
+              .then(function(r){ return r.json(); }).then(function(j){
+                if (!j.url){ note.textContent = L('We could not confirm the payment. Please contact us with your PayPal receipt.', 'お支払いを確認できませんでした。お手数ですが、PayPalの領収メールを添えてご連絡ください。'); return; }
+                try { localStorage.setItem('mbReading', j.url); } catch (e) {}
+                if (window.mbTrack) mbTrack('purchase', {transaction_id:data.orderID, currency:'USD', value:9.99});
+                location.href = j.url;
+              });
+          },
+          onCancel: function(){ note.textContent = L('Payment was cancelled. You can try again any time.', 'お支払いはキャンセルされました。いつでもやり直せます。'); },
+          onError: function(){ note.textContent = L('Something went wrong with the payment. Please try again.', 'お支払いでエラーが起きました。もう一度お試しください。'); }
+        }).render(box);
+        if (saved && /^\/full\/\?[\w=&-]+$/.test(saved)){
+          var p = document.createElement('p'); p.className = 'fine';
+          p.innerHTML = '<a href="' + saved + '" style="color:inherit">' + L('Already bought? Open your last reading', '購入済みの方：前回の鑑定を開く') + '</a>';
+          box.appendChild(p);
+        }
+      });
+    }).catch(function(){ note.textContent = L('Could not open checkout. Please try again.', 'お支払い画面を開けませんでした。もう一度お試しください。'); });
   }
 
   var rt; window.addEventListener('resize', function(){ clearTimeout(rt); rt = setTimeout(paintFoot, 150); });
