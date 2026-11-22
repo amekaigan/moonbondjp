@@ -1647,15 +1647,19 @@ function init(){
     }
     return box;
   }
-  var ppLoading = null;
+  var ppLoading = null, ppLocale = '', ppScript = null;
   function loadPayPal(id){
+    /* ボタンの言葉をサイトの言語に合わせる（ブラウザの言語ではなく、EN／日本語の切り替えに従う） */
+    var loc = lang === 'ja' ? 'ja_JP' : 'en_US';
+    if (ppLocale !== loc && ppScript){ ppScript.remove(); ppScript = null; ppLoading = null; try { delete window.paypal; } catch (e) { window.paypal = undefined; } }
     if (window.paypal) return Promise.resolve();
     if (ppLoading) return ppLoading;
+    ppLocale = loc;
     ppLoading = new Promise(function(ok, ng){
       var s = document.createElement('script');
-      s.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(id) + '&currency=USD&intent=capture&components=buttons';
-      s.onload = ok; s.onerror = function(){ ppLoading = null; ng(); };
-      document.head.appendChild(s);
+      s.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(id) + '&currency=USD&intent=capture&components=buttons&locale=' + loc;
+      s.onload = ok; s.onerror = function(){ ppLoading = null; ppScript = null; ppLocale = ''; s.remove(); ng(); };
+      ppScript = s; document.head.appendChild(s);
     });
     return ppLoading;
   }
