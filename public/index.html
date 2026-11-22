@@ -1642,7 +1642,7 @@ function init(){
   function ppBox(note){
     var box = note.previousElementSibling;
     if (!box || !box.classList.contains('pp-box')){
-      box = document.createElement('div'); box.className = 'pp-box'; box.style.cssText = 'margin-top:10px;min-height:0';
+      box = document.createElement('div'); box.className = 'pp-box'; box.style.cssText = 'margin-top:14px;padding:16px 16px 8px;background:#fff;border-radius:16px;box-shadow:0 2px 14px rgba(29,27,39,.10)';
       note.parentNode.insertBefore(box, note);
     }
     return box;
