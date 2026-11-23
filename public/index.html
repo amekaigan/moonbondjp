@@ -1250,6 +1250,19 @@ function loadFonts(text, cb){
     ]).then(cb, function(){});
   } catch (e) {}
 }
+function wrapText(ctx, text, maxW){
+  var ja = /[\u3000-\u9fff]/.test(text), parts = ja ? Array.from(text) : text.split(' '), lines = [], cur = '';
+  parts.forEach(function(w){
+    var t = cur ? cur + (ja ? '' : ' ') + w : w;
+    if (ctx.measureText(t).width > maxW && cur){
+      /* 句読点や閉じかっこは行頭に置かない */
+      if (ja && /^[、。」）！？]$/.test(w)){ cur = t; return; }
+      lines.push(cur); cur = w;
+    } else cur = t;
+  });
+  if (cur) lines.push(cur);
+  return lines;
+}
 function fitFont(ctx, text, weight, size, family, maxW){
   ctx.font = weight + ' ' + size + 'px ' + family;
   while (ctx.measureText(text).width > maxW && size > 20){ size -= 4; ctx.font = weight + ' ' + size + 'px ' + family; }
@@ -1401,31 +1414,39 @@ function drawPair(){
     ctx.fillStyle = NIGHT; ctx.beginPath(); ctx.arc(cx, cy, 205, 0, 2*P); ctx.fill(); /* 点線が中央の文字にかからないように */
     ctx.fillStyle = PAPER; ctx.font = '800 ' + (f.kanji.length > 1 ? 170 : 210) + 'px ' + DISPLAY; ctx.fillText(f.kanji, cx, cy + 6);
     fitFont(ctx, f.label, 800, 88, DISPLAY, 980); ctx.fillText(f.label, W/2, 1130);
-    ctx.fillStyle = KIN; fitFont(ctx, f.line, 700, 40, BODY, 980); ctx.fillText(f.line, W/2, 1212);
+    /* 診断結果のひとこと（最大2行） */
+    ctx.fillStyle = KIN; var vs = 40, vl;
+    for (;;){ ctx.font = '700 ' + vs + 'px ' + BODY; vl = wrapText(ctx, f.verdict, 960); if (vl.length <= 2 || vs <= 30) break; vs -= 4; }
+    if (vl.length === 2){
+      /* 2行のときは読点や文の切れ目で、なるべく左右の長さをそろえて折り返す */
+      var cut = -1, mid = f.verdict.length / 2;
+      f.verdict.replace(/[、。,.] ?/g, function(m0, i){ var k = i + m0.length; if (k < f.verdict.length && (cut < 0 || Math.abs(k - mid) < Math.abs(cut - mid))) cut = k; return m0; });
+      if (cut > 0){ var l1 = f.verdict.slice(0, cut).trim(), l2 = f.verdict.slice(cut).trim(); if (ctx.measureText(l1).width <= 960 && ctx.measureText(l2).width <= 960) vl = [l1, l2]; }
+    }
+    vl.slice(0, 2).forEach(function(t, n){ ctx.fillText(t, W/2, (vl.length > 1 ? 1206 : 1228) + n * (vs + 14)); });
+    var Y = 1316, BH = 474;
     var box = function(x, label, kanji, name, im){
-      roundRect(ctx, x, 1290, 455, 300, 28); ctx.fillStyle = PAPER; ctx.fill();
+      roundRect(ctx, x, Y, 455, BH, 28); ctx.fillStyle = PAPER; ctx.fill();
       if (im){
-        /* 絵の上には文字を重ねない（顔の位置が絵ごとに違うため）。ラベルと名前は下の紙の部分に置く */
-        ctx.save(); roundRect(ctx, x, 1290, 455, 300, 28); ctx.clip(); ctx.beginPath(); ctx.rect(x, 1290, 455, 176); ctx.clip();
-        ctx.drawImage(im, x, 1290 - 40, 455, 364); ctx.restore();
-        ctx.fillStyle = SHU; ctx.font = '700 26px ' + BODY; ctx.fillText(label, x + 227, 1500);
-        ctx.fillStyle = INK; fitFont(ctx, kanji + ' · ' + name, 800, 40, DISPLAY, 410); ctx.fillText(kanji + ' · ' + name, x + 227, 1550);
+        /* 絵は切らずに全体を見せる（帯の精まで入るように）。文字は絵の下の紙の部分だけに置く */
+        ctx.save(); roundRect(ctx, x, Y, 455, BH, 28); ctx.clip(); ctx.drawImage(im, x, Y, 455, 364); ctx.restore();
+        ctx.fillStyle = SHU; fitFont(ctx, label, 700, 26, BODY, 420); ctx.fillText(label, x + 227, Y + 402);
+        ctx.fillStyle = INK; fitFont(ctx, kanji + ' · ' + name, 800, 38, DISPLAY, 420); ctx.fillText(kanji + ' · ' + name, x + 227, Y + 446);
         return;
       }
-      ctx.fillStyle = SHU; ctx.font = '700 28px ' + BODY; ctx.fillText(label, x + 227, 1342);
-      ctx.fillStyle = INK; ctx.font = '800 112px ' + DISPLAY; ctx.fillText(kanji, x + 227, 1440);
-      fitFont(ctx, name, 800, 46, DISPLAY, 400); ctx.fillText(name, x + 227, 1540);
+      ctx.fillStyle = SHU; fitFont(ctx, label, 700, 28, BODY, 420); ctx.fillText(label, x + 227, Y + 60);
+      ctx.fillStyle = INK; ctx.font = '800 150px ' + DISPLAY; ctx.fillText(kanji, x + 227, Y + 225);
+      fitFont(ctx, name, 800, 44, DISPLAY, 410); ctx.fillText(name, x + 227, Y + 400);
     };
     var both = pairArt[f.a] && pairArt[f.b]; /* 片方だけ絵があるとちぐはぐなので、二人とも絵がそろったときだけ使う */
-    box(70, f.la, f.ka, f.na, both && pairArt[f.b]); box(555, f.lb, f.kb, f.nb, both && pairArt[f.a]);
-    ctx.fillStyle = MIST; ctx.font = '500 36px ' + BODY; ctx.fillText(f.rare, W/2, 1660);
-    ctx.fillStyle = KIN; ctx.font = '800 66px ' + DISPLAY; ctx.fillText(f.ask, W/2, 1752);
+    box(70, f.la + L(' · ', '（') + f.Bn + L('', '）'), f.ka, f.na, both && pairArt[f.b]);
+    box(555, f.lb + L(' · ', '（') + f.An + L('', '）'), f.kb, f.nb, both && pairArt[f.a]);
     ctx.fillStyle = FOOT; ctx.fillRect(0, 1826, W, 94);
     ctx.fillStyle = PAPER; ctx.font = '700 30px ' + BODY; ctx.fillText(f.foot, W/2, 1874);
     try { $('pairImg').src = pairCanvas.toDataURL('image/png'); } catch (e) {}
   };
   paint();
-  loadFonts(f.top + f.kanji + f.label + f.line + f.la + f.lb + f.ka + f.kb + f.na + f.nb + f.rare + f.ask + f.foot + M.map(function(m){ return m[0]; }).join(''), paint);
+  loadFonts(f.top + f.kanji + f.label + f.verdict + f.la + f.lb + f.An + f.Bn + f.ka + f.kb + f.na + f.nb + f.foot + M.map(function(m){ return m[0]; }).join(''), paint);
   [f.a, f.b].forEach(function(k){ if (hasChar(k)) charImage(k, function(im){ pairArt[k] = im; paint(); }); });
 }
 
@@ -1521,7 +1542,7 @@ function renderBond(){
     line:(dn ? dn + '  ·  ' : '') + (same ? sameText : stepsText),
     la:L('I SEE THEM AS', '私から見た相手'), lb:L('THEY SEE ME AS', '相手から見た私'),
     ka:R[0], kb:RB[0], na:L(ROLE[r.key][0], ROLE[r.key][1]), nb:L(ROLE[back.key][0], ROLE[back.key][1]),
-    rare:An + ' × ' + Bn, ask:L('What are you two?', 'あなたたちは？'),
+    verdict:L(VERDICT[pr[1]][1], VERDICT[pr[1]][3]), An:An, Bn:Bn,
     foot:L('moonbondjp.win  ·  #shukuyo  #japanesemoonsign', 'moonbondjp.win  ·  #宿曜  #宿曜占星術')
   };
   drawPair();
