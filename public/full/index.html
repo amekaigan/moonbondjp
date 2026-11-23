@@ -92,7 +92,24 @@ html[lang="ja"] h1,html[lang="ja"] h2,html[lang="ja"] .closing .line{text-wrap:w
 .pbar i{background:var(--shu)}
 .pct{color:var(--ink)}
 .room-bar{display:grid;grid-template-columns:1fr 3.2em;align-items:center;gap:12px}
-.who-card{background:var(--paper-2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.who-card{background:var(--paper-2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+.who-art{display:block;width:calc(100% + 28px);height:auto;aspect-ratio:5/4;object-fit:cover;margin:-14px -14px 2px}
+.ch h3{font-family:var(--display);font-size:18px;margin-top:6px}
+.pros{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.pro{border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.pro.good{background:#e5f1ea}.pro.care{background:#f8e6df}
+.pro-h{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px}
+.pro-ic{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:900;color:#fff6ea}
+.pro.good .pro-ic{background:#2f7d5b}.pro.care .pro-ic{background:var(--shu)}
+.pro ul{margin:0;padding-left:20px;list-style:disc;display:flex;flex-direction:column;gap:4px;font-size:15px;line-height:1.6}
+.tcmp{display:grid;gap:10px}
+.tc-row{display:grid;grid-template-columns:5.5em 1fr;gap:10px;align-items:center}
+.tc-name{font-weight:700;font-size:14px}
+.tc-row.gap .tc-name{color:var(--shu)}
+.tc-bars{display:flex;flex-direction:column;gap:4px}
+.tc-bar{display:block;height:11px;border-radius:6px;background:rgba(29,27,39,.12);overflow:hidden}
+.tc-bar i{display:block;height:100%;border-radius:6px}
+.own{display:inline-block;font-size:11.5px;font-weight:800;background:var(--kin);color:var(--ink);border-radius:999px;padding:1px 8px;margin-right:6px}
 .who-top{display:flex;align-items:center;gap:12px}
 .who-disc{flex:none;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:25px;background:var(--kin);color:var(--ink)}
 .who-disc.b{background:var(--shu);color:#fff6ea}
@@ -606,6 +623,66 @@ function wheelSVG(a, b, same, kanji, label){
   svg += '<text class="mid1" x="170" y="160" text-anchor="middle" dominant-baseline="central">' + kanji + '</text><text class="mid2" x="170" y="198" text-anchor="middle" dominant-baseline="central">' + esc(label) + '</text>';
   return '<svg id="wheel" viewBox="0 0 340 340" role="img" aria-label="' + L('Wheel of the 27 mansions. You are ' + M[a][2] + ', they are ' + M[b][2] + '.', '27宿の輪。あなたは' + M[a][0] + '宿、相手は' + M[b][0] + '宿。') + '">' + svg + '</svg>';
 }
+/* ---------- 無料ページと同じ、二人ならではの内容（第1〜3章） ---------- */
+var STORY = {
+  mei:['Put two of the same mansion together and everything doubles: the strengths, and the blind spots. You rarely need to explain yourself, and you often catch your own habits in them.','同じ宿の二人は、長所も弱点も二倍になります。説明しなくても通じ合える一方で、相手の中に自分のくせを見つけてはっとすることも。'],
+  go:['In this bond, help tends to flow from them to you. It often arrives before you ask, and the relationship grows strongest when you thank them out loud.','この相性では、相手からあなたへと助けが流れやすくなります。頼む前に手を差し伸べてくれることも多く、それを言葉で感謝するほど絆は深まります。'],
+  tai:['In this bond, you tend to be the one who gives. Supporting them feels natural, almost like an old promise, and your care is what lets them grow.','この相性では、あなたが支える側になりやすい関係です。昔からの約束のように自然と手を貸したくなり、その支えが相手を伸ばします。'],
+  ei:["This is the luckiest pairing in Shukuyō. Their presence lifts your fortunes, and the plans you start together tend to take root and grow.",'宿曜でいちばん幸運な組み合わせです。相手がいるだけで運気が上がり、二人で始めたことは根を張って育っていきます。'],
+  shin:['This bond feels like family. Trust comes early, and it holds through busy seasons and long gaps alike.','家族のような安心感のある関係です。信頼は早くに生まれ、忙しい時期や会えない時期があっても揺らぎません。'],
+  yu:['This is a bond of easy company. Talk flows, time disappears, and neither of you has to perform.','一緒にいて気楽な関係です。会話は途切れず、時間はあっという間。どちらも無理をして自分を飾る必要がありません。'],
+  sui:['In this bond, you tend to give more than you take. Your care is real, and it lasts longest when you also let them look after you.','この相性では、あなたが与える側に回りがちです。その思いやりは本物。ときには相手に甘えることで、関係は長く続きます。'],
+  an:['Around them you feel settled and in control. The pull is stronger on their side, so your steadiness becomes their safe harbor.','相手のそばでは、あなたは落ち着いていられます。惹かれる気持ちは相手のほうが強く、あなたの安定が相手の「帰る港」になります。'],
+  kai:['They shake up your routines and make you see things differently. Unsettling at times, but this is how you change.','相手はあなたのいつものやり方を揺さぶり、物の見方を変えてくれます。落ち着かないこともありますが、それがあなたを変えていきます。'],
+  ki:['You come from different worlds, with different values and different rhythms. That is what makes it exciting, and why it needs patience.','二人は別の世界から来たような組み合わせ。価値観もペースも違います。だからこそ刺激的で、だからこそ根気が要ります。'],
+  sei:['They sharpen you. Around them you think more clearly and finish what you start, which makes this a strong bond for work and study.','相手はあなたを磨いてくれる人です。そばにいると頭がさえ、始めたことを最後までやり遂げられます。仕事や勉強でも強い組み合わせです。']
+};
+var PROS = {
+  '命':[['You understand each other without words.','You rarely clash over values.'],['言葉がなくても分かり合える','価値観でぶつかることが少ない'],['You can share the same blind spots.','Being so alike, their flaws can feel like your own and irritate you.'],['同じ弱点を二人とも抱えやすい','似ているぶん、相手の欠点が自分の欠点に見えて苛立つことがある']],
+  '業胎':[['You support each other without keeping score.','The longer it lasts, the deeper it gets.'],['見返りを求めずに支え合える','長く続くほど、絆が深まる'],['One of you can end up doing most of the giving.','Unspoken thanks can turn into taking each other for granted.'],['片方ばかりが尽くす形になりやすい','感謝を言葉にしないと、当たり前になってしまう']],
+  '栄親':[['What you start together tends to grow.','Trust comes early and lasts.'],['一緒に始めたことが育ちやすい','信頼が早く生まれ、長く続く'],['It is so comfortable that small complaints go unsaid.','Comfort can slow down how much you both grow.'],['居心地がよすぎて、小さな不満を流しがち','安心しすぎて、成長が止まることもある']],
+  '友衰':[['Easy company. The conversation never runs dry.','Caring for each other comes naturally.'],['気楽で、会話が尽きない','相手を思いやる気持ちが自然に出る'],['One of you tends to give more than the other.','Serious talks keep getting put off.'],['尽くす量に差が出やすい','大事な話を後回しにしがち']],
+  '安壊':[['A strong pull and plenty of spark.','You bring real change into each other’s lives.'],['強く惹かれ合い、刺激がある','お互いの人生に変化をもたらす'],['One of you is shaken more than the other.','Saved-up frustrations tend to spill out all at once.'],['片方だけが揺さぶられやすい','ため込んだ不満が一度にあふれやすい']],
+  '危成':[['You show each other worlds you would not find alone.','You push each other to grow.'],['知らない世界を見せ合える','お互いを成長させる'],['Different values can lead to clashes.','Meeting in the middle takes time.'],['価値観の違いでぶつかりやすい','歩み寄りに時間がかかる']]
+};
+var GAPSCENE = [
+  [['You want to start right away. They want to think it through first.','あなたはすぐ動きたい。相手はまずじっくり考えたい。'],['They want to start right away. You want to think it through first.','相手はすぐ動きたい。あなたはまずじっくり考えたい。']],
+  [['You say how you feel in the moment. They show it later, through what they do.','あなたは気持ちをその場で言葉にする。相手は、あとから行動で示す。'],['They say how they feel in the moment. You show it later, through what you do.','相手は気持ちをその場で言葉にする。あなたは、あとから行動で示す。']],
+  [['You want to talk a problem through until it makes sense. They would rather trust their gut and move on.','あなたは問題を納得いくまで話し合いたい。相手は直感を信じて先に進みたい。'],['They want to talk a problem through until it makes sense. You would rather trust your gut and move on.','相手は問題を納得いくまで話し合いたい。あなたは直感を信じて先に進みたい。']],
+  [['When plans fall apart, you stay steady while they feel it first.','予定が崩れた時、あなたは落ち着いていて、相手が先に動揺する。'],['When plans fall apart, they stay steady while you feel it first.','予定が崩れた時、相手は落ち着いていて、あなたが先に動揺する。']]
+];
+var SAMESCENE = ['You react to most things the same way, so you rarely need to explain yourselves.','たいていのことに同じように反応するので、説明しなくても通じ合える。'];
+var TRAITS = [['Drive','行動力'],['Heart','情'],['Mind','知性'],['Calm','落ち着き']];
+var CHARS = {'pleiades':1, 'net':1, 'beak':1, 'three-stars':1, 'well':1, 'rooftop':1};
+function charSlug(idx){ return M[idx][2].toLowerCase().replace(/[^a-z]+/g, '-'); }
+function freeExtras(a, b, key, pk){
+  var ma = M[a], mb = M[b], ja = MJ[a], jb = MJ[b], i;
+  var intro = a === b
+    ? L('You are both ' + ma[3] + ' (' + ma[2] + ' Mansion). ', '二人とも' + ma[0] + '宿の「' + ja[0] + '」。')
+    : L('You are ' + ma[3] + ' (' + ma[2] + ' Mansion). They are ' + mb[3] + ' (' + mb[2] + ' Mansion). ', 'あなたは' + ma[0] + '宿の「' + ja[0] + '」、相手は' + mb[0] + '宿の「' + jb[0] + '」。');
+  var sides = a === b ? '' : L('Your side: ' + ma[4] + ' Their side: ' + mb[4] + ' ', 'あなたは、' + ja[1] + '相手は、' + jb[1]);
+  var P = PROS[pk];
+  var story = '<h3>' + L('Your story as a pair', '二人の物語') + '</h3><p>' + esc(intro + sides + L(STORY[key][0], STORY[key][1])) + '</p>' +
+    '<div class="pros"><div class="pro good"><p class="pro-h"><span class="pro-ic" aria-hidden="true">✓</span>' + L('What this bond does well', 'この相性の強み') + '</p><ul>' + L(P[0], P[1]).map(function(t){ return '<li>' + esc(t) + '</li>'; }).join('') + '</ul></div>' +
+    '<div class="pro care"><p class="pro-h"><span class="pro-ic" aria-hidden="true">!</span>' + L('What to watch for', '気をつけたいこと') + '</p><ul>' + L(P[2], P[3]).map(function(t){ return '<li>' + esc(t) + '</li>'; }).join('') + '</ul></div></div>';
+  var ta = ma[11], tb = mb[11], gi = -1, gd = 0;
+  for (i = 0; i < 4; i++){ var d = Math.abs(ta[i] - tb[i]); if (d > gd){ gd = d; gi = i; } }
+  var both = []; for (i = 0; i < 4; i++) if (ta[i] >= 4 && tb[i] >= 4) both.push(L(TRAITS[i][0], TRAITS[i][1]));
+  var gapText = gi < 0
+    ? L('Your four strengths line up almost exactly. You move at the same pace, which feels easy, and it also means you share the same blind spots.', '二人の4つの力は、ほぼ同じ形です。同じペースで動けるので楽な反面、苦手なところも重なりやすい組み合わせです。')
+    : L('The biggest difference between you is ' + TRAITS[gi][0] + ', and ' + (ta[gi] > tb[gi] ? 'you' : 'they') + ' have more of it. That gap is exactly where you can give each other the most.',
+        'いちばん大きな違いは「' + TRAITS[gi][1] + '」で、' + (ta[gi] > tb[gi] ? 'あなた' : '相手') + 'のほうが強く持っています。この違いこそ、二人がお互いに贈り合えるものです。');
+  if (both.length) gapText += L(' You both score high on ' + both.join(' and ') + ', which gives this bond a solid base.', '「' + both.join('」と「') + '」は二人とも高く、この関係の土台になります。');
+  var traits = '<h3>' + L('Your four strengths, side by side', '二人の4つの力をくらべる') + '</h3><div class="tcmp">' + TRAITS.map(function(t, k2){
+    return '<div class="tc-row' + (k2 === gi ? ' gap' : '') + '"><span class="tc-name">' + L(t[0], t[1]) + '</span><div class="tc-bars">' +
+      '<span class="tc-bar" role="img" aria-label="' + L('You ', 'あなた') + ta[k2] + '/5"><i style="width:' + ta[k2] * 20 + '%;background:var(--kin)"></i></span>' +
+      '<span class="tc-bar" role="img" aria-label="' + L('Them ', '相手') + tb[k2] + '/5"><i style="width:' + tb[k2] * 20 + '%;background:var(--shu)"></i></span></div></div>';
+  }).join('') + '</div><div class="legend" style="color:var(--ink)"><span><i style="background:var(--kin)"></i>' + L('You', 'あなた') + '</span><span><i style="background:var(--shu)"></i>' + L('Them', '相手') + '</span></div><p>' + esc(gapText) + '</p>';
+  var sc = gi < 0 ? SAMESCENE : GAPSCENE[gi][ta[gi] > tb[gi] ? 0 : 1];
+  var scene = '<li>' + CHECK + '<span><span class="own">' + L('Just you two', 'この二人ならでは') + '</span>' + esc(L(sc[0], sc[1])) + '</span></li>';
+  return {story:story, traits:traits, scene:scene};
+}
+
 function render(){
   if (!mine || !partner) return;
   var a = mine.idx, b = partner.idx, r = relOf(a, b), back = relOf(b, a), R = REL[r.key], RB = REL[back.key], RJ = RELJ[r.key], RBJ = RELJ[back.key];
@@ -626,22 +703,24 @@ function render(){
   var mv = METER[k].slice();
   if (di === 0){ mv[0] = Math.min(5, mv[0] + 1); mv[2] = Math.min(5, mv[2] + 1); }
   if (di === 2){ mv[0] = Math.max(1, mv[0] - 1); mv[4] = Math.min(5, mv[4] + 1); }
+  var ex = freeExtras(a, b, r.key, k);
   var b2 = b; h += chapter(1, L('Your bond, and how you see each other', '二人の相性と、お互いの見え方'),
     '<div class="sides"><div class="side"><span class="mini">' + L('How you see them', 'あなたから見た相手') + '</span><p class="side-name">' + L(R[0] + ' ' + R[1] + ' · ' + ROLE[r.key][0], R[0] + '（' + RJ[0] + '）· ' + ROLE[r.key][1]) + '</p><p>' + esc(L(SIDE[r.key].a[0], SIDE[r.key].a[1])) + '</p></div>' +
     '<div class="side"><span class="mini">' + L('How they see you', '相手から見たあなた') + '</span><p class="side-name">' + L(RB[0] + ' ' + RB[1] + ' · ' + ROLE[back.key][0], RB[0] + '（' + RBJ[0] + '）· ' + ROLE[back.key][1]) + '</p><p>' + esc(L(SIDE[back.key].b[0], SIDE[back.key].b[1])) + '</p></div></div>' +
-    '<div class="meter">' + mv.map(function(v, i){ var lb = L(METER_L[i][0], METER_L[i][1]); return '<div class="meter-row"><span>' + lb + '</span>' + pbar(pctOf(v, a, b2, i), lb) + '</div>'; }).join('') + '</div><p style="font-size:12.5px;opacity:.75;margin:8px 0 0">' + L('Scores are Moonbond\'s own reading of this bond in the Shukuyō tradition, not statistics.', '数値は宿曜の伝統をもとにしたMoonbond独自の目安で、統計ではありません。') + '</p>');
+    ex.story + '<div class="meter">' + mv.map(function(v, i){ var lb = L(METER_L[i][0], METER_L[i][1]); return '<div class="meter-row"><span>' + lb + '</span>' + pbar(pctOf(v, a, b2, i), lb) + '</div>'; }).join('') + '</div><p style="font-size:12.5px;opacity:.75;margin:8px 0 0">' + L('Scores are Moonbond\'s own reading of this bond in the Shukuyō tradition, not statistics.', '数値は宿曜の伝統をもとにしたMoonbond独自の目安で、統計ではありません。') + '</p>');
   /* 2 */
   var who = function(idx, cls, tag, text){
     var kw = lang === 'ja' ? MJ[idx][2] : M[idx][5];
-    return '<div class="who-card"><div class="who-top"><span class="who-disc ' + cls + '" lang="ja">' + M[idx][0] + '</span><div><p class="who-tag">' + tag + '</p><p class="who-name">' + L(M[idx][2] + ' Mansion', M[idx][0] + '宿（' + YOMI[idx] + '）') + '</p><p class="who-arch">' + esc(L(M[idx][3], MJ[idx][0])) + '</p></div></div>' +
+    var art = CHARS[charSlug(idx)] ? '<img class="who-art" src="/art/chars/' + charSlug(idx) + '-s.webp" alt="" width="640" height="512">' : '';
+    return '<div class="who-card">' + art + '<div class="who-top"><span class="who-disc ' + cls + '" lang="ja">' + M[idx][0] + '</span><div><p class="who-tag">' + tag + '</p><p class="who-name">' + L(M[idx][2] + ' Mansion', M[idx][0] + '宿（' + YOMI[idx] + '）') + '</p><p class="who-arch">' + esc(L(M[idx][3], MJ[idx][0])) + '</p></div></div>' +
       '<ul class="chips">' + kw.map(function(x){ return '<li class="chip">' + esc(x) + '</li>'; }).join('') + '</ul>' + text + '</div>';
   };
   h += chapter(2, L('Who you two are', '二人はこんな人'),
     who(a, 'a', L('You', 'あなた'), '<p>' + esc(L(M[a][6], MJ[a][3])) + '</p><p><span class="mini">' + L('In love', '恋愛では') + '</span><br>' + esc(L(LOVE[a][0], LOVE[a][1])) + '</p>') +
-    who(b, 'b', L('Them', '相手'), '<p><span class="mini">' + L('In love', '恋愛では') + '</span><br>' + esc(L(LOVE[b][0], LOVE[b][1])) + '</p>'));
+    who(b, 'b', L('Them', '相手'), '<p><span class="mini">' + L('In love', '恋愛では') + '</span><br>' + esc(L(LOVE[b][0], LOVE[b][1])) + '</p>') + ex.traits);
   /* 3 */
   h += chapter(3, L('What tends to happen between you', '二人に起きやすいこと'),
-    '<ul class="dots">' + SCENES[r.key].map(function(s){ return '<li>' + CHECK + '<span>' + esc(L(s[0], s[1])) + '</span></li>'; }).join('') + '</ul>' +
+    '<ul class="dots">' + ex.scene + SCENES[r.key].map(function(s){ return '<li>' + CHECK + '<span>' + esc(L(s[0], s[1])) + '</span></li>'; }).join('') + '</ul>' +
     '<div class="try"><span class="mini">' + L('One thing to try this week', '今日からできること') + '</span><p>' + esc(L(TIP[k][0], TIP[k][1])) + '</p></div>');
   /* 4 */
   h += chapter(4, L(TDIST[dk].t[0], TDIST[dk].t[1]), '<p>' + esc(join(TDIST[dk].o, 'DIST', dk)) + '</p>' + gift('DIST_UP', dk));

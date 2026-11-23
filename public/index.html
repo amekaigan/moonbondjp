@@ -1589,7 +1589,8 @@ function renderBond(){
   $('wheel').setAttribute('aria-label', L('Wheel of the 27 mansions. You are ' + M[a][2] + ', they are ' + M[b][2] + '.', '27宿の輪。あなたは' + M[a][0] + '宿、相手は' + M[b][0] + '宿。'));
   $('bondTitle').textContent = L(VERDICT[pr[1]][0], VERDICT[pr[1]][2]);
   $('bondSub').textContent = L(VERDICT[pr[1]][1], VERDICT[pr[1]][3]);
-  $('bondJp').textContent = L(pr[1] + ' · ' + label, pr[1] + '（' + PAIRYOMI[pr[1]] + '）· ' + label);
+  /* 先頭に二人の宿の名前を出して、同じ相性の型でも「自分たちの結果」だと分かるようにする */
+  $('bondJp').textContent = L(M[a][2] + ' × ' + M[b][2] + '  ·  ' + pr[1] + ' · ' + label, M[a][0] + '宿 × ' + M[b][0] + '宿 ・ ' + pr[1] + '（' + PAIRYOMI[pr[1]] + '）· ' + label);
   $('verdictQ').textContent = same ? L('Only 1 pair in 27 lands here.', '27組に1組だけの組み合わせです。') : L('Which one are you?', 'あなたは、どちら？');
   $('sideAName').textContent = L(R[0] + ' ' + R[1] + ' · ' + ROLE[r.key][0], R[0] + '（' + RJ[0] + '）· ' + ROLE[r.key][1]);
   $('sideAText').textContent = L(SIDE[r.key].a[0], SIDE[r.key].a[1]);
