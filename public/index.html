@@ -1398,6 +1398,7 @@ function drawPair(){
     }
     var mark = function(k, fill, fg){ var p2 = pt(k, rad); ctx.fillStyle = fill; ctx.beginPath(); ctx.arc(p2[0], p2[1], 36, 0, 2*P); ctx.fill(); ctx.fillStyle = fg; ctx.font = '800 40px ' + DISPLAY; ctx.fillText(M[k][0], p2[0], p2[1] + 2); };
     mark(f.b, SHU, '#fff6ea'); mark(f.a, KIN, INK);
+    ctx.fillStyle = NIGHT; ctx.beginPath(); ctx.arc(cx, cy, 205, 0, 2*P); ctx.fill(); /* 点線が中央の文字にかからないように */
     ctx.fillStyle = PAPER; ctx.font = '800 ' + (f.kanji.length > 1 ? 170 : 210) + 'px ' + DISPLAY; ctx.fillText(f.kanji, cx, cy + 6);
     fitFont(ctx, f.label, 800, 88, DISPLAY, 980); ctx.fillText(f.label, W/2, 1130);
     ctx.fillStyle = KIN; fitFont(ctx, f.line, 700, 40, BODY, 980); ctx.fillText(f.line, W/2, 1212);
@@ -1416,7 +1417,8 @@ function drawPair(){
       ctx.fillStyle = INK; ctx.font = '800 112px ' + DISPLAY; ctx.fillText(kanji, x + 227, 1440);
       fitFont(ctx, name, 800, 46, DISPLAY, 400); ctx.fillText(name, x + 227, 1540);
     };
-    box(70, f.la, f.ka, f.na, pairArt[f.b]); box(555, f.lb, f.kb, f.nb, pairArt[f.a]);
+    var both = pairArt[f.a] && pairArt[f.b]; /* 片方だけ絵があるとちぐはぐなので、二人とも絵がそろったときだけ使う */
+    box(70, f.la, f.ka, f.na, both && pairArt[f.b]); box(555, f.lb, f.kb, f.nb, both && pairArt[f.a]);
     ctx.fillStyle = MIST; ctx.font = '500 36px ' + BODY; ctx.fillText(f.rare, W/2, 1660);
     ctx.fillStyle = KIN; ctx.font = '800 66px ' + DISPLAY; ctx.fillText(f.ask, W/2, 1752);
     ctx.fillStyle = FOOT; ctx.fillRect(0, 1826, W, 94);
