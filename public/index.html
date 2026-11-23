@@ -224,7 +224,7 @@ html[lang="ja"] .bond-title{font-size:23px;line-height:1.45;white-space:pre-line
 .tc-row.gap .tc-name{color:var(--kin)}
 .tgap{font-size:15.5px;line-height:1.7}
 .scene-own{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.02em;background:var(--kin);color:var(--ink);border-radius:999px;padding:2px 8px;margin-bottom:4px}
-.pp-cap{font-size:13.5px;font-weight:700;color:var(--ink);margin:2px 4px 6px}
+.pp-cap{font-size:13.5px;font-weight:700;color:var(--ink);margin:2px 10px 6px}
 .pp-slot + .pp-cap{margin-top:18px}
 .who-art{display:block;width:calc(100% + 32px);height:auto;aspect-ratio:5/4;object-fit:cover;margin:-16px -16px 2px;background:#1e3f8f}
 .char-art{display:block;width:100%;height:auto;aspect-ratio:5/4;object-fit:cover;background:#1e3f8f}
@@ -1799,7 +1799,7 @@ function init(){
   function ppBox(note){
     var box = note.previousElementSibling;
     if (!box || !box.classList.contains('pp-box')){
-      box = document.createElement('div'); box.className = 'pp-box'; box.style.cssText = 'margin-top:14px;padding:16px 16px 8px;background:#fff;border-radius:16px;box-shadow:0 2px 14px rgba(29,27,39,.10)';
+      box = document.createElement('div'); box.className = 'pp-box'; box.style.cssText = 'margin-top:14px;padding:14px 8px 6px;background:#fff;border-radius:16px;box-shadow:0 2px 14px rgba(29,27,39,.10)';
       note.parentNode.insertBefore(box, note);
     }
     return box;
@@ -1858,7 +1858,7 @@ function init(){
         /* PayPalとカードを別々のボタンにして、それぞれの上に自分たちの言葉で説明を書く（カードのボタンは端末によって文字が出ないため） */
         var methods = [
           [paypal.FUNDING.PAYPAL, {shape:'pill', label:'pay', height:48}, ''],
-          [paypal.FUNDING.CARD, {shape:'pill', height:48}, L('No PayPal account needed', 'クレジットカード・デビットカードで支払う（PayPalのアカウントは不要）')]
+          [paypal.FUNDING.CARD, {shape:'pill', height:48}, L('No PayPal account needed', 'カードで支払う（PayPalのアカウントは不要）')]
         ];
         methods.forEach(function(m0){
           var btn = paypal.Buttons(Object.assign({fundingSource:m0[0], style:m0[1]}, opts));
