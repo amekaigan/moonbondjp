@@ -1805,14 +1805,15 @@ function init(){
   var ppLoading = null, ppLocale = '', ppScript = null;
   function loadPayPal(id){
     /* ボタンの言葉をサイトの言語に合わせる（ブラウザの言語ではなく、EN／日本語の切り替えに従う） */
-    var loc = lang === 'ja' ? 'ja_JP' : 'en_US';
+    /* 日本語は locale を指定しない（ja_JP を指定するとカードのボタンが文字なしになるため。日本の端末なら日本語で表示される） */
+    var loc = lang === 'ja' ? '' : 'en_US';
     if (ppLocale !== loc && ppScript){ ppScript.remove(); ppScript = null; ppLoading = null; try { delete window.paypal; } catch (e) { window.paypal = undefined; } }
     if (window.paypal) return Promise.resolve();
     if (ppLoading) return ppLoading;
     ppLocale = loc;
     ppLoading = new Promise(function(ok, ng){
       var s = document.createElement('script');
-      s.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(id) + '&currency=USD&intent=capture&components=buttons&locale=' + loc;
+      s.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(id) + '&currency=USD&intent=capture&components=buttons' + (loc ? '&locale=' + loc : '');
       s.onload = ok; s.onerror = function(){ ppLoading = null; ppScript = null; ppLocale = ''; s.remove(); ng(); };
       ppScript = s; document.head.appendChild(s);
     });
@@ -1832,7 +1833,7 @@ function init(){
       if (!cfg.clientId){ note.textContent = L('Coming soon. We are still getting this ready.', 'ただいま準備中です。もうしばらくお待ちください。'); return; }
       return loadPayPal(cfg.clientId).then(function(){
         var box = ppBox(note); box.innerHTML = '';
-        note.textContent = L('Pay with PayPal or a card. Your reading opens right after payment.', 'PayPalかカードでお支払いいただけます。お支払いが終わると、すぐに鑑定が開きます。');
+        note.textContent = L('Yellow button: PayPal. Black button: credit or debit card, no PayPal account needed. Your reading opens right after payment.', '黄色のボタンはPayPal、黒のボタンはクレジットカード・デビットカードでのお支払いです（PayPalのアカウントは不要）。お支払いが終わると、すぐに鑑定が開きます。');
         if (window.mbTrack) mbTrack('begin_checkout', {currency:'USD', value:9.99});
         paypal.Buttons({
           style:{shape:'pill', label:'pay', height:48},
