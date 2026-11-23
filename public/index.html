@@ -1405,12 +1405,11 @@ function drawPair(){
     var box = function(x, label, kanji, name, im){
       roundRect(ctx, x, 1290, 455, 300, 28); ctx.fillStyle = PAPER; ctx.fill();
       if (im){
-        ctx.save(); roundRect(ctx, x, 1290, 455, 300, 28); ctx.clip(); ctx.drawImage(im, x, 1290 - 60, 455, 364); ctx.restore();
-        ctx.fillStyle = PAPER; ctx.fillRect(x, 1504, 455, 58); roundRect(ctx, x, 1500, 455, 90, 28); ctx.fill();
-        ctx.font = '700 26px ' + BODY; var lw = ctx.measureText(label).width + 36;
-        roundRect(ctx, x + 18, 1306, lw, 46, 23); ctx.fillStyle = SHU; ctx.fill();
-        ctx.fillStyle = '#fff6ea'; ctx.fillText(label, x + 18 + lw/2, 1330);
-        ctx.fillStyle = INK; fitFont(ctx, kanji + ' · ' + name, 800, 40, DISPLAY, 410); ctx.fillText(kanji + ' · ' + name, x + 227, 1546);
+        /* 絵の上には文字を重ねない（顔の位置が絵ごとに違うため）。ラベルと名前は下の紙の部分に置く */
+        ctx.save(); roundRect(ctx, x, 1290, 455, 300, 28); ctx.clip(); ctx.beginPath(); ctx.rect(x, 1290, 455, 176); ctx.clip();
+        ctx.drawImage(im, x, 1290 - 40, 455, 364); ctx.restore();
+        ctx.fillStyle = SHU; ctx.font = '700 26px ' + BODY; ctx.fillText(label, x + 227, 1500);
+        ctx.fillStyle = INK; fitFont(ctx, kanji + ' · ' + name, 800, 40, DISPLAY, 410); ctx.fillText(kanji + ' · ' + name, x + 227, 1550);
         return;
       }
       ctx.fillStyle = SHU; ctx.font = '700 28px ' + BODY; ctx.fillText(label, x + 227, 1342);
