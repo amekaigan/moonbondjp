@@ -207,6 +207,8 @@ html[lang="ja"] .bond-title{font-size:23px;line-height:1.45;white-space:pre-line
 .meter .pct{color:var(--paper)}
 .who{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
 .who-card{background:var(--paper);color:var(--ink);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.who-art{display:block;width:calc(100% + 32px);height:auto;aspect-ratio:5/4;object-fit:cover;margin:-16px -16px 2px;background:#1e3f8f}
+.char-art{display:block;width:100%;height:auto;aspect-ratio:5/4;object-fit:cover;background:#1e3f8f}
 .who-top{display:flex;align-items:center;gap:12px}
 .who-disc{flex:none;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:26px;background:var(--kin);color:var(--ink)}
 .who-disc.b{background:var(--shu);color:#fff6ea}
@@ -494,6 +496,7 @@ html[lang="ja"] .sub{font-size:16px}
     </div>
     <div class="stack">
       <article class="card" id="resultCard">
+        <img class="char-art" id="rChar" alt="" width="1200" height="960" decoding="async" hidden>
         <div class="card-head" id="cardHead">
           <div class="moon-disc" lang="ja" id="rKanji"></div>
           <div class="head-text">
@@ -1252,6 +1255,19 @@ function fitFont(ctx, text, weight, size, family, maxW){
   while (ctx.measureText(text).width > maxW && size > 20){ size -= 4; ctx.font = weight + ' ' + size + 'px ' + family; }
 }
 
+/* ---------- character art（できた宿から順に /art/chars/ に置く） ---------- */
+var CHARS = {'net':1, 'beak':1, 'three-stars':1, 'well':1};
+function charSlug(idx){ return M[idx][2].toLowerCase().replace(/[^a-z]+/g, '-'); }
+function hasChar(idx){ return !!CHARS[charSlug(idx)]; }
+function charURL(idx, small){ return '/art/chars/' + charSlug(idx) + (small ? '-s' : '') + '.webp'; }
+function charAlt(idx){ var m = M[idx]; return L('The ' + m[2] + ' Mansion girl in a ' + m[8][0] + ' kimono, with her little obi spirit', m[0] + '宿の女の子。' + m[8][1] + 'の着物に、帯から生まれた精を連れている'); }
+var charImgs = {};
+function charImage(idx, cb){
+  var u = charURL(idx), im = charImgs[u];
+  if (im){ if (im.complete && im.naturalWidth) cb(im); else im.addEventListener('load', function(){ cb(im); }); return; }
+  im = charImgs[u] = new Image(); im.onload = function(){ cb(im); }; im.src = u;
+}
+
 /* ---------- reading card ---------- */
 function renderMansion(idx, mode){
   viewIdx = idx; viewMode = mode;
@@ -1260,6 +1276,8 @@ function renderMansion(idx, mode){
   head.style.backgroundImage = 'url(' + patternURL(m[10], 720, 320, c1, mix(c1, on, 0.15), 30) + ')';
   head.style.backgroundColor = c1; head.style.color = on;
   $('rKanji').textContent = m[0];
+  var rc = $('rChar');
+  if (hasChar(idx)){ rc.src = charURL(idx); rc.alt = charAlt(idx); rc.hidden = false; } else { rc.hidden = true; rc.removeAttribute('src'); }
   $('rNo').textContent = L('Mansion ' + (idx + 1) + ' of 27', '27宿中 第' + (idx + 1) + '宿');
   $('rName').textContent = nmFull(idx);
   $('rJp').textContent = L(m[0] + '宿 · ' + m[1], YOMI[idx] + ' · ' + m[2]);
@@ -1323,6 +1341,7 @@ function drawShare(idx){
     top:L('MY JAPANESE MOON SIGN', '私の宿 · 宿曜占星術'), name:nmFull(idx), sub:L(m[0] + '宿  ·  ' + m[1], YOMI[idx]),
     arch:L(m[3], j[0]), kw:L(m[5], j[2]).join('  ·  '), foot:L('moonbondjp.win  ·  Japanese moon signs', 'moonbondjp.win  ·  日本の月の占星術')
   };
+  var art = null;
   var paint = function(){
     if (job !== shareJob) return;
     var W = 1080, H = 1350, ctx = shareCanvas.getContext('2d');
@@ -1330,8 +1349,13 @@ function drawShare(idx){
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     roundRect(ctx, 230, 78, 620, 76, 38); ctx.fillStyle = c1; ctx.fill();
     ctx.fillStyle = on; ctx.font = '700 34px ' + BODY; ctx.fillText(s.top, W/2, 118);
-    ctx.fillStyle = PAPER; ctx.beginPath(); ctx.arc(W/2, 490, 285, 0, 2*Math.PI); ctx.fill();
-    ctx.fillStyle = INK; ctx.font = '800 330px ' + DISPLAY; ctx.fillText(m[0], W/2, 505);
+    if (art){
+      roundRect(ctx, 130, 176, 820, 640, 30); ctx.fillStyle = PAPER; ctx.fill();
+      ctx.save(); roundRect(ctx, 142, 188, 796, 616, 22); ctx.clip(); ctx.drawImage(art, 142, 188, 796, 637); ctx.restore();
+    } else {
+      ctx.fillStyle = PAPER; ctx.beginPath(); ctx.arc(W/2, 490, 285, 0, 2*Math.PI); ctx.fill();
+      ctx.fillStyle = INK; ctx.font = '800 330px ' + DISPLAY; ctx.fillText(m[0], W/2, 505);
+    }
     roundRect(ctx, 90, 820, 900, 330, 30); ctx.fillStyle = c1; ctx.fill();
     ctx.fillStyle = on; fitFont(ctx, s.name, 800, 92, DISPLAY, 820); ctx.fillText(s.name, W/2, 900);
     ctx.font = '500 40px ' + DISPLAY; ctx.fillText(s.sub, W/2, 978);
@@ -1347,11 +1371,12 @@ function drawShare(idx){
   };
   paint();
   loadFonts(m[0] + '宿' + s.top + s.name + s.sub + s.arch + s.kw + s.foot, paint);
+  if (hasChar(idx)) charImage(idx, function(im){ art = im; paint(); });
 }
 
 /* ---------- tall story card for two ---------- */
 function drawPair(){
-  var job = ++pairJob, f = pairInfo;
+  var job = ++pairJob, f = pairInfo, pairArt = {};
   var paint = function(){
     if (job !== pairJob) return;
     var W = 1080, H = 1920, ctx = pairCanvas.getContext('2d'), P = Math.PI, i;
@@ -1376,13 +1401,22 @@ function drawPair(){
     ctx.fillStyle = PAPER; ctx.font = '800 ' + (f.kanji.length > 1 ? 170 : 210) + 'px ' + DISPLAY; ctx.fillText(f.kanji, cx, cy + 6);
     fitFont(ctx, f.label, 800, 88, DISPLAY, 980); ctx.fillText(f.label, W/2, 1130);
     ctx.fillStyle = KIN; fitFont(ctx, f.line, 700, 40, BODY, 980); ctx.fillText(f.line, W/2, 1212);
-    var box = function(x, label, kanji, name){
+    var box = function(x, label, kanji, name, im){
       roundRect(ctx, x, 1290, 455, 300, 28); ctx.fillStyle = PAPER; ctx.fill();
+      if (im){
+        ctx.save(); roundRect(ctx, x, 1290, 455, 300, 28); ctx.clip(); ctx.drawImage(im, x, 1290 - 60, 455, 364); ctx.restore();
+        ctx.fillStyle = PAPER; ctx.fillRect(x, 1504, 455, 58); roundRect(ctx, x, 1500, 455, 90, 28); ctx.fill();
+        ctx.font = '700 26px ' + BODY; var lw = ctx.measureText(label).width + 36;
+        roundRect(ctx, x + 18, 1306, lw, 46, 23); ctx.fillStyle = SHU; ctx.fill();
+        ctx.fillStyle = '#fff6ea'; ctx.fillText(label, x + 18 + lw/2, 1330);
+        ctx.fillStyle = INK; fitFont(ctx, kanji + ' · ' + name, 800, 40, DISPLAY, 410); ctx.fillText(kanji + ' · ' + name, x + 227, 1546);
+        return;
+      }
       ctx.fillStyle = SHU; ctx.font = '700 28px ' + BODY; ctx.fillText(label, x + 227, 1342);
       ctx.fillStyle = INK; ctx.font = '800 112px ' + DISPLAY; ctx.fillText(kanji, x + 227, 1440);
       fitFont(ctx, name, 800, 46, DISPLAY, 400); ctx.fillText(name, x + 227, 1540);
     };
-    box(70, f.la, f.ka, f.na); box(555, f.lb, f.kb, f.nb);
+    box(70, f.la, f.ka, f.na, pairArt[f.b]); box(555, f.lb, f.kb, f.nb, pairArt[f.a]);
     ctx.fillStyle = MIST; ctx.font = '500 36px ' + BODY; ctx.fillText(f.rare, W/2, 1660);
     ctx.fillStyle = KIN; ctx.font = '800 66px ' + DISPLAY; ctx.fillText(f.ask, W/2, 1752);
     ctx.fillStyle = FOOT; ctx.fillRect(0, 1826, W, 94);
@@ -1391,6 +1425,7 @@ function drawPair(){
   };
   paint();
   loadFonts(f.top + f.kanji + f.label + f.line + f.la + f.lb + f.ka + f.kb + f.na + f.nb + f.rare + f.ask + f.foot + M.map(function(m){ return m[0]; }).join(''), paint);
+  [f.a, f.b].forEach(function(k){ if (hasChar(k)) charImage(k, function(im){ pairArt[k] = im; paint(); }); });
 }
 
 /* ---------- reveal ---------- */
@@ -1460,7 +1495,8 @@ function renderBond(){
   }).join('');
   var who = function(idx, cls, tag){
     var kw = lang === 'ja' ? MJ[idx][2] : M[idx][5];
-    return '<div class="who-card"><div class="who-top"><span class="who-disc ' + cls + '" lang="ja">' + M[idx][0] + '</span><div><p class="who-tag">' + tag + '</p><p class="who-name">' + L(M[idx][2] + ' Mansion', M[idx][0] + '宿（' + YOMI[idx] + '）') + '</p><p class="who-arch">' + L(M[idx][3], MJ[idx][0]) + '</p></div></div>' +
+    var art = hasChar(idx) ? '<img class="who-art" src="' + charURL(idx, true) + '" alt="' + charAlt(idx) + '" width="640" height="512" loading="lazy" decoding="async">' : '';
+    return '<div class="who-card">' + art + '<div class="who-top"><span class="who-disc ' + cls + '" lang="ja">' + M[idx][0] + '</span><div><p class="who-tag">' + tag + '</p><p class="who-name">' + L(M[idx][2] + ' Mansion', M[idx][0] + '宿（' + YOMI[idx] + '）') + '</p><p class="who-arch">' + L(M[idx][3], MJ[idx][0]) + '</p></div></div>' +
       '<ul class="chips">' + kw.map(function(k){ return '<li class="chip">' + k + '</li>'; }).join('') + '</ul>' +
       '<p class="who-love"><span class="mini">' + L('In love', '恋愛では') + '</span><br>' + L(LOVE[idx][0], LOVE[idx][1]) + '</p></div>';
   };
