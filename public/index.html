@@ -1256,7 +1256,7 @@ function fitFont(ctx, text, weight, size, family, maxW){
 }
 
 /* ---------- character art（できた宿から順に /art/chars/ に置く） ---------- */
-var CHARS = {'net':1, 'beak':1, 'three-stars':1, 'well':1};
+var CHARS = {'pleiades':1, 'net':1, 'beak':1, 'three-stars':1, 'well':1, 'rooftop':1};
 function charSlug(idx){ return M[idx][2].toLowerCase().replace(/[^a-z]+/g, '-'); }
 function hasChar(idx){ return !!CHARS[charSlug(idx)]; }
 function charURL(idx, small){ return '/art/chars/' + charSlug(idx) + (small ? '-s' : '') + '.webp'; }
