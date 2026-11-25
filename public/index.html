@@ -1367,7 +1367,7 @@ function renderFreeExtras(a, b, key, pk){
 }
 
 /* ---------- character art（できた宿から順に /art/chars/ に置く） ---------- */
-var CHARS = {'pleiades':1, 'net':1, 'beak':1, 'three-stars':1, 'well':1, 'spirit':1, 'rooftop':1, 'willow':1, 'star':1, 'drawn-bow':1, 'wings':1, 'chariot':1, 'horn':1, 'neck':1, 'root':1, 'chamber':1, 'heart':1};
+var CHARS = {'pleiades':1, 'net':1, 'beak':1, 'three-stars':1, 'well':1, 'spirit':1, 'rooftop':1, 'willow':1, 'star':1, 'drawn-bow':1, 'wings':1, 'chariot':1, 'horn':1, 'neck':1, 'root':1, 'chamber':1, 'heart':1, 'tail':1};
 function charSlug(idx){ return M[idx][2].toLowerCase().replace(/[^a-z]+/g, '-'); }
 function hasChar(idx){ return !!CHARS[charSlug(idx)]; }
 function charURL(idx, small){ return '/art/chars/' + charSlug(idx) + (small ? '-s' : '') + '.webp'; }
