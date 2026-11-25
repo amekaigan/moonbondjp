@@ -1367,10 +1367,11 @@ function renderFreeExtras(a, b, key, pk){
 }
 
 /* ---------- character art（できた宿から順に /art/chars/ に置く） ---------- */
-var CHARS = {'pleiades':1, 'net':1, 'beak':1, 'three-stars':1, 'well':1, 'spirit':1, 'rooftop':1, 'willow':1, 'star':1, 'drawn-bow':1, 'wings':1, 'chariot':1, 'horn':1, 'neck':1, 'root':1, 'chamber':1, 'heart':1, 'tail':1};
+var CHARS = {'pleiades':1, 'net':1, 'beak':1, 'three-stars':1, 'well':1, 'spirit':2, 'rooftop':1, 'willow':2, 'star':2, 'drawn-bow':2, 'wings':2, 'chariot':1, 'horn':1, 'neck':1, 'root':1, 'chamber':1, 'heart':1, 'tail':2};
 function charSlug(idx){ return M[idx][2].toLowerCase().replace(/[^a-z]+/g, '-'); }
 function hasChar(idx){ return !!CHARS[charSlug(idx)]; }
-function charURL(idx, small){ return '/art/chars/' + charSlug(idx) + (small ? '-s' : '') + '.webp'; }
+/* 絵を差し替えたら CHARS の数字を上げる（ブラウザに残った古い絵を読み直させるため） */
+function charURL(idx, small){ return '/art/chars/' + charSlug(idx) + (small ? '-s' : '') + '.webp?v=' + CHARS[charSlug(idx)]; }
 function charAlt(idx){ var m = M[idx]; return L('The ' + m[2] + ' Mansion girl in a ' + m[8][0] + ' kimono, with her little obi spirit', m[0] + '宿の女の子。' + m[8][1] + 'の着物に、帯から生まれた精を連れている'); }
 var charImgs = {};
 function charImage(idx, cb){
