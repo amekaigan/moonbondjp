@@ -88,6 +88,14 @@ button,select{font-family:inherit}
   @keyframes twinkle{0%,100%{opacity:1}50%{opacity:.35}}
   @keyframes flicker{0%,100%{opacity:1}45%{opacity:.5}70%{opacity:.9}}
 }
+.hero-g{background:#03419a;min-height:0;gap:0}
+.hero-g .scene{display:none}
+.hero-g .hero-copy{padding-bottom:6px}
+.hero-g .hero-copy > *{max-width:none}
+.hero-group{display:block;width:100%;height:auto;aspect-ratio:3/2;margin-top:4px;-webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent)}
+.hero-g .hero-cta{padding-top:16px}
+.hero-g .hero-cta .lede{color:#fff6ea}
+.hero:not(.hero-g) .hero-group{display:none}
 .hero-copy{position:relative;display:flex;flex-direction:column;gap:12px;padding-top:26px}
 .hero-copy > *{max-width:min(66%,440px)}
 .eyebrow{font-size:13px;font-weight:500;color:var(--kin);letter-spacing:.03em}
@@ -376,7 +384,7 @@ html[lang="ja"] .sub{font-size:16px}
 </header>
 
 <main>
-<section class="hero" id="heroBox">
+<section class="hero hero-g" id="heroBox">
   <div class="scene" aria-hidden="true">
     <div class="sc-mt">
       <img class="full" src="art/bg.webp" alt="" width="1028" height="2014">
@@ -392,6 +400,7 @@ html[lang="ja"] .sub{font-size:16px}
     <h1 data-i="h1">What connects<br>you and me?</h1>
     <p class="sub" data-i="sub">A little closer to understanding each other.</p>
   </div>
+  <img class="hero-group" src="art/group-s.webp" srcset="art/group-s.webp 900w, art/group.webp 1536w" sizes="(min-width:760px) 760px, 100vw" alt="Five of the 27 moon girls in kimono with their little obi spirits, under a golden full moon" width="1536" height="1024" fetchpriority="high">
   <div class="wrap hero-cta">
     <p class="lede" data-i="lede">Two birthdays. One hidden connection.</p>
     <button class="btn hero-btn" type="button" id="startBtn"><span data-i="cta">Check our compatibility</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v13M6 12.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
