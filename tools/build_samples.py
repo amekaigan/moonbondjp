@@ -47,3 +47,8 @@ p = ROOT / 'public/full/sample/index.html'
 t = p.read_text(encoding='utf-8')
 t = t.replace('src="art/', 'src="/full/art/')
 p.write_text(t, encoding='utf-8')
+
+# カップル完全版の見本（二人用と同じ誕生日）
+if (ROOT / 'public/couple/index.html').exists():
+    make('public/couple/index.html', 'public/couple/sample/index.html', 'a=1995-11-14&b=1996-03-03',
+         [("q.get('k') && pa && pb", "pa && pb")])

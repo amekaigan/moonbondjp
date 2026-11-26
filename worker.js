@@ -5,8 +5,8 @@
 //   PAYPAL_SECRET    : 同じアプリの Secret                … 種類は「シークレット」
 // PAYPAL_SECRET が未設定のあいだは、今までどおり /full/ を誰でも開ける（支払いボタンは「準備中」のまま）
 
-// 商品ごとの金額。bond＝二人のくわしい鑑定（/full/）、me＝自分用のくわしい鑑定（/me/）
-const PRICES = { bond: { value: "9.99", currency: "USD" }, me: { value: "6.99", currency: "USD" } };
+// 商品ごとの金額。bond＝二人のくわしい鑑定（/full/）、me＝自分用のくわしい鑑定（/me/）、couple＝カップル完全版（/couple/）
+const PRICES = { bond: { value: "9.99", currency: "USD" }, me: { value: "6.99", currency: "USD" }, couple: { value: "19.99", currency: "USD" } };
 const PRICE = PRICES.bond;
 const API = "https://api-m.paypal.com";
 const DATE = /^(\d{4})-(\d{1,2})-(\d{1,2})$/;
@@ -71,6 +71,11 @@ async function readingUrl(env, order) {
     if (!a || cap.amount?.currency_code !== PRICES.me.currency || cap.amount?.value !== PRICES.me.value) return null;
     return `/me/?a=${a}&lang=${parts[2] === "ja" ? "ja" : "en"}&k=${await sign(env, "me:" + a, "-")}`;
   }
+  if (parts[0] === "couple") {
+    const a = cleanDate(parts[1]), b = cleanDate(parts[2]);
+    if (!a || !b || cap.amount?.currency_code !== PRICES.couple.currency || cap.amount?.value !== PRICES.couple.value) return null;
+    return `/couple/?a=${a}&b=${b}&lang=${parts[3] === "ja" ? "ja" : "en"}&k=${await sign(env, "couple:" + a, b)}`;
+  }
   const [a, b, lang] = parts;
   if (cap.amount?.currency_code !== PRICE.currency || cap.amount?.value !== PRICE.value) return null;
   if (!cleanDate(a) || !cleanDate(b)) return null;
@@ -87,15 +92,18 @@ async function api(request, env, path) {
 
   if (path === "/api/paypal/order") {
     const a = cleanDate(body.a), lang = body.lang === "ja" ? "ja" : "en";
-    const solo = body.kind === "me";
+    const kind = body.kind === "me" ? "me" : body.kind === "couple" ? "couple" : "bond";
+    const solo = kind === "me";
     const b = solo ? "-" : cleanDate(body.b);
     if (!a || !b) return json({ error: "dates" }, 400);
-    const price = solo ? PRICES.me : PRICES.bond;
+    const price = PRICES[kind];
+    const desc = { me: "Moonbond personal reading", couple: "Moonbond complete couple reading", bond: "Moonbond full compatibility reading" }[kind];
+    const cid = { me: `me|${a}|${lang}`, couple: `couple|${a}|${b}|${lang}`, bond: `${a}|${b}|${lang}` }[kind];
     const { ok, j } = await pp(env, "/v2/checkout/orders", "POST", {
       intent: "CAPTURE",
       purchase_units: [{
-        description: solo ? "Moonbond personal reading" : "Moonbond full compatibility reading",
-        custom_id: solo ? `me|${a}|${lang}` : `${a}|${b}|${lang}`,
+        description: desc,
+        custom_id: cid,
         amount: { currency_code: price.currency, value: price.value },
       }],
       payment_source: { paypal: { experience_context: { brand_name: "Moonbond", shipping_preference: "NO_SHIPPING", user_action: "PAY_NOW" } } },
@@ -127,6 +135,11 @@ export default {
       if ((path === "/me" || path === "/me/" || path === "/me/index.html") && env.PAYPAL_SECRET) {
         const a = cleanDate(url.searchParams.get("a"));
         const ok = a && same(url.searchParams.get("k"), await sign(env, "me:" + a, "-"));
+        if (!ok) return Response.redirect(url.origin + "/#editions", 302);
+      }
+      if ((path === "/couple" || path === "/couple/" || path === "/couple/index.html") && env.PAYPAL_SECRET) {
+        const a = cleanDate(url.searchParams.get("a")), b = cleanDate(url.searchParams.get("b"));
+        const ok = a && b && same(url.searchParams.get("k"), await sign(env, "couple:" + a, b));
         if (!ok) return Response.redirect(url.origin + "/#editions", 302);
       }
       if ((path === "/full" || path === "/full/" || path === "/full/index.html") && env.PAYPAL_SECRET) {

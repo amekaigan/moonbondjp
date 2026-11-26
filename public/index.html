@@ -706,10 +706,11 @@ document.documentElement.setAttribute('data-hero',v);})();
         <a class="sample-link" href="/me/sample/" data-i="sampleLink">See a sample reading</a>
       </div>
       <div class="tier">
-        <div class="tier-top"><span class="tier-name" data-i="t3name">Couple edition</span><span class="chip kin" data-i="t3chip">Coming soon</span></div>
+        <div class="tier-top"><span class="tier-name" data-i="t3name">Couple edition</span><span class="chip kin" data-i="t3chip">Everything included</span></div>
         <span class="price">$19.99</span>
         <ul><li data-i="t3a">Everything in the full reading</li><li data-i="t3b">Why you two met</li><li data-i="t3c">Living together, day to day</li><li data-i="t3d">Good days for you both, 12 months ahead</li><li data-i="t3e">A keepsake certificate with both your names</li></ul>
-        <button class="btn line" type="button" disabled aria-disabled="true" style="opacity:.55;cursor:default" data-i="t3btn">Coming soon</button>
+        <button class="btn" type="button" data-buy="couple" data-i="t3btn">Read the complete reading</button>
+        <a class="sample-link" href="/couple/sample/" data-i="sampleLink">See a sample reading</a>
       </div>
     </div>
     <p class="msg" style="color:var(--mist);text-align:center"><span data-i="refundNote">Digital readings open right after payment.</span> <a href="/refund/" data-i="refundLink" style="color:var(--kin)">Refunds and contact</a></p>
@@ -1000,7 +1001,7 @@ var JA = {
   sampleLink:'鑑定書のサンプルを見る', refundNote:'鑑定書はお支払い後すぐに開きます。', refundLink:'返金・お問い合わせ',
   s1name:'あなた編のくわしい鑑定', s1chip:'あなた自身を知る', s1a:'本当のあなた、強みとつまずきやすいところ', s1b:'恋愛のしかたと、くり返しやすいパターン', s1c:'仕事とお金', s1d:'運をくれる人と、ていねいに付き合いたい人', s1e:'運気の流れ（今年からの5年、12か月、これからの30日）', s1btn:'あなた編の鑑定を読む',
   meKick:'あなた編のくわしい鑑定', meH:'あなた自身を、もっと深く知る', mea:'本当のあなた、強みとつまずきやすいところ', meb:'恋愛のしかたと、くり返しやすいパターン', mec:'仕事とお金', med:'運をくれる人と、ていねいに付き合いたい人', mee:'運気の流れ（今年からの5年、12か月、これからの30日）', mePrice:'全6章。あなたの宿に合わせて書かれます', meBtn:'あなた編の鑑定を読む　→',
-  t3name:'カップル完全版', t3chip:'近日公開', t3a:'くわしい相性鑑定のすべて', t3b:'二人が出会った意味', t3c:'一緒に暮らす時のコツ', t3d:'この先12か月、二人に良い日', t3e:'二人の名前が入った、記念の鑑定証', t3btn:'近日公開',
+  t3name:'カップル完全版', t3chip:'ぜんぶ入り', t3a:'くわしい相性鑑定のすべて', t3b:'二人が出会った意味', t3c:'一緒に暮らす時のコツ', t3d:'この先12か月、二人に良い日', t3e:'二人の名前が入った、記念の鑑定証', t3btn:'カップル完全版を読む',
   abH:'宿曜とは',
   f1:'月が毎月通る宿の数', f2:'空海が唐から持ち帰ったと伝わる年', f3:'二人の相性の種類',
   q1:'宿曜占星術とは？', a1:'宿曜（しゅくよう、すくよう）は、27の宿をもとにした日本の占星術です。原典は9世紀に唐から日本へ伝わりました。',
@@ -1963,7 +1964,7 @@ function init(){
   /* 「あなた編」を購入できる宿の一覧（public/me-ready.json。文章ができた宿だけが入る） */
   var meReadyP = fetch('/me-ready.json').then(function(r){ return r.json(); }).catch(function(){ return []; });
   function startCheckout(note, kind){
-    var solo = kind === 'me', skey = solo ? 'mbMe' : 'mbReading', saved = null;
+    var solo = kind === 'me', couple = kind === 'couple', skey = solo ? 'mbMe' : couple ? 'mbCouple' : 'mbReading', saved = null;
     try { saved = localStorage.getItem(skey); } catch (e) {}
     if (!mine || mine.example || (!solo && (!partner || partner.example))){
       note.textContent = solo ? L('First enter your birthday above. The personal reading is written for your mansion.', 'まず上で、あなたの誕生日を入れてください。あなた編の鑑定は、あなたの宿に合わせて書かれます。')
@@ -1978,7 +1979,7 @@ function init(){
       });
     } else go();
     function go(){
-    var a = ymd(mine), b = solo ? null : ymd(partner), price = solo ? 6.99 : 9.99;
+    var a = ymd(mine), b = solo ? null : ymd(partner), price = solo ? 6.99 : couple ? 19.99 : 9.99;
     note.textContent = L('Opening secure checkout…', 'お支払い画面を準備しています…');
     fetch('/api/paypal/config').then(function(r){ return r.json(); }).then(function(cfg){
       if (!cfg.clientId){ note.textContent = L('Coming soon. We are still getting this ready.', 'ただいま準備中です。もうしばらくお待ちください。'); return; }
@@ -1989,7 +1990,7 @@ function init(){
         if (window.mbTrack) mbTrack('begin_checkout', {currency:'USD', value:price, product:kind});
         var opts = {
           createOrder: function(){
-            return fetch('/api/paypal/order', {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify(solo ? {kind:'me', a:a, lang:lang} : {a:a, b:b, lang:lang})})
+            return fetch('/api/paypal/order', {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify(solo ? {kind:'me', a:a, lang:lang} : couple ? {kind:'couple', a:a, b:b, lang:lang} : {a:a, b:b, lang:lang})})
               .then(function(r){ return r.json(); }).then(function(j){ if (!j.id) throw new Error('order'); return j.id; });
           },
           onApprove: function(data){
@@ -2018,7 +2019,7 @@ function init(){
           var slot = document.createElement('div'); slot.className = 'pp-slot';
           box.appendChild(slot); btn.render(slot);
         });
-        if (saved && (solo ? /^\/me\/\?[\w=&-]+$/ : /^\/full\/\?[\w=&-]+$/).test(saved)){
+        if (saved && (solo ? /^\/me\/\?[\w=&-]+$/ : couple ? /^\/couple\/\?[\w=&-]+$/ : /^\/full\/\?[\w=&-]+$/).test(saved)){
           var p = document.createElement('p'); p.className = 'fine';
           p.innerHTML = '<a href="' + saved + '" style="color:inherit">' + L('Already bought? Open your last reading', '購入済みの方：前回の鑑定を開く') + '</a>';
           box.appendChild(p);
