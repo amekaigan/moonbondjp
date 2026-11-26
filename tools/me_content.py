@@ -81,3 +81,12 @@ ME['star'] = {
         "Your light is the kind that gets brighter the longer you carry it. There is no need to hurry it. Just let the right people see it.",
         "あなたの光は、長く灯し続けるほど明るくなる種類のものです。急ぐ必要はありません。ふさわしい人に見える場所へ、そっと出してあげてください。"),
 }
+
+
+# 残りの宿は me_content_a〜e.py に分けて書いてある（あるものだけ読み込む）
+import importlib
+for _n in ('me_content_a', 'me_content_b', 'me_content_c', 'me_content_d', 'me_content_e'):
+    try:
+        ME.update(importlib.import_module(_n).ME_X)
+    except ModuleNotFoundError:
+        pass
