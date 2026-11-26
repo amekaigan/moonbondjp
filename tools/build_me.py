@@ -12,6 +12,7 @@ import json, re, sys, pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'tools'))
 from me_content import ME  # noqa: E402
+from me_lucky import LUCKY  # noqa: E402
 
 full = (ROOT / 'public/full/index.html').read_text(encoding='utf-8')
 lines = full.split('\n')
@@ -51,40 +52,60 @@ extra_css = """
 .cover-art{display:block;width:calc(100% + 40px);margin:-22px -20px 4px;height:auto;aspect-ratio:5/4;object-fit:cover;border-radius:18px 18px 0 0}
 .cover-for,.cover-names{padding-right:0}
 .swatches{display:flex;flex-wrap:wrap;gap:10px}
-.sw-i{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700}
+.sw-i{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700}
 .sw-i i{width:26px;height:26px;border-radius:50%;display:inline-block;box-shadow:inset 0 0 0 1px rgba(29,27,39,.2)}
 .pkey{background:var(--paper-2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
 .pkey-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
-.pkey-h b{font-family:var(--display);font-size:17px}
-.pkey-h span{font-size:13px;color:var(--ink-2)}
-.pkey p{font-size:15px;line-height:1.7}
+.pkey-h b{font-family:var(--display);font-size:18px}
+.pkey-h span{font-size:15px;color:var(--ink-2)}
+.pkey p{font-size:16px;line-height:1.8}
 .mrow{display:flex;flex-wrap:wrap;gap:8px}
 .mp{display:flex;flex-direction:column;align-items:center;gap:3px;width:68px;text-align:center}
 .mp img{width:68px;height:54px;object-fit:cover;object-position:left top;border-radius:10px;display:block}
 .mp b{width:68px;height:54px;border-radius:10px;background:var(--paper);display:grid;place-items:center;font-family:var(--display);font-size:26px}
-.mp small{font-size:11.5px;font-weight:700;line-height:1.2}
-.grp{font-family:var(--display);font-size:17px;margin-top:6px}
+.mp small{font-size:13px;font-weight:700;line-height:1.25}
+.grp{font-family:var(--display);font-size:18px;margin-top:8px}
 .mon{display:flex;flex-direction:column;gap:6px}
 .mo{display:grid;grid-template-columns:6.6em 1fr;gap:10px;align-items:start;border-radius:10px;padding:10px 12px;background:var(--paper-2)}
 .mo.now{background:#fbf3d9;box-shadow:0 0 0 2px var(--kin)}
-.mo-l{font-size:13px;font-weight:700;line-height:1.35}
+.mo-l{font-size:15px;font-weight:700;line-height:1.4}
 .mo-l small{display:block;color:var(--ink-2);font-weight:500}
-.mo-t{font-size:14.5px;line-height:1.6;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
-.pk{display:flex;flex-direction:column;gap:2px;font-size:15px;line-height:1.55}
-.pk b{font-family:var(--display);font-size:15px}
-.pk span{font-size:14px;color:var(--ink-2)}
+.mo-t{font-size:16px;line-height:1.75;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.pk{display:flex;flex-direction:column;gap:3px;font-size:16px;line-height:1.7}
+.pk b{font-family:var(--body);font-weight:700;font-size:16px}
+.pk span{font-size:15.5px;color:var(--ink-2)}
 .pick .pk+.pk{margin-top:8px}
-.tag{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;border-radius:999px;padding:1px 9px;margin-right:6px;color:#fff6ea}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:800;border-radius:999px;padding:1px 9px;margin-right:6px;color:#fff6ea}
 .t-good{background:#2f7d5b}.t-calm{background:#6C848D}.t-care{background:var(--shu)}
-.days{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
-.dc{border-radius:10px;padding:6px 0;text-align:center;color:#fff6ea;display:flex;flex-direction:column;line-height:1.15}
-.dc b{font-family:var(--display);font-size:17px}
-.dc small{font-size:10.5px;opacity:.9}
-.dc.t-calm{background:#8fa1a8}
+.calm{display:flex;flex-direction:column;gap:6px}
+.cal-m{font-family:var(--display);font-size:18px;font-weight:700;margin-top:4px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-w{text-align:center;font-size:14px;font-weight:700;color:var(--ink-2);padding-bottom:2px}
+.cal-w.sun{color:var(--shu)}
+.cd{border-radius:10px;padding:7px 0 6px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1}
+.cd b{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.cd i{font-style:normal;font-size:15px;font-weight:800;line-height:1}
+.cd.t-good{background:#cfe8d8;color:#17513a}
+.cd.t-calm{background:#e6e9eb;color:#46555c}
+.cd.t-care{background:#f6d3c8;color:#9c2f16}
+.cd.today{box-shadow:0 0 0 3px var(--ink)}
+.cd.blank{visibility:hidden}
+.cal-key{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px;color:var(--ink-2)}
+.cal-key span{display:inline-flex;align-items:center;gap:6px}
+.cal-key i{font-style:normal;font-weight:800;width:26px;height:26px;border-radius:8px;display:inline-grid;place-items:center;font-size:14px}
+.cal-key .k-good{background:#cfe8d8;color:#17513a}.cal-key .k-calm{background:#e6e9eb;color:#46555c}.cal-key .k-care{background:#f6d3c8;color:#9c2f16}
+.luck{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.lk{background:var(--paper-2);border-radius:14px;padding:14px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.lk-i{height:44px;display:grid;place-items:center;font-size:34px;line-height:1}
+.lk-i .dot{width:40px;height:40px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(29,27,39,.2)}
+.lk-i .num{font-family:var(--display);font-weight:800;font-size:38px}
+.lk-i svg{width:42px;height:42px}
+.lk small{font-size:14px;color:var(--ink-2);font-weight:700}
+.lk b{font-size:17px;line-height:1.35}
 .picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
 .pick{border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
 .pick.good{background:#e5f1ea}.pick.care{background:#f8e6df}
-.pick ul{display:flex;flex-direction:column;gap:6px;font-size:15px}
+.pick ul{display:flex;flex-direction:column;gap:6px;font-size:16px}
 .pick li{display:flex;gap:8px;align-items:baseline}
 .pick li b{font-family:var(--display);min-width:5.6em}
 .soon{background:var(--night-2);border:1px solid var(--hair);border-radius:18px;padding:22px 20px;text-align:center;color:var(--mist)}
@@ -134,6 +155,7 @@ TEMPLATE = r"""<!DOCTYPE html>
 <script>
 var lang = 'en';
 var ME = __ME__;
+var LUCKY = __LUCKY__;
 __TABLES__
 __FUNCS__
 function L(en, ja){ return lang === 'ja' ? ja : en; }
@@ -243,10 +265,17 @@ function render(){
     months += '<div class="mo' + (mi === cur ? ' now' : '') + '"><div class="mo-l">' + L('Lunar month ' + mi, '旧暦' + mi + '月') + '<small>' + L('around ' + LMON[mi - 1], 'おおよそ' + (((mi + 0) % 12) + 1) + '月') + (mi === cur ? L(' · now', '・いま') : '') + '</small></div>' +
       '<div class="mo-t">' + tagOf(key) + esc(L(TONE[key][0], TONE[key][1])) + '</div></div>';
   }
-  var days = nextDays(30), dh = '', good = [], care = [];
+  var days = nextDays(30), dh = '', good = [], care = [], MK = {good:'◎', calm:'○', care:'▲'}, t0 = todayJST(), curM = 0;
   var GO = ['ei','shin','yu','sei'], CO = ['kai','ki','go','sui'];
   days.forEach(function(x){
-    dh += '<span class="dc t-' + TG[x.key] + '"><b>' + x.d + '</b><small>' + DOW[lang === 'ja' ? 1 : 0][x.w] + '</small></span>';
+    if (x.m !== curM){
+      if (curM) dh += '</div>';
+      curM = x.m;
+      dh += '<h4 class="cal-m">' + L(MONTH_NAMES[x.m - 1], x.m + '月') + '</h4><div class="cal">';
+      for (var wi = 0; wi < 7; wi++) dh += '<span class="cal-w' + (wi === 0 ? ' sun' : '') + '">' + DOW[lang === 'ja' ? 1 : 0][wi] + '</span>';
+      for (var bi = 0; bi < x.w; bi++) dh += '<span class="cd blank"></span>';
+    }
+    dh += '<span class="cd t-' + TG[x.key] + (x.m === t0.m && x.d === t0.d ? ' today' : '') + '" aria-label="' + esc(dayLabel(x)) + '"><b>' + x.d + '</b><i aria-hidden="true">' + MK[TG[x.key]] + '</i></span>';
     if (GO.indexOf(x.key) >= 0) good.push(x); if (CO.indexOf(x.key) >= 0) care.push(x);
   });
   good.sort(function(p, q){ return GO.indexOf(p.key) - GO.indexOf(q.key); });
@@ -257,18 +286,29 @@ function render(){
       var ds = arr.filter(function(x){ return x.key === k; }).slice(0, 4);
       if (ds.length) rows += '<div class="pk"><b>' + esc(L(TONE[k][0], TONE[k][1])) + '</b><span>' + ds.map(dayLabel).join(L(', ', '、')) + '</span></div>';
     });
-    return '<div class="pick ' + cls + '"><span class="mini">' + ttl + '</span>' + (rows || '<p style="font-size:14.5px">' + L('None in the next 30 days.', 'この30日間にはありません。') + '</p>') + '</div>';
+    return '<div class="pick ' + cls + '"><span class="mini">' + ttl + '</span>' + (rows || '<p>' + L('None in the next 30 days.', 'この30日間にはありません。') + '</p>') + '</div>';
   };
   h += chapter(5, L('Your year, month by month', '運気の流れ'),
     '<p>' + L('In Shukuyō, each lunar month and each day belongs to one of the 27 mansions. How that mansion relates to yours sets the tone. This is the traditional method, worked out for your mansion.', '宿曜では、旧暦の月も毎日も、27の宿のどれかにあたります。その宿があなたの宿から見て何にあたるかで、その時の流れが決まります。伝統的な読み方を、あなたの宿に合わせて計算しました。') + '</p>' +
     '<h3 class="grp">' + L('The 12 lunar months', '旧暦12か月') + '</h3><div class="mon">' + months + '</div>' +
     '<h3 class="grp">' + L('The next 30 days', 'これからの30日') + '</h3>' +
-    '<div class="legend" style="color:var(--ink-2);justify-content:flex-start"><span><i style="background:#2f7d5b"></i>' + L('Favorable', '追い風') + '</span><span><i style="background:#8fa1a8"></i>' + L('Steady', '安定') + '</span><span><i style="background:var(--shu)"></i>' + L('Go gently', '慎重に') + '</span></div>' +
-    '<div class="days">' + dh + '</div>' +
+    '<div class="cal-key"><span><i class="k-good">◎</i>' + L('Favorable', '追い風') + '</span><span><i class="k-calm">○</i>' + L('Steady', '安定') + '</span><span><i class="k-care">▲</i>' + L('Go gently', '慎重に') + '</span><span>' + L('Black frame: today', '黒い枠：今日') + '</span></div>' +
+    '<div class="calm">' + dh + '</div></div>' +
     '<div class="picks">' + pickList(good, GO, 'good', L('Best days to move', '動くのによい日')) + pickList(care, CO, 'care', L('Days to go gently', '慎重に過ごしたい日')) + '</div>');
   /* 6 */
-  var c1 = m[8], c2 = m[9], pat = PAT[m[10]], patJ = PATJ[m[10]];
+  var c1 = m[8], c2 = m[9], pat = PAT[m[10]], patJ = PATJ[m[10]], K = LUCKY[a];
+  var compass = '<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="none" stroke="#1d1b27" stroke-opacity=".25" stroke-width="2"/><g transform="rotate(' + K[4] + ' 24 24)"><path d="M24 7 L31 26 L24 22 L17 26 Z" fill="#d4472a"/><path d="M24 41 L31 26 L24 22 L17 26 Z" fill="#1d1b27" fill-opacity=".25"/></g></svg>';
+  var lk = function(icon, label, text){ return '<div class="lk"><span class="lk-i">' + icon + '</span><small>' + label + '</small><b>' + esc(text) + '</b></div>'; };
+  var luckHtml = '<div class="luck">' +
+    lk('<span class="dot" style="background:' + K[0] + '"></span>', L('Lucky color', 'ラッキーカラー'), L(K[1], K[2])) +
+    lk('<span class="num">' + K[3] + '</span>', L('Lucky number', 'ラッキーナンバー'), L('Number ' + K[3], K[3] + '番')) +
+    lk(compass, L('Lucky direction', 'ラッキー方角'), L(K[5], K[6])) +
+    lk(K[9], L('Lucky item', 'ラッキーアイテム'), L(K[7], K[8])) +
+    lk(K[12], L('Lucky food', 'ラッキーフード'), L(K[10], K[11])) +
+    lk(K[15], L('Lucky place', 'ラッキースポット'), L(K[13], K[14])) + '</div>';
   h += chapter(6, L('Small things that bring luck', '運を呼ぶヒント'),
+    '<h3 class="grp">' + L('Your lucky picks', 'あなたのラッキー') + '</h3>' + luckHtml +
+    '<h3 class="grp">' + L('Your kimono and obi colors', 'きものと帯の色') + '</h3>' +
     '<div class="swatches"><span class="sw-i"><i style="background:' + c1[2] + '"></i>' + esc(L(c1[0], c1[1])) + '</span><span class="sw-i"><i style="background:' + c2[2] + '"></i>' + esc(L(c2[0], c2[1])) + '</span></div>' +
     '<p>' + L('Your kimono and obi colors, in Japan\'s traditional color names. Wear them, or carry them in something small. Pattern: ' + pat[0] + ' (' + pat[2] + ').', 'あなたの宿に合わせた、きものと帯の色です。身につけても、小物で持ち歩いても。柄は' + pat[1] + '（' + patJ + '）。') + '</p>' +
     '<div class="try"><span class="mini">' + L('This week', '今週のひとこと') + '</span><p>' + esc(L(D.week[0], D.week[1])) + '</p></div>');
@@ -325,7 +365,8 @@ out = (TEMPLATE
        .replace('__CORE__', core)
        .replace('__TABLES__', tables)
        .replace('__FUNCS__', funcs)
-       .replace('__ME__', json.dumps(ME, ensure_ascii=False, separators=(',', ':'))))
+       .replace('__ME__', json.dumps(ME, ensure_ascii=False, separators=(',', ':')))
+       .replace('__LUCKY__', json.dumps(LUCKY, ensure_ascii=False, separators=(',', ':'))))
 (ROOT / 'public/me').mkdir(exist_ok=True)
 (ROOT / 'public/me/index.html').write_text(out, encoding='utf-8')
 (ROOT / 'public/me-ready.json').write_text(json.dumps(sorted(ME.keys()), ensure_ascii=False) + '\n', encoding='utf-8')
