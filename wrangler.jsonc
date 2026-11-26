@@ -8,7 +8,7 @@
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page",
-    "run_worker_first": ["/api/*", "/full", "/full/", "/full/index.html"]
+    "run_worker_first": ["/api/*", "/full", "/full/", "/full/index.html", "/me", "/me/", "/me/index.html"]
   }
   // PayPal の Client ID と Secret は、Cloudflare の「変数とシークレット」に PAYPAL_CLIENT_ID・PAYPAL_SECRET（どちらも種類はシークレット）として入れる。
   // ここに vars を書くと、公開のたびに画面で入れた値が消えるので書かない

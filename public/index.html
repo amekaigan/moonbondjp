@@ -367,8 +367,11 @@ html[lang="ja"] .sub{font-size:16px}
   .trait{flex-direction:column;align-items:flex-start;gap:4px}
 }
 @media (min-width:720px){
-  .tiers{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .tiers{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+.mebul{display:flex;flex-direction:column;gap:6px;font-size:14.5px;margin-bottom:12px}
+.mebul li{display:grid;grid-template-columns:14px 1fr;gap:8px;align-items:start}
+.mebul li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--kin);margin-top:8px}
 .tier > .btn{margin-top:auto}
 .tier ul{flex:1 1 auto}
 </style>
@@ -596,6 +599,23 @@ document.documentElement.setAttribute('data-hero',v);})();
           </div>
         </div>
       </article>
+
+      <article class="card meup">
+        <div class="pad">
+          <h3 data-i="meH">Know yourself in more depth</h3>
+          <p class="sec-sub" style="margin:0 0 10px;color:var(--ink-2)" data-i="meSub">Your personal reading: six chapters written for your mansion alone.</p>
+          <ul class="mebul">
+            <li data-i="mea">The real you, strengths and blind spots</li>
+            <li data-i="meb">How you love, and the pattern to watch</li>
+            <li data-i="mec">Work and money</li>
+            <li data-i="med">Who lifts you, and who to handle gently</li>
+            <li data-i="mee">Your year month by month, plus the next 30 days</li>
+          </ul>
+          <div class="price-line"><span class="price">$6.99</span><span data-i="mePrice">Six chapters, written for your mansion</span></div>
+          <button class="btn" type="button" data-buy="me" data-i="meBtn">Read my personal reading</button>
+          <p class="msg" id="buyMsg3" role="status"></p>
+        </div>
+      </article>
     </div>
   </div>
 </section>
@@ -638,6 +658,12 @@ document.documentElement.setAttribute('data-hero',v);})();
         <span class="price">$9.99</span>
         <ul><li data-i="t2a">Why this bond feels the way it does</li><li data-i="t2b">Where you clash, and what it is really about</li><li data-i="t2c">What they need from you but rarely say</li><li data-i="t2d">Love, marriage and daily life, one by one</li><li data-i="t2e">Three things that make it last</li></ul>
         <button class="btn" type="button" data-buy="bond" data-i="t2btn">Read the full reading</button>
+      </div>
+      <div class="tier">
+        <div class="tier-top"><span class="tier-name" data-i="s1name">Personal reading</span><span class="chip kin" data-i="s1chip">Just you</span></div>
+        <span class="price">$6.99</span>
+        <ul><li data-i="s1a">The real you, strengths and blind spots</li><li data-i="s1b">How you love, and the pattern to watch</li><li data-i="s1c">Work and money</li><li data-i="s1d">Who lifts you, and who to handle gently</li><li data-i="s1e">Your year month by month, plus the next 30 days</li></ul>
+        <button class="btn" type="button" data-buy="me" data-i="s1btn">Read my personal reading</button>
       </div>
       <div class="tier">
         <div class="tier-top"><span class="tier-name" data-i="t3name">Couple edition</span><span class="chip kin" data-i="t3chip">Coming soon</span></div>
@@ -930,6 +956,8 @@ var JA = {
   edH:'もっと詳しく知りたい方へ', edSub:'知りたい深さに合わせて選べます。',
   t1name:'無料診断', t1chip:'いま読んだ内容', t1a:'二人の相性と、お互いの見え方', t1b:'二人はこんな人', t1c:'二人に起きやすいこと', t1d:'シェア用の画像',
   t2name:'くわしい相性鑑定', t2chip:'おすすめ', t2a:'この関係が、今の形になった理由', t2b:'二人がぶつかる場所と、本当の理由', t2c:'相手が口にしない本音', t2d:'恋愛・結婚・日常、それぞれの相性', t2e:'長続きさせる3つのコツ', t2btn:'くわしい鑑定を読む',
+  s1name:'あなた編のくわしい鑑定', s1chip:'あなた自身を知る', s1a:'本当のあなた、強みとつまずきやすいところ', s1b:'恋愛のしかたと、くり返しやすいパターン', s1c:'仕事とお金', s1d:'運をくれる人と、ていねいに付き合いたい人', s1e:'運気の流れ（12か月と、これからの30日）', s1btn:'あなた編の鑑定を読む',
+  meH:'あなた自身を、もっと深く知る', meSub:'あなたの宿だけのために書いた、全6章の鑑定です。', mea:'本当のあなた、強みとつまずきやすいところ', meb:'恋愛のしかたと、くり返しやすいパターン', mec:'仕事とお金', med:'運をくれる人と、ていねいに付き合いたい人', mee:'運気の流れ（12か月と、これからの30日）', mePrice:'全6章。あなたの宿に合わせて書かれます', meBtn:'あなた編の鑑定を読む',
   t3name:'カップル完全版', t3chip:'近日公開', t3a:'くわしい相性鑑定のすべて', t3b:'二人が出会った意味', t3c:'一緒に暮らす時のコツ', t3d:'この先12か月、二人に良い日', t3e:'二人の名前が入った、記念の鑑定証', t3btn:'近日公開',
   abH:'宿曜とは',
   f1:'月が毎月通る宿の数', f2:'空海が唐から持ち帰ったと伝わる年', f3:'二人の相性の種類',
@@ -1814,8 +1842,9 @@ function init(){
   var buys = document.querySelectorAll('[data-buy]');
   for (var bi = 0; bi < buys.length; bi++){
     buys[bi].addEventListener('click', function(e){
-      var note = e.currentTarget.closest('.locked') ? $('buyMsg') : $('buyMsg2');
-      startCheckout(note);
+      var kind = e.currentTarget.getAttribute('data-buy');
+      var note = e.currentTarget.closest('.locked') ? $('buyMsg') : (e.currentTarget.closest('.meup') ? $('buyMsg3') : $('buyMsg2'));
+      startCheckout(note, kind);
     });
   }
 
@@ -1846,25 +1875,35 @@ function init(){
     });
     return ppLoading;
   }
-  function startCheckout(note){
-    var saved = null;
-    try { saved = localStorage.getItem('mbReading'); } catch (e) {}
-    if (!mine || !partner || mine.example || partner.example){
-      note.textContent = L('First enter your two birthdays above. The full reading is written for that exact pair.', 'まず上で二人の誕生日を入れてください。くわしい鑑定は、その二人の組み合わせに合わせて書かれます。');
+  /* 「あなた編」を購入できる宿の一覧（public/me-ready.json。文章ができた宿だけが入る） */
+  var meReadyP = fetch('/me-ready.json').then(function(r){ return r.json(); }).catch(function(){ return []; });
+  function startCheckout(note, kind){
+    var solo = kind === 'me', skey = solo ? 'mbMe' : 'mbReading', saved = null;
+    try { saved = localStorage.getItem(skey); } catch (e) {}
+    if (!mine || mine.example || (!solo && (!partner || partner.example))){
+      note.textContent = solo ? L('First enter your birthday above. The personal reading is written for your mansion.', 'まず上で、あなたの誕生日を入れてください。あなた編の鑑定は、あなたの宿に合わせて書かれます。')
+        : L('First enter your two birthdays above. The full reading is written for that exact pair.', 'まず上で二人の誕生日を入れてください。くわしい鑑定は、その二人の組み合わせに合わせて書かれます。');
       $('heroBox').scrollIntoView({behavior:reduce() ? 'auto' : 'smooth', block:'start'});
       return;
     }
-    var a = ymd(mine), b = ymd(partner);
+    if (solo){
+      meReadyP.then(function(ready){
+        if (ready.indexOf(charSlug(mine.idx)) < 0){ note.textContent = L('Your personal reading is still being written for this mansion. It will open soon.', 'あなたの宿の「あなた編」は、いま書いているところです。もうしばらくお待ちください。'); return; }
+        go();
+      });
+    } else go();
+    function go(){
+    var a = ymd(mine), b = solo ? null : ymd(partner), price = solo ? 6.99 : 9.99;
     note.textContent = L('Opening secure checkout…', 'お支払い画面を準備しています…');
     fetch('/api/paypal/config').then(function(r){ return r.json(); }).then(function(cfg){
       if (!cfg.clientId){ note.textContent = L('Coming soon. We are still getting this ready.', 'ただいま準備中です。もうしばらくお待ちください。'); return; }
       return loadPayPal(cfg.clientId).then(function(){
         var box = ppBox(note); box.innerHTML = '';
         note.textContent = L('Your reading opens right after payment.', 'お支払いが終わると、すぐに鑑定が開きます。');
-        if (window.mbTrack) mbTrack('begin_checkout', {currency:'USD', value:9.99});
+        if (window.mbTrack) mbTrack('begin_checkout', {currency:'USD', value:price, product:kind});
         var opts = {
           createOrder: function(){
-            return fetch('/api/paypal/order', {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({a:a, b:b, lang:lang})})
+            return fetch('/api/paypal/order', {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify(solo ? {kind:'me', a:a, lang:lang} : {a:a, b:b, lang:lang})})
               .then(function(r){ return r.json(); }).then(function(j){ if (!j.id) throw new Error('order'); return j.id; });
           },
           onApprove: function(data){
@@ -1872,8 +1911,8 @@ function init(){
             return fetch('/api/paypal/capture', {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({id:data.orderID})})
               .then(function(r){ return r.json(); }).then(function(j){
                 if (!j.url){ note.textContent = L('We could not confirm the payment. Please contact us with your PayPal receipt.', 'お支払いを確認できませんでした。お手数ですが、PayPalの領収メールを添えてご連絡ください。'); return; }
-                try { localStorage.setItem('mbReading', j.url); } catch (e) {}
-                if (window.mbTrack) mbTrack('purchase', {transaction_id:data.orderID, currency:'USD', value:9.99});
+                try { localStorage.setItem(skey, j.url); } catch (e) {}
+                if (window.mbTrack) mbTrack('purchase', {transaction_id:data.orderID, currency:'USD', value:price, product:kind});
                 location.href = j.url;
               });
           },
@@ -1893,13 +1932,14 @@ function init(){
           var slot = document.createElement('div'); slot.className = 'pp-slot';
           box.appendChild(slot); btn.render(slot);
         });
-        if (saved && /^\/full\/\?[\w=&-]+$/.test(saved)){
+        if (saved && (solo ? /^\/me\/\?[\w=&-]+$/ : /^\/full\/\?[\w=&-]+$/).test(saved)){
           var p = document.createElement('p'); p.className = 'fine';
           p.innerHTML = '<a href="' + saved + '" style="color:inherit">' + L('Already bought? Open your last reading', '購入済みの方：前回の鑑定を開く') + '</a>';
           box.appendChild(p);
         }
       });
     }).catch(function(){ note.textContent = L('Could not open checkout. Please try again.', 'お支払い画面を開けませんでした。もう一度お試しください。'); });
+    }
   }
 
   var rt; window.addEventListener('resize', function(){ clearTimeout(rt); rt = setTimeout(paintFoot, 150); });

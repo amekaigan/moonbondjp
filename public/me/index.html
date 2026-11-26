@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Moonbond · Your Reading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* 自分用の鑑定（tools/build_me.py で作る。直接は書き換えない） */
+/* The paid reading: two birthdays in, eight chapters out. Indigo night and washi paper, same family as the free page. */
+:root{
+  --night:#12264f; --night-2:#1b3668; --night-3:#2b4c87; --paper:#f6f0e1; --paper-2:#e9e0ca; --ink:#1d1b27; --ink-2:#55506a;
+  --shu:#d4472a; --kin:#d6b05a; --mist:#bcc8e2; --hair:rgba(255,255,255,.18);
+  --display:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",Georgia,serif;
+  --body:"Zen Kaku Gothic New","Hiragino Sans","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--night);color:var(--paper);font-family:var(--body);font-size:16px;line-height:1.6}
+p,ul,ol,h1,h2,h3,fieldset,legend{margin:0;padding:0}
+ul,ol{list-style:none}
+fieldset{border:0;min-width:0}
+.wrap{width:100%;max-width:680px;margin:0 auto;padding:0 16px}
+h1,h2,h3{font-family:var(--display);line-height:1.25;font-weight:800;text-wrap:balance}
+:focus-visible{outline:3px solid var(--kin);outline-offset:2px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:12px;padding-bottom:12px}
+.brand{display:flex;align-items:center;gap:8px}
+.brand-moon{width:18px;height:18px;border-radius:50%;box-shadow:inset -6px 0 0 0 var(--kin)}
+.brand-name{font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:.04em}
+.brand-jp{font-family:var(--display);color:var(--kin);font-size:14px}
+.lang{display:flex;gap:2px;border:1px solid var(--hair);border-radius:999px;padding:3px}
+.lang button{appearance:none;border:0;background:transparent;color:var(--mist);font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--paper);color:var(--ink)}
+
+.intro{display:flex;flex-direction:column;gap:14px;padding-top:10px;padding-bottom:26px}
+.intro-head{display:grid;grid-template-columns:1fr 84px;gap:14px;align-items:center}
+.intro-head img{width:84px;height:84px;display:block}
+.intro h1{font-size:clamp(26px,7.4vw,38px)}
+.intro-sub{color:var(--mist);font-size:15px}
+form{display:flex;flex-direction:column;gap:14px}
+legend{font-weight:700;font-size:15px;margin-bottom:6px}
+.date-row{display:grid;grid-template-columns:1.5fr .9fr 1.1fr;gap:8px}
+.date-row label{display:flex;flex-direction:column;gap:4px;min-width:0}
+.date-row label span{font-size:12px;color:var(--mist)}
+select{width:100%;min-width:0;background:var(--night-2);color:var(--paper);border:1px solid rgba(255,255,255,.3);border-radius:10px;padding:12px 10px;font-size:16px;font-family:inherit}
+.btn{appearance:none;background:var(--shu);color:#fff6ea;border:1px solid var(--shu);border-radius:10px;padding:14px 18px;font-size:16px;font-weight:700;cursor:pointer;text-align:center;font-family:inherit}
+.err{color:#ffc9b8;font-size:14px;min-height:1px}
+
+#reading{display:flex;flex-direction:column;gap:16px;padding-bottom:40px}
+#reading[hidden]{display:none}
+.cover{background:var(--night-2);border:1px solid var(--hair);border-radius:18px;padding:22px 20px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden}
+.cover-cats{display:flex;gap:10px;align-items:flex-end;justify-content:flex-end;position:absolute;right:16px;top:16px}
+.cover-cats img{height:64px;width:auto;display:block}
+.cover-for{font-size:13px;color:var(--mist);padding-right:120px}
+.cover-names{font-family:var(--display);font-weight:800;font-size:24px;line-height:1.3;padding-right:120px}
+.cover-bond{color:var(--kin);font-family:var(--display);font-weight:700;font-size:16px}
+.cover-title{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.38;white-space:pre-line}
+.cover-sub{font-size:16px;line-height:1.65}
+#wheel{width:100%;max-width:320px;height:auto;display:block;margin:4px auto 0}
+#wheel text{font-family:var(--display);fill:var(--mist);font-size:12px}
+#wheel .a text{fill:var(--ink)}
+#wheel .b text{fill:#fff6ea}
+#wheel .mid1{fill:var(--paper);font-size:34px;font-weight:800}
+#wheel .mid2{fill:var(--kin);font-size:13px;font-family:var(--body);font-weight:700}
+.legend{display:flex;gap:16px;justify-content:center;font-size:13px;color:var(--mist)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+.ch{background:var(--paper);color:var(--ink);border-radius:18px;padding:22px 20px;display:flex;flex-direction:column;gap:14px}
+.ch-head{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center}
+.ch-num{width:44px;height:44px;border-radius:50%;background:var(--night);color:var(--kin);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:20px}
+.ch-label{font-size:12.5px;font-weight:700;color:var(--shu)}
+.ch h2{font-size:21px;line-height:1.35}
+.ch p{font-size:16px;line-height:1.85}
+html[lang="ja"] .ch p{line-height:1.95}
+html[lang="ja"] h1,html[lang="ja"] h2,html[lang="ja"] .closing .line{text-wrap:wrap}
+.sides{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.side{background:var(--paper-2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:4px}
+.mini{font-size:12.5px;font-weight:700;color:var(--shu)}
+.side-name{font-family:var(--display);font-weight:800;font-size:20px;line-height:1.3}
+.side p{font-size:15px;line-height:1.7}
+.meter{display:grid;gap:10px}
+.meter-row{display:grid;grid-template-columns:7.2em 1fr 3.2em;align-items:center;gap:12px;font-size:14.5px;font-weight:700}
+.pbar{display:block;height:12px;border-radius:6px;overflow:hidden}
+.pbar i{display:block;height:100%;border-radius:6px}
+.pct{font-family:var(--display);font-weight:800;font-size:18px;line-height:1;text-align:right;font-variant-numeric:tabular-nums}
+.pct small{font-size:12px;font-weight:700;margin-left:1px}
+@media (prefers-reduced-motion:no-preference){.pbar i{animation:pgrow 1s cubic-bezier(.2,.7,.2,1) both}@keyframes pgrow{from{width:0}}}
+.pbar{background:rgba(29,27,39,.12)}
+.pbar i{background:var(--shu)}
+.pct{color:var(--ink)}
+.room-bar{display:grid;grid-template-columns:1fr 3.2em;align-items:center;gap:12px}
+.who-card{background:var(--paper-2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+.who-art{display:block;width:calc(100% + 28px);height:auto;aspect-ratio:5/4;object-fit:cover;margin:-14px -14px 2px}
+.ch h3{font-family:var(--display);font-size:18px;margin-top:6px}
+.pros{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.pro{border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.pro.good{background:#e5f1ea}.pro.care{background:#f8e6df}
+.pro-h{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px}
+.pro-ic{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:900;color:#fff6ea}
+.pro.good .pro-ic{background:#2f7d5b}.pro.care .pro-ic{background:var(--shu)}
+.pro ul{margin:0;padding-left:20px;list-style:disc;display:flex;flex-direction:column;gap:4px;font-size:15px;line-height:1.6}
+.tcmp{display:grid;gap:10px}
+.tc-row{display:grid;grid-template-columns:5.5em 1fr;gap:10px;align-items:center}
+.tc-name{font-weight:700;font-size:14px}
+.tc-row.gap .tc-name{color:var(--shu)}
+.tc-bars{display:flex;flex-direction:column;gap:4px}
+.tc-bar{display:block;height:11px;border-radius:6px;background:rgba(29,27,39,.12);overflow:hidden}
+.tc-bar i{display:block;height:100%;border-radius:6px}
+.own{display:inline-block;font-size:11.5px;font-weight:800;background:var(--kin);color:var(--ink);border-radius:999px;padding:1px 8px;margin-right:6px}
+.who-top{display:flex;align-items:center;gap:12px}
+.who-disc{flex:none;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:25px;background:var(--kin);color:var(--ink)}
+.who-disc.b{background:var(--shu);color:#fff6ea}
+.who-tag{font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.who-name{font-family:var(--display);font-weight:800;font-size:18px;line-height:1.25}
+.who-arch{font-size:14px;color:var(--ink-2)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700;background:var(--paper);color:var(--ink)}
+.who-card p{font-size:15px;line-height:1.75}
+.dots li{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;font-size:16px;line-height:1.7}
+.dots{display:flex;flex-direction:column;gap:8px}
+.dots svg{width:20px;height:20px;margin-top:4px}
+.try{background:var(--night);color:var(--paper);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.try .mini{color:var(--kin)}
+.try p{font-size:16px;line-height:1.65;font-weight:700}
+.gift{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start;background:#fbf3d9;border-radius:12px;padding:14px 16px}
+.gift svg{width:24px;height:24px;margin-top:2px}
+.gift .mini{color:#8a6410}
+.gift p{font-family:var(--display);font-weight:700;font-size:16.5px;line-height:1.75}
+.rooms{display:flex;flex-direction:column;gap:10px}
+.room{background:var(--paper-2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.room-name{font-family:var(--display);font-weight:800;font-size:17px}
+.room p{font-size:15px;line-height:1.7}
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;background:var(--paper-2);border-radius:12px;padding:14px}
+.step-n{width:34px;height:34px;border-radius:50%;background:var(--shu);color:#fff6ea;display:grid;place-items:center;font-weight:700}
+.step strong{display:block;font-family:var(--display);font-size:17.5px;line-height:1.4}
+.step p{font-size:15px;line-height:1.75;margin-top:4px}
+.step-lead{display:block;font-size:14px;color:var(--ink-2);margin-bottom:2px}
+.closing{background:var(--night-2);border:1px solid var(--hair);border-radius:18px;padding:24px 20px;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center}
+.closing img{width:64px;height:64px}
+.closing .for{font-size:13px;font-weight:700;color:var(--kin)}
+.closing .line{font-family:var(--display);font-weight:500;font-size:17.5px;line-height:1.9;text-align:left}
+.closing .fine{font-size:12.5px;color:var(--mist);max-width:36em}
+@media print{
+  body{background:#fff;color:#000}
+  .top,.intro{display:none}
+  .ch,.cover,.closing{break-inside:avoid;border:1px solid #ccc}
+}
+
+.cover-art{display:block;width:calc(100% + 40px);margin:-22px -20px 4px;height:auto;aspect-ratio:5/4;object-fit:cover;border-radius:18px 18px 0 0}
+.cover-for,.cover-names{padding-right:0}
+.swatches{display:flex;flex-wrap:wrap;gap:10px}
+.sw-i{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700}
+.sw-i i{width:26px;height:26px;border-radius:50%;display:inline-block;box-shadow:inset 0 0 0 1px rgba(29,27,39,.2)}
+.pkey{background:var(--paper-2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.pkey-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.pkey-h b{font-family:var(--display);font-size:17px}
+.pkey-h span{font-size:13px;color:var(--ink-2)}
+.pkey p{font-size:15px;line-height:1.7}
+.mrow{display:flex;flex-wrap:wrap;gap:8px}
+.mp{display:flex;flex-direction:column;align-items:center;gap:3px;width:68px;text-align:center}
+.mp img{width:68px;height:54px;object-fit:cover;object-position:left top;border-radius:10px;display:block}
+.mp b{width:68px;height:54px;border-radius:10px;background:var(--paper);display:grid;place-items:center;font-family:var(--display);font-size:26px}
+.mp small{font-size:11.5px;font-weight:700;line-height:1.2}
+.grp{font-family:var(--display);font-size:17px;margin-top:6px}
+.mon{display:flex;flex-direction:column;gap:6px}
+.mo{display:grid;grid-template-columns:6.6em 1fr;gap:10px;align-items:start;border-radius:10px;padding:10px 12px;background:var(--paper-2)}
+.mo.now{background:#fbf3d9;box-shadow:0 0 0 2px var(--kin)}
+.mo-l{font-size:13px;font-weight:700;line-height:1.35}
+.mo-l small{display:block;color:var(--ink-2);font-weight:500}
+.mo-t{font-size:14.5px;line-height:1.6;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.pk{display:flex;flex-direction:column;gap:2px;font-size:15px;line-height:1.55}
+.pk b{font-family:var(--display);font-size:15px}
+.pk span{font-size:14px;color:var(--ink-2)}
+.pick .pk+.pk{margin-top:8px}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;border-radius:999px;padding:1px 9px;margin-right:6px;color:#fff6ea}
+.t-good{background:#2f7d5b}.t-calm{background:#6C848D}.t-care{background:var(--shu)}
+.days{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.dc{border-radius:10px;padding:6px 0;text-align:center;color:#fff6ea;display:flex;flex-direction:column;line-height:1.15}
+.dc b{font-family:var(--display);font-size:17px}
+.dc small{font-size:10.5px;opacity:.9}
+.dc.t-calm{background:#8fa1a8}
+.picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.pick{border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.pick.good{background:#e5f1ea}.pick.care{background:#f8e6df}
+.pick ul{display:flex;flex-direction:column;gap:6px;font-size:15px}
+.pick li{display:flex;gap:8px;align-items:baseline}
+.pick li b{font-family:var(--display);min-width:5.6em}
+.soon{background:var(--night-2);border:1px solid var(--hair);border-radius:18px;padding:22px 20px;text-align:center;color:var(--mist)}
+
+</style>
+<script id="core">
+/* Calendar and Shukuyō logic. No DOM access in this block. */
+var EPOCH0 = -18273;            /* 1919-12-22 as days since 1970-01-01: first day of lunar month 11 */
+var ENC = "bbabaabaabbabbbabaabaababbbabbaAbaababbabbabababaabbababbababaababbAbabbababaabababbabbabaabababbabbabAabaabbabbbabaabaababbbabbaabAababbabbbaabaabababbbababaabababbabBababaabababbabbababaabababbabbabaaBabababbbabaabaababbbabbaabaaBabbabbbaabaabababbbababaabababbabbaBaababababbabbabaababababbabbabaabaBababbabbaabaababbbabbaabaababbabbbAabaabababbbababaabababbbababaAbababbabbabaababababbababababababaBbababababaabbabbabbaabaababbabbbaaBaabababbbababaabababbbababaabAbabbabbabaababababbabababababababbAbababababababbabababaababbabbababaAbababbbababaabababbbababaabaabbbabbAbaabaabbabbabbaababababbababAbabababababbabababaabbababbababaabAbabbbababaabababbbababaabaabbbabbabAabaabbabbbabaabaababbbabababAbaabbabbabababaabbababbabababaababBabbababaabababbabbabaabaabbabbbabaAbaabbabbbabaabaababbbabbaabaabAbbabbababaabababbabbababaababbabAbbababaabababbabbabaabababbabbabaabAabbabbbabaabaababbbabbaabaababbabbAbabaabababbbababaabababbabbabAbaabababbababbabaabababbabbabaabaAbbabbbabaabaababbbabbaabaababbabbbaAbaabababbbababaabababbabbabaabababAbbabababababababbabbaababababAbbabbaabaababbbabbaabaababbabbbaabAabababbbababaabababbabbabaababababBbabaababababbababababababababbAbababaababbbabababaababbabbababaAbababbbababaabababbbababaabababbabbAbaababababbabababababababbababababAbababbabababaababbabbababaabAbabbbababaabababbbababaabaabbbabbabAabaabbabbabbaabaabbababbabababababAbabbabababaababbabbababaabababbbAbabaabababbbababaabaabbabbbabaaBaabb";            /* one letter per lunar month: a=29 days, b=30 days, capitals = leap month */
+var MONTHS = [];
+(function(){
+  var d = EPOCH0, m = 11;
+  for (var i = 0; i < ENC.length; i++){
+    var ch = ENC.charAt(i), leap = (ch === 'A' || ch === 'B'), len = (ch === 'a' || ch === 'A') ? 29 : 30;
+    if (i > 0 && !leap) m = m % 12 + 1;
+    MONTHS.push({s:d, m:m, leap:leap, len:len});
+    d += len;
+  }
+})();
+var LAST_DAY = MONTHS[MONTHS.length-1].s + MONTHS[MONTHS.length-1].len - 1;
+/* first-day mansion of each lunar month (index into the 27), months 1..12 */
+var FIRST = [0,22,24,26,1,3,5,8,11,13,15,18,20];
+function dayNum(y, m, d){ return Math.round(Date.UTC(y, m-1, d) / 86400000); }
+function lunarOf(dn){
+  if (dn < EPOCH0 || dn > LAST_DAY) return null;
+  var lo = 0, hi = MONTHS.length - 1;
+  while (lo < hi){ var mid = (lo + hi + 1) >> 1; if (MONTHS[mid].s <= dn) lo = mid; else hi = mid - 1; }
+  var mo = MONTHS[lo];
+  return {m:mo.m, d:dn - mo.s + 1, leap:mo.leap};
+}
+function shukuOf(y, m, d){
+  var L = lunarOf(dayNum(y, m, d));
+  if (!L) return null;
+  return {idx:(FIRST[L.m] + L.d - 1) % 27, lm:L.m, ld:L.d, leap:L.leap};
+}
+var REL9 = ['ei','sui','an','ki','sei','kai','yu','shin'];
+function relOf(a, b){
+  var pos = ((b - a + 27) % 27) + 1, r = (pos - 1) % 9, g = Math.floor((pos - 1) / 9);
+  var key = r === 0 ? ['mei','go','tai'][g] : REL9[r-1];
+  var steps = Math.min(pos - 1, 27 - (pos - 1));
+  return {pos:pos, key:key, steps:steps};
+}
+function hashStr(s){ var h = 2166136261; for (var i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+if (typeof module !== 'undefined') module.exports = {shukuOf:shukuOf, relOf:relOf, lunarOf:lunarOf, dayNum:dayNum, hashStr:hashStr, MONTHS:MONTHS};
+</script>
+<script src="/analytics.js" defer></script>
+</head>
+<body>
+<header class="wrap top">
+  <div class="brand"><span class="brand-moon" aria-hidden="true"></span><span class="brand-name">Moonbond</span><span class="brand-jp" lang="ja">月の縁</span></div>
+  <div class="lang" role="group" aria-label="Language"><button type="button" id="langEn" aria-pressed="true">EN</button><button type="button" id="langJa" aria-pressed="false" lang="ja">日本語</button></div>
+</header>
+<main class="wrap">
+  <section class="intro">
+    <div class="intro-head">
+      <div><h1 id="tH1"></h1><p class="intro-sub" id="tSub"></p></div>
+      <img src="/full/art/moon.webp" alt="" width="330" height="328">
+    </div>
+    <form id="birthForm" novalidate>
+      <fieldset><legend id="tYou"></legend>
+        <div class="date-row">
+          <label for="bMonth"><span class="lm"></span><select id="bMonth"></select></label>
+          <label for="bDay"><span class="ld"></span><select id="bDay"></select></label>
+          <label for="bYear"><span class="ly"></span><select id="bYear"></select></label>
+        </div>
+      </fieldset>
+      <button class="btn" type="submit" id="tGo"></button>
+      <p class="err" id="err" role="alert"></p>
+    </form>
+  </section>
+  <div id="reading" hidden></div>
+</main>
+<script>
+var lang = 'en';
+var ME = {"star":{"core":[["You are the kind of person who decides where you are going long before anyone notices you have started. While others talk about their dreams, you are already doing the unglamorous part of it: the early mornings, the practice, the quiet hours nobody sees. You do not need an audience, and you do not trust success that arrives too easily.","あなたは、周りが気づくずっと前に、行き先を決めて歩き出している人です。ほかの人が夢を語っている間に、早起きや練習のような地味な部分をもう始めています。見ている人がいなくても平気で、あっさり手に入った成功のほうが、むしろ信用できません。"],["Your path tends to be slower at the start and stronger at the end. Praise may come late, and that can sting, but what you build with your own hands does not collapse when the wind changes. Behind the calm face is real pride, and a part of you keeps score of every promise you have made to yourself.","歩き出しはゆっくりでも、後半に強くなる道のりです。ほめ言葉が遅れて届くと寂しい日もあるでしょう。それでも、自分の手で積み上げたものは、風向きが変わっても崩れません。静かな顔の奥には確かな誇りがあり、自分との約束を一つずつ数えている面もあります。"]],"strengths":[["Staying power","続ける力","You keep going after the excitement has worn off. That alone puts you ahead of most people.","気持ちが盛り上がっていない日も続けられます。それだけで、多くの人より一歩先に出られます。"],["Self-direction","自分で決める力","You do not wait to be told. Once you pick a goal, you can plan the road and walk it alone.","指示を待たず、目標を決めたら道筋まで自分で組み立てて進めます。"],["Trustworthiness","信頼される力","People learn that what you say you will do, you do. Over the years this becomes your biggest asset.","「やる」と言ったことは、やる。そう知られていくことが、年月とともに一番の財産になります。"]],"blind":[["Hard to lean on others","人に頼るのが苦手","You would rather struggle alone than ask. People around you often do not know you need help until you are worn out.","頼むくらいなら一人で抱えたい人です。周りは、あなたが疲れ切るまで助けが必要だと気づけません。"],["Racing the clock","人と比べて焦る","When someone your age moves faster, you quietly feel behind. Your path simply runs on a different clock.","同じ年ごろの人が先に進むと、静かに焦りが出ます。でも、あなたの道は時計の進み方がもともと違います。"],["Showing only the finished face","完成した顔しか見せない","Pride makes you show a polished self. Closeness needs the unfinished one too.","誇りが高いぶん、整った顔ばかり見せます。親しくなるには、未完成の顔も必要です。"]],"love":{"attract":["You are drawn to people who work at something and do not make a show of it. Seriousness, a clear goal and quiet kindness move you far more than charm does.","何かに黙々と取り組んでいる人に惹かれます。派手な魅力よりも、まじめさ、はっきりした目標、さりげない優しさに心が動きます。"],"pattern":["You open up slowly, and when you do it is all the way. The trap is that you show the strong version of yourself for months, so your partner falls for someone who never has a bad day. Then you cannot tell them about the bad day.","心を開くまでは時間がかかりますが、開いたら深く開きます。落とし穴は、何か月も「強い自分」だけを見せてしまうこと。相手は弱音を吐かない人に恋をして、あなたも調子の悪い日を打ち明けにくくなります。"],"try":["Tell your partner one unfinished thing this month: a worry, or a goal you are not sure of. It will not lower their respect for you. It lets them reach you.","今月、未完成なことを一つ、相手に話してみてください。迷っている目標でも、小さな不安でも構いません。尊敬は下がらず、相手があなたに届くようになります。"]},"work":{"fit":[["Craft and expertise: engineering, research, design, the trades. Anywhere mastery counts.","腕前が育つ仕事：技術職、研究、デザイン、職人系。実力がものを言う世界。"],["Work with your own territory: freelancing, running a shop, a role with real discretion.","自分の持ち場がある働き方：独立、自営、裁量の大きい役割。"],["Long-horizon roles: finance, planning, project management, where patience pays.","時間をかけて成果が出る仕事：経理・財務、企画、プロジェクト管理。"]],"style":["You do your best work when the goal is clear and nobody hovers. Being micromanaged drains you faster than hard work does.","目標がはっきりしていて、横から口を出されない環境で、いちばん力が出ます。細かく管理されると、仕事の量よりも早く消耗します。"],"money":["Money comes from effort and arrives in steps, not in jackpots. You are a natural saver and do best with a plan and a number to aim at. Be careful of the all-or-nothing project you fund alone.","お金は努力に応じて、階段のように増えていきます。一発逆転型ではありません。貯めるのが得意で、目標の金額があると伸びます。気をつけたいのは、一人で全額を出す「一か八か」の挑戦です。"],"caution":["Do not turn down good offers just because you feel you have not earned them yet.","「まだ自分にはふさわしくない」と、良い話を断りすぎないでください。"]},"drain":["Being rushed, being compared with others, and meetings that have no purpose.","急かされること、人と比べられること、目的のない付き合い。"],"recharge":["An hour of focused work on your own project, a long walk, a quiet evening with one person you trust.","自分の課題に集中する一時間、長めの散歩、信頼できる一人との静かな夜。"],"week":["This week, pick one thing you have been building alone and show it to one person you trust.","今週、一人で積み上げてきたことを一つ選んで、信頼できる人に見せてみてください。"],"close":["Your light is the kind that gets brighter the longer you carry it. There is no need to hurry it. Just let the right people see it.","あなたの光は、長く灯し続けるほど明るくなる種類のものです。急ぐ必要はありません。ふさわしい人に見える場所へ、そっと出してあげてください。"]}};
+var MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var M = [
+['昴','Bō-shuku','Pleiades','The Radiant Scholar','Grace, learning and a quiet glow that draws people in.',['Refined','Curious','Honored'],'Bō is counted among the most fortunate mansions. You carry yourself with natural dignity, love to learn, and tend to be lifted by mentors and elders.','You fall for minds first and need a partner who respects your ideals.',['Fuji-iro','藤色','#BBBCDE'],['Kogane','黄金','#E6B422'],'shippo',[3,3,5,4]],
+['畢','Hisshuku','Net','The Steady Climber','Slow, sure and impossible to knock off course.',['Enduring','Loyal','Grounded'],'You build your life the way a mountain path is cut, one firm step at a time. Others tire and you keep going, so your best years tend to arrive later and last longer.','Devoted and constant, you show love through reliability more than words.',['Tokiwa-iro','常磐色','#007B43'],['Kuri-iro','栗色','#762F07'],'kikko',[4,3,3,5]],
+['觜','Shi-shuku','Beak','The Silver Tongue','Words are your craft, and you choose them with care.',['Articulate','Studious','Discreet'],'You think before you speak, and when you do speak people listen. Knowledge and conversation win you trust, while your real feelings stay close to your chest.','You court with conversation and need someone who can keep up with it.',['Rikyū-nezumi','利休鼠','#888E7E'],['Kikyō-iro','桔梗色','#5654A2'],'yagasuri',[3,2,5,4]],
+['参','Shin-shuku','Three Stars','The Trailblazer','Bold ideas, a loud laugh and no patience for the old way.',['Daring','Inventive','Outspoken'],'Curiosity pulls you toward whatever is new, and you say exactly what you think about it. You wake a room up and open doors other people had not noticed.','You need freedom and a partner who enjoys a lively debate.',['Shu-iro','朱色','#EB6101'],['Kon','紺','#223A70'],'uroko',[5,3,4,1]],
+['井','Sei-shuku','Well','The Clear Thinker','Cool logic and deep reserves.',['Analytical','Composed','Fair'],'Like well water, your mind is clear and runs deep. You gather facts, argue precisely and stay calm when others do not, so people rely on your judgement.','You warm up slowly, then stay loyal for a very long time.',['Asagi-iro','浅葱色','#00A3AF'],['Shironeri','白練','#F3F3F2'],'seigaiha',[3,2,5,4]],
+['鬼','Ki-shuku','Spirit','The Free Spirit','Playful, generous and hard to pin down.',['Open-hearted','Curious','Lucky'],'Tradition calls this the most auspicious mansion of all. You wander toward whatever fascinates you, give freely, and somehow land on your feet.','You love with childlike sincerity and wilt under control.',['Yamabuki-iro','山吹色','#F8B500'],['Wakatake-iro','若竹色','#68BE8D'],'asanoha',[3,5,3,3]],
+['柳','Ryū-shuku','Willow','The Devoted Flame','Whatever you love, you love completely.',['Passionate','Magnetic','Focused'],'You pour yourself into the people and pursuits that capture you, and that intensity attracts followers. Like a willow you bend with the wind while your roots stay put.','All-in and protective, you need a partner who can match your depth.',['Yanagi-iro','柳色','#A8C97F'],['Enji','臙脂','#B94047'],'kanoko',[5,4,3,2]],
+['星','Sei-shuku','Star','The Self-Made Star','Quiet ambition that outworks everyone.',['Hardworking','Independent','Ambitious'],'You set a far-off goal and walk toward it without fuss. Success comes from your own effort, often later than for others, and it is all the more solid for that.','Proud and private, you open up to someone who respects your goals.',['Ruri-iro','瑠璃色','#1E50A2'],['Ukon-iro','鬱金色','#FABF14'],'kikko',[5,2,4,3]],
+['張','Chō-shuku','Drawn Bow','The Leading Light','Made for the stage, and generous with the spotlight.',['Charismatic','Proud','Expressive'],'You know how to present yourself, and people gather around you. Under the confident surface is a careful planner who hates to disappoint.','You want to be admired and will spoil the one who does.',['Hi-iro','緋色','#D3381C'],['Kogane','黄金','#E6B422'],'ichimatsu',[5,3,3,2]],
+['翼','Yoku-shuku','Wings','The Far Traveler','High standards and wings wide enough to reach them.',['Idealistic','Precise','Worldly'],'You aim for perfection and will go a long way to find it, often literally. Distant places, foreign ideas and long projects suit you.','Faithful and exacting, you take time to choose and then commit.',['Sora-iro','空色','#A0D8EF'],['Gunjō-iro','群青色','#4C6CB3'],'yagasuri',[4,3,4,3]],
+['軫','Shin-shuku','Chariot','The Graceful Connector','Light on your feet and welcome everywhere.',['Sociable','Nimble','Considerate'],'You read a room in seconds and move through it with ease, linking people who should know each other. Travel, trade and anything in motion bring you luck.','Attentive and gentle, you need steady reassurance in return.',['Shinbashi-iro','新橋色','#59B9C6'],['Sango-iro','珊瑚色','#F5B1AA'],'shippo',[3,5,3,3]],
+['角','Kaku-shuku','Horn','The Charmer','Style, wit and a gift for enjoying life.',['Stylish','Playful','Skilled'],'You have good taste and clever hands, and you make hard things look easy. People come for the fun and stay for the principled core you keep hidden.','Popular and flirtatious, yet loyal once your heart is set.',['Botan-iro','牡丹色','#E7609E'],['Sumi','墨','#595857'],'ichimatsu',[3,4,3,3]],
+['亢','Kō-shuku','Neck','The Reformer','Principle first, authority second.',['Principled','Defiant','Just'],'You hold firm convictions and will stand alone to defend them. Unfairness moves you to act, which makes you a natural advocate.','You need an equal who shares your values.',['Kachi-iro','勝色','#4D4C61'],['Akane-iro','茜色','#B7282E'],'uroko',[5,2,4,2]],
+['氐','Tei-shuku','Root','The Powerhouse','A strong appetite for life, and the stamina to feed it.',['Vigorous','Practical','Determined'],'You have staying power in body and mind, and you go straight after what you want. Practical instincts turn your desires into results.','Ardent and direct, you say what you want.',['Kaki-iro','柿色','#ED6D3D'],['Chitose-midori','千歳緑','#316745'],'asanoha',[5,3,3,2]],
+['房','Bō-shuku','Chamber','The Fortunate Heir','Charm, comfort and luck with money.',['Blessed','Elegant','Warm'],'Fortune tends to find you through family, patrons or simple good timing. You enjoy fine things and share them graciously, which keeps the luck flowing.','Affectionate and well loved, you thrive in a harmonious home.',['Kōbai-iro','紅梅色','#F2A0A1'],['Kohaku-iro','琥珀色','#BF783A'],'shippo',[2,4,3,5]],
+['心','Shin-shuku','Heart','The Heart Reader','You sense what people feel before they say it.',['Perceptive','Charming','Adaptable'],'You understand people by instinct and can become whoever the moment needs. That gift wins hearts while your own stays carefully hidden.','Captivating and guarded, you treat trust as everything.',['Kurenai','紅','#D7003A'],['Shikon','紫紺','#460E44'],'kanoko',[3,5,4,2]],
+['尾','Bi-shuku','Tail','The Finisher','Once you start, you do not stop.',['Persistent','Competitive','Dedicated'],'You have a fighter\'s focus and a craftsman\'s patience. You stay on one path until you master it, and you rise to a challenge.','Serious and single-minded, you pursue one person wholeheartedly.',['Suō','蘇芳','#9E3D3F'],['Tetsukon','鉄紺','#17184B'],'yagasuri',[5,3,3,3]],
+['箕','Ki-shuku','Winnowing Basket','The Straight Shooter','Frank, fearless and happiest standing on your own feet.',['Bold','Honest','Independent'],'You say what you mean and take on what others avoid. Hardship toughens you, and you often do best far from where you began.','Direct and big-hearted, you have no time for games.',['Kincha','金茶','#F39800'],['Koke-iro','苔色','#69821B'],'uroko',[5,3,2,3]],
+['斗','To-shuku','Dipper','The Quiet Warrior','Calm on the outside, fiercely determined within.',['Driven','Charismatic','Spiritual'],'You carry a strong sense of purpose and a competitive streak you rarely show. People sense your inner strength and follow your lead.','Idealistic, you look for a partner you can deeply respect.',['Gunjō-iro','群青色','#4C6CB3'],['Ginnezu','銀鼠','#AFAFB0'],'kikko',[5,3,4,3]],
+['女','Jo-shuku','Maiden','The Strategist','Discipline, patience and a plan for everything.',['Diligent','Organized','Patient'],'You study hard, work methodically and keep your promises. Quiet effort earns you authority, and you manage people and resources well.','Reserved at first, you show care through practical support.',['Nando-iro','納戸色','#008899'],['Zōge-iro','象牙色','#F8F4E6'],'ichimatsu',[4,2,5,4]],
+['虚','Kyo-shuku','Void','The Dreamer','A rich inner world and ideals that reach past the ordinary.',['Sensitive','Idealistic','Complex'],'You feel deeply and think in big, unconventional pictures. Your moods swing between confidence and doubt, and that tension feeds real creativity.','Romantic and private, you need a patient partner who understands you.',['Edo-murasaki','江戸紫','#745399'],['Geppaku','月白','#EAF4FC'],'seigaiha',[3,4,4,1]],
+['危','Ki-shuku','Rooftop','The Adventurer','Life is more fun near the edge.',['Sociable','Daring','Trendsetting'],'You love novelty, people and a little risk. Quick to try things, you bring energy to any group and often spot a trend first.','Fun and spontaneous, you treat routine as the enemy.',['Tsuyukusa-iro','露草色','#38A1DB'],['Tanpopo-iro','蒲公英色','#FFD900'],'kanoko',[4,4,3,1]],
+['室','Shisshuku','Hall','The Builder','Big energy, big plans, and the nerve to carry them out.',['Powerful','Confident','Enterprising'],'You think on a grand scale and push projects forward with force. Obstacles rarely slow you, and you often build something that lasts.','Protective and proud, you lead in love as in life.',['Kokiake','深緋','#C9171E'],['Sumi','墨','#595857'],'ichimatsu',[5,2,3,3]],
+['壁','Heki-shuku','Wall','The Hidden Pillar','The quiet strength others lean on.',['Supportive','Wise','Private'],'You prefer to work behind the scenes, where your judgement and loyalty hold everything up. You have a taste for the mysterious and rarely reveal all you know.','Devoted and discreet, you love by standing firmly beside someone.',['Ainezu','藍鼠','#6C848D'],['Kyō-murasaki','京紫','#9D5B8B'],'kikko',[3,4,4,5]],
+['奎','Kei-shuku','Stride','The Noble Heart','Upright, gentle and guided by a clear conscience.',['Sincere','Refined','Principled'],'You value pure intentions and treat people with courtesy. Good partnerships, in marriage and in work, bring out your best fortune.','Faithful and idealistic, you seek a true life partner.',['Shiraai','白藍','#C1E4E9'],['Kakitsubata-iro','杜若色','#3E62AD'],'seigaiha',[2,4,4,5]],
+['婁','Rō-shuku','Bond','The Fine-Tuner','A sharp eye for detail and a talent for bringing people together.',['Observant','Helpful','Meticulous'],'You notice what others miss and quietly put things in order. As an adviser and go-between you are invaluable.','Caring and attentive, you look after the small things that matter.',['Wasabi-iro','山葵色','#A8BF93'],['Azuki-iro','小豆色','#96514D'],'asanoha',[3,4,5,4]],
+['胃','I-shuku','Granary','The Lone Wolf','Fierce independence and an appetite for achievement.',['Self-reliant','Bold','Ambitious'],'You trust your own strength and prefer to carve your own road. Courage and hunger for success carry you through tests that stop others.','Intense and proud, you need respect before affection.',['Daidai-iro','橙色','#EE7800'],['Kachi-iro','勝色','#4D4C61'],'uroko',[5,2,3,2]]
+];
+var PAT = {
+  seigaiha:['Seigaiha','青海波','Endless waves: lasting calm and good fortune'],
+  asanoha:['Asanoha','麻の葉','Hemp leaf: healthy, steady growth'],
+  shippo:['Shippō','七宝','Linked circles: harmony and good ties'],
+  kikko:['Kikkō','亀甲','Tortoise shell: long life'],
+  ichimatsu:['Ichimatsu','市松','Unbroken checks: prosperity that continues'],
+  uroko:['Uroko','鱗','Scales: protection from harm'],
+  yagasuri:['Yagasuri','矢絣','Arrow feathers: a path that never turns back'],
+  kanoko:['Kanoko','鹿の子','Fawn spots: abundance and family luck']
+};
+var REL = {
+  mei:['命','Mei','Mirror','You share the same mansion. You understand each other without words, and you also see your own flaws in them.','They see themselves in you, strengths and flaws alike.'],
+  go:['業','Gō','Karmic Gift','Tradition says they carry a debt to you from a past life. They tend to help you and ask for little back.','To them, you carry a debt from a past life. You may find yourself helping them freely.'],
+  tai:['胎','Tai','Karmic Calling','You feel moved to support them, as if keeping a promise carried into this life.','They feel moved to support you, as if keeping a promise carried into this life.'],
+  ei:['栄','Ei','Prosperity','The luckiest bond in Shukuyō. They lift your fortunes, and what you start together tends to grow.','To them, you bring luck. Your presence helps their plans grow.'],
+  shin:['親','Shin','Kinship','Close as family. Trust comes easily and lasts, in love, friendship and work alike.','They see you as family. Their trust in you comes easily and lasts.'],
+  yu:['友','Yū','Friendship','Easy, warm company. You relax around them and the talk never runs dry.','They relax around you. To them, you are easy company.'],
+  sui:['衰','Sui','Waning','You care for them deeply and tend to give more than you take. Mind your energy.','They care for you deeply and tend to give more than they take.'],
+  an:['安','An','Comfort','You feel settled and in control around them. The pull is stronger on their side, so handle their heart gently.','They feel settled around you, while the stronger pull is on your side.'],
+  kai:['壊','Kai','Disruption','Magnetic and unsettling. They can upend your routines and change you, for better or worse.','To them, you are magnetic and unsettling. You can shake up their routines.'],
+  ki:['危','Ki','Risk','Different worlds and different values. Exciting and unpredictable, better for adventures than routines.','To them, you come from another world. Exciting to be around, hard to predict.'],
+  sei:['成','Sei','Achievement','They sharpen your thinking and push you to finish what you start. A strong match for work and study.','You sharpen their thinking and push them to finish what they start.']
+};
+var YOMI = ['ぼうしゅく','ひっしゅく','ししゅく','しんしゅく','せいしゅく','きしゅく','りゅうしゅく','せいしゅく','ちょうしゅく','よくしゅく','しんしゅく','かくしゅく','こうしゅく','ていしゅく','ぼうしゅく','しんしゅく','びしゅく','きしゅく','としゅく','じょしゅく','きょしゅく','きしゅく','しつしゅく','へきしゅく','けいしゅく','ろうしゅく','いしゅく'];
+var MJ = [
+['気品ある学者','気品と学び、そして人を引き寄せる静かな輝き。',['上品','探究心','尊敬される'],'昴宿は特に幸運な宿のひとつとされます。自然な品格があり、学ぶことを好み、師や年長者に引き立てられやすい人です。','まず知性に惹かれます。あなたの理想を尊重してくれる相手が必要です。'],
+['着実な登山者','ゆっくり、確実に。誰にも進路を曲げられない。',['粘り強い','誠実','地に足がついた'],'山道を切り開くように、一歩ずつ確かに人生を築きます。周りが疲れても歩き続けるので、最盛期は遅めに訪れ、長く続きます。','一途で変わらない人。言葉よりも、頼れる行動で愛を示します。'],
+['言葉の名手','言葉があなたの技。ひとつひとつ丁寧に選びます。',['弁が立つ','勉強家','慎重'],'よく考えてから話し、話せば人が耳を傾けます。知識と会話で信頼を得ますが、本心は胸の内にしまっています。','会話で距離を縮めます。その会話についてこられる相手が必要です。'],
+['開拓者','大胆な発想と大きな笑い声。古いやり方には我慢できない。',['大胆','独創的','率直'],'好奇心が新しいものへ向かわせ、思ったことをそのまま口にします。場を活気づけ、誰も気づかなかった扉を開く人です。','自由が必要です。活発な議論を楽しめる相手が合います。'],
+['明晰な思考家','冷静な論理と、深い蓄え。',['分析的','落ち着き','公平'],'井戸の水のように、頭脳は澄んで深い。事実を集め、正確に論じ、周りが動揺しても冷静なので、判断を頼りにされます。','打ち解けるまでに時間がかかりますが、その後はとても長く誠実です。'],
+['自由な魂','遊び心があり、気前がよく、つかみどころがない。',['おおらか','好奇心','幸運'],'伝統的に、もっとも縁起のよい宿とされます。心惹かれるものへ自由に向かい、惜しみなく与え、なぜかうまく着地します。','子どものように純粋に愛します。束縛されるとしおれてしまいます。'],
+['一途な炎','好きになったものは、とことん愛する。',['情熱的','人を惹きつける','集中力'],'心をつかんだ人や物事に全力を注ぎ、その熱量が人を集めます。柳のように風にはしなっても、根は動きません。','全力で愛し、守ろうとします。その深さに応えられる相手が必要です。'],
+['自力で輝く星','誰よりも努力する、静かな野心。',['努力家','自立','向上心'],'遠い目標を定め、騒がずに歩き続けます。成功は自分の努力から生まれ、人より遅れて来ることが多いぶん、揺るぎません。','誇り高く、内面を見せません。目標を尊重してくれる人に心を開きます。'],
+['舞台の主役','舞台に立つために生まれ、光を人にも分ける。',['華がある','誇り高い','表現力'],'自分の見せ方を知っていて、人が集まります。自信に満ちた表面の下には、期待を裏切りたくない慎重な計画家がいます。','称賛されたい人。称賛してくれる相手を、とことん甘やかします。'],
+['遠くへ行く旅人','高い理想と、そこへ届く大きな翼。',['理想家','几帳面','国際的'],'完璧を目指し、そのためなら文字どおり遠くまで行きます。遠い土地、異国の考え方、長期の仕事が合います。','誠実で基準が高い人。選ぶのに時間をかけ、決めたら貫きます。'],
+['軽やかな橋渡し役','身軽で、どこでも歓迎される。',['社交的','機敏','気配り'],'場の空気を一瞬で読み、軽やかに動いて、出会うべき人同士をつなぎます。旅、商い、動きのあるものが幸運を運びます。','よく気がつく優しい人。その分、変わらない安心感を求めます。'],
+['人気者','センスと機知、人生を楽しむ才能。',['おしゃれ','遊び上手','器用'],'趣味がよく手先も器用で、難しいことを簡単そうにこなします。人は楽しさに惹かれて集まり、隠れた芯の強さを知って離れません。','モテて気も多いけれど、心が決まれば一途です。'],
+['改革者','まず信念。権威はその次。',['信念','反骨','正義感'],'強い信念を持ち、守るためなら一人でも立ちます。不公平を見ると動かずにいられない、生まれつきの代弁者です。','価値観を共有できる、対等な相手が必要です。'],
+['エネルギーの塊','人生への旺盛な欲と、それを満たす体力。',['精力的','現実的','意志が強い'],'心身ともに持久力があり、欲しいものへまっすぐ向かいます。現実的な勘が、望みを結果に変えます。','情熱的で率直。望むことをはっきり口にします。'],
+['恵まれた跡継ぎ','魅力と豊かさ、そして金運。',['恵まれた','優雅','温かい'],'家族や後援者、あるいは巡り合わせを通じて運がやって来ます。良いものを楽しみ、気前よく分かち合うので、運が巡り続けます。','愛情深く、愛される人。穏やかな家庭で力を発揮します。'],
+['心を読む人','相手が口にする前に、気持ちを感じ取る。',['洞察力','魅力的','順応性'],'直感で人を理解し、その場に必要な自分になれます。その才能で人の心をつかみますが、自分の心は慎重に隠しています。','人を惹きつけるのに、警戒心は強い。信頼がすべてです。'],
+['やり遂げる人','始めたら、止まらない。',['粘り強い','負けず嫌い','ひたむき'],'闘う人の集中力と、職人の忍耐を持っています。極めるまで一つの道を歩み、挑戦されるほど力を出します。','真剣で一途。一人の相手を全力で追いかけます。'],
+['直球勝負の人','率直で恐れ知らず。自分の足で立つときがいちばん幸せ。',['大胆','正直','独立心'],'思ったとおりに話し、人が避けることを引き受けます。苦労が人を強くし、生まれた場所から離れて成功することが多い人です。','まっすぐで心が広い。駆け引きには興味がありません。'],
+['静かな闘士','外は穏やか、内には激しい決意。',['意欲的','カリスマ','精神性'],'強い使命感と、めったに見せない闘争心を持っています。内なる強さを感じ取って、人がついてきます。','理想が高く、心から尊敬できる相手を求めます。'],
+['戦略家','規律と忍耐。すべてに計画がある。',['勤勉','整理上手','辛抱強い'],'よく学び、手順を踏んで働き、約束を守ります。静かな努力で信頼と立場を得て、人も資源も上手に管理します。','最初は控えめ。実際に役立つ支えで愛情を示します。'],
+['夢見る人','豊かな内面世界と、日常を超える理想。',['繊細','理想家','複雑'],'深く感じ、型にはまらない大きな絵で考えます。自信と迷いの間を揺れ動き、その緊張が本物の創造性を育てます。','ロマンチストで内向的。理解してくれる、気の長い相手が必要です。'],
+['冒険家','人生は、ぎりぎりのところが面白い。',['社交的','大胆','流行に敏感'],'新しいもの、人、少しのリスクが好き。すぐ試す人で、どんな集まりにも活気を与え、流行を最初に見つけます。','楽しく気まま。マンネリが最大の敵です。'],
+['築き上げる人','大きなエネルギー、大きな計画、やり抜く度胸。',['力強い','自信','事業家'],'大きなスケールで考え、力強く物事を進めます。障害があっても止まらず、長く残るものを築くことが多い人です。','守ろうとする気持ちが強く、誇り高い。恋でも人生でもリードします。'],
+['縁の下の柱','人が寄りかかる、静かな強さ。',['支える','聡明','秘密主義'],'裏方を好み、その判断力と誠実さが全体を支えます。神秘的なものを好み、知っていることをすべては明かしません。','献身的で控えめ。そばにしっかり立つことで愛します。'],
+['高潔な心','まっすぐで優しく、澄んだ良心に従う。',['誠実','上品','信念'],'純粋な動機を大切にし、人に礼儀正しく接します。結婚でも仕事でも、良いパートナーが最高の運を引き出します。','誠実で理想が高い。本当の人生の伴侶を求めます。'],
+['調整の名人','細部を見抜く目と、人を結びつける才能。',['観察力','世話好き','几帳面'],'人が見落とすことに気づき、静かに物事を整えます。相談役や仲介役として欠かせない存在です。','思いやりがあり、よく気がつく。大切な小さなことに気を配ります。'],
+['一匹狼','強い独立心と、達成への渇望。',['自立','大胆','野心'],'自分の力を信じ、自分の道を切り開くことを好みます。勇気と成功への渇望が、人が止まる試練も乗り越えさせます。','激しく誇り高い。愛情の前に、まず敬意が必要です。']
+];
+var PATJ = {
+  seigaiha:'穏やかな波が続くように、平穏と幸運が続く',
+  asanoha:'健やかで、まっすぐな成長',
+  shippo:'円がつながる。調和と良縁',
+  kikko:'亀の甲羅。長寿',
+  ichimatsu:'途切れない格子。繁栄が続く',
+  uroko:'鱗。厄除け',
+  yagasuri:'射た矢は戻らない。まっすぐな道',
+  kanoko:'子鹿の斑点。豊かさと家族の幸運'
+};
+var RELJ = {
+  mei:['めい','鏡','同じ宿の二人です。言葉がなくても分かり合えますが、相手の中に自分の欠点も見えます。','相手はあなたの中に、長所も短所も含めて自分自身を見ています。'],
+  go:['ごう','前世からの贈り物','伝統では、相手は前世であなたに借りがあるとされます。見返りをあまり求めずに助けてくれる傾向があります。','相手から見ると、あなたは前世の借りを負う側です。気づけば進んで相手を助けているかもしれません。'],
+  tai:['たい','前世からの使命','前世からの約束を果たすかのように、相手を支えたくなります。','相手は、前世からの約束を果たすかのように、あなたを支えたくなります。'],
+  ei:['えい','繁栄','宿曜でいちばん幸運な相性です。相手があなたの運を引き上げ、一緒に始めたことは育ちやすくなります。','相手にとって、あなたは幸運を運ぶ人です。あなたがいると相手の計画が育ちます。'],
+  shin:['しん','身内','家族のように近い相手です。恋愛でも友情でも仕事でも、信頼が自然に生まれ、長く続きます。','相手はあなたを身内のように感じています。あなたへの信頼は自然に生まれ、長続きします。'],
+  yu:['ゆう','友情','気楽で温かい相手です。一緒にいるとくつろげて、会話が尽きません。','相手はあなたといるとくつろげます。相手にとって、あなたは気楽に過ごせる人です。'],
+  sui:['すい','衰え','あなたは相手を深く思い、受け取るより多く与えがちです。自分のエネルギーに気をつけて。','相手はあなたを深く思い、受け取るより多く与えがちです。'],
+  an:['あん','安らぎ','相手といると落ち着き、主導権を持てます。強く惹かれているのは相手の側なので、相手の心は丁寧に扱って。','相手はあなたといると落ち着きます。ただし、強く惹かれているのはあなたの側です。'],
+  kai:['かい','破壊','強く惹かれるのに、心が乱される相手です。良くも悪くも、あなたの日常をひっくり返し、あなたを変えます。','相手にとって、あなたは強く惹かれるのに心を乱す存在です。相手の日常を揺さぶることがあります。'],
+  ki:['き','危うさ','住む世界も価値観も違う相手です。刺激的で予測できず、日常よりも冒険に向きます。','相手から見ると、あなたは別世界の人です。一緒にいると刺激的で、予測ができません。'],
+  sei:['せい','達成','相手はあなたの考えを磨き、始めたことをやり遂げるよう後押しします。仕事や勉強に強い相性です。','あなたは相手の考えを磨き、始めたことをやり遂げるよう後押しします。']
+};
+var ROLE = {
+  mei:['The Mirror','もう一人の自分'], go:['The Guardian','尽くしてくれる人'], tai:['The One You Protect','支えたくなる人'],
+  ei:['The Lucky Charm','運を運んでくれる人'], shin:['Chosen Family','家族のような人'], yu:['A Kindred Spirit','気の合う友'],
+  sui:['The One You Pour Into','尽くしたくなる人'], an:['The Safe Harbor','安らげる人'], kai:['The Storm','心を揺さぶる人'],
+  ki:['The Wild Card','別世界の人'], sei:['The Whetstone','成長させてくれる人']
+};
+var SIDE = {
+  mei:{a:['They share your mansion. You get each other without words, and you also see your own flaws in them.','あなたと同じ宿の人。言葉がなくても分かり合えるけれど、相手の中に自分の欠点も見えてしまいます。'],b:['They see themselves in you, the good parts and the hard ones.','相手はあなたの中に、自分自身を見ています。いいところも、直したいところも。']},
+  go:{a:['Tradition says they owe you something from a past life. They help you again and again, and ask for little back.','宿曜では、前世であなたに借りがある人とされます。何度でも助けてくれて、見返りをほとんど求めません。'],b:['To them, you are the one who always shows up. You may catch yourself helping before they even ask.','相手にとって、あなたは「いつも助けてくれる人」。頼まれる前に、つい手を差し伸べているかもしれません。']},
+  tai:{a:['You feel moved to support them, as if you were keeping an old promise.','なぜか支えたくなる人。昔からの約束を守っているような気持ちになります。'],b:['They feel moved to support you, as if they were keeping an old promise.','相手はなぜか、あなたを支えたくなります。昔からの約束を守るように。']},
+  ei:{a:['They lift your luck. Things you start together tend to grow.','あなたの運を引き上げてくれる人。二人で始めたことは、不思議と育ちます。'],b:['To them, you are good luck. Their plans go better when you are around.','相手にとって、あなたは幸運を運ぶ人。あなたがいると、物事がうまく回ります。']},
+  shin:{a:['They feel like family. Trust comes easily and it lasts, in love, friendship and work alike.','家族のように近く感じる人。恋でも友情でも仕事でも、信頼が自然に生まれて長く続きます。'],b:['They think of you as family. They trusted you early, and that trust holds.','相手はあなたを、家族のように思っています。早いうちから信頼していて、それは簡単には揺らぎません。']},
+  yu:{a:['Easy, warm company. You relax around them and never run out of things to say.','一緒にいて楽な人。肩の力が抜けて、話が尽きません。'],b:['They relax around you. To them, you are the easy one to be with.','相手はあなたといると、ほっとします。気をつかわずにいられる相手です。']},
+  sui:{a:['You care about them deeply and tend to give more than you get. Watch your own energy.','大切に思うあまり、もらうより多く与えてしまう相手。自分が疲れすぎないように気をつけて。'],b:['They care about you deeply, and tend to give more than they get.','相手はあなたを大切に思い、もらうより多く与えようとします。']},
+  an:{a:['You feel calm and in control around them. The stronger pull is on their side, so be gentle with their heart.','一緒にいると落ち着けて、自分のペースでいられる相手。より強く惹かれているのは相手の方なので、気持ちは丁寧に扱ってあげて。'],b:['They feel calm around you. The stronger pull is on your side.','相手はあなたといると落ち着きます。より強く惹かれているのは、あなたの方です。']},
+  kai:{a:['Magnetic and unsettling. They can turn your routine upside down and change you, for better or worse.','強く惹かれるのに、心をかき乱される相手。良くも悪くも、あなたの日常を変えてしまう人です。'],b:['To them, you are magnetic and a little unsettling. You shake up their routine without trying.','相手にとって、あなたは強く惹かれるのに、どこか落ち着かない存在。知らないうちに、相手の日常を揺さぶっています。']},
+  ki:{a:['A different world, different values. Exciting and hard to predict, better at adventures than at routines.','住む世界も価値観も違う人。刺激的で先が読めず、ふだんの日よりも「特別な時間」に強い相手です。'],b:['To them, you are from another world. Exciting to be around, hard to predict.','相手から見ると、あなたは別世界の人。一緒にいると刺激的で、先が読めません。']},
+  sei:{a:['They sharpen your thinking and push you to finish what you start. Great for work, study and big goals.','あなたを成長させてくれる人。考えを磨き、やり遂げるまで背中を押してくれます。仕事や勉強、大きな目標に強い相性です。'],b:['You sharpen their thinking and push them to finish what they start.','あなたは相手を成長させる人。相手の考えを磨き、やり遂げるまで背中を押しています。']}
+};
+var CHARS = {'pleiades':1, 'net':1, 'beak':1, 'three-stars':1, 'well':1, 'spirit':2, 'rooftop':1, 'willow':2, 'star':2, 'drawn-bow':2, 'wings':2, 'chariot':2, 'horn':1, 'neck':1, 'root':1, 'chamber':1, 'heart':1, 'tail':2, 'winnowing-basket':1, 'dipper':1, 'maiden':1, 'void':1, 'hall':1, 'wall':1, 'stride':1, 'bond':1, 'granary':1};
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function nm(i){ return lang === 'ja' ? M[i][0] + '宿' : M[i][2]; }
+function dateText(o){ return L(o.d + ' ' + MONTH_NAMES[o.m - 1] + ' ' + o.y, o.y + '年' + o.m + '月' + o.d + '日'); }
+function todayJST(){ var t = new Date(Date.now() + 9*3600000); return {y:t.getUTCFullYear(), m:t.getUTCMonth() + 1, d:t.getUTCDate()}; }
+function fillDate(prefix, y, m, d){
+  var ms = $(prefix + 'Month'), ds = $(prefix + 'Day'), ys = $(prefix + 'Year'), i, o;
+  for (i = 1; i <= 12; i++){ o = document.createElement('option'); o.value = i; ms.appendChild(o); }
+  for (i = 1; i <= 31; i++){ o = document.createElement('option'); o.value = i; o.textContent = i; ds.appendChild(o); }
+  for (i = todayJST().y; i >= 1920; i--){ o = document.createElement('option'); o.value = i; o.textContent = i; ys.appendChild(o); }
+  ms.value = m; ds.value = d; ys.value = y;
+}
+function readDate(prefix){
+  var y = +$(prefix + 'Year').value, m = +$(prefix + 'Month').value, d = +$(prefix + 'Day').value;
+  var t = new Date(Date.UTC(y, m - 1, d));
+  if (t.getUTCMonth() !== m - 1) return {err:L(MONTH_NAMES[m-1] + ' ' + y + ' has no day ' + d + '. Pick another day.', y + '年' + m + '月に' + d + '日はありません。別の日を選んでください。')};
+  var now = todayJST();
+  if (dayNum(y, m, d) > dayNum(now.y, now.m, now.d) + 1) return {err:L('That date is in the future. Pick a birthday up to today.', 'その日付は未来です。今日までの誕生日を選んでください。')};
+  var s = shukuOf(y, m, d);
+  if (!s) return {err:L('That date is outside the calendar we cover. Pick a year from 1920 onward.', '対応していない日付です。1920年以降を選んでください。')};
+  return {y:y, m:m, d:d, idx:s.idx};
+}
+function charSlug(idx){ return M[idx][2].toLowerCase().replace(/[^a-z]+/g, '-'); }
+function L(en, ja){ return lang === 'ja' ? ja : en; }
+var mine = null;
+var TRAITS = [['Drive','行動力'],['Heart','情'],['Mind','知性'],['Calm','落ち着き']];
+var CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#d4472a"/><path d="M7.5 12.5l3 3 6-6.5" fill="none" stroke="#fff6ea" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var SPARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.2 6.6 6.8 2.4-6.8 2.4L12 20.5l-2.2-6.6L3 11.5l6.8-2.4z" fill="#d6b05a"/></svg>';
+function pbar(p, label){ return '<span class="pbar" role="img" aria-label="' + label + ' ' + p + '%"><i style="width:' + p + '%"></i></span><span class="pct">' + p + '<small>%</small></span>'; }
+function chapter(n, title, body){
+  return '<section class="ch"><div class="ch-head"><span class="ch-num" aria-hidden="true">' + n + '</span><div><p class="ch-label">' + L('Chapter ' + n, '第' + n + '章') + '</p><h2>' + esc(title) + '</h2></div></div>' + body + '</section>';
+}
+function pr(x){ return '<p>' + esc(L(x[0], x[1])) + '</p>'; }
+function room(name, x){ return '<div class="room"><span class="room-name">' + esc(name) + '</span><p>' + esc(L(x[0], x[1])) + '</p></div>'; }
+
+/* 十一の関係ごとの一言（その月・その日の宿が、あなたの宿から見て何にあたるか） */
+var TONE = {
+  ei:['Luck runs with you. A good time to start things.','運が味方する時。物事を始めるのに向いています。'],
+  shin:['Warm and supported. Good for people and agreements.','あたたかく支えられる時。人との話し合いや約束ごとに向いています。'],
+  yu:['Easy and light. Meet people, talk, enjoy yourself.','気楽で軽やかな時。会って話して、楽しむのに向いています。'],
+  sei:['Effort pays off. Push your project forward.','努力が実りやすい時。取り組んでいる課題を前に進めて。'],
+  an:['Calm and settled. Your usual pace works well.','穏やかで落ち着く時。いつものペースがよく合います。'],
+  mei:['A mirror time. Look at yourself and reset.','自分を見つめ直す時。気持ちを整えるのに向いています。'],
+  tai:['Quiet and protective. Look after what you already have.','守りの時。今あるものを大切にしましょう。'],
+  go:['Old threads come back. Finish things before you start anything new.','過去の縁や宿題が戻りやすい時。新しいことより、片づけを先に。'],
+  sui:['Energy dips. Rest, and do not give more than you have.','力が落ちやすい時。しっかり休んで、尽くしすぎないで。'],
+  kai:['Plans may shake. Put big decisions off.','予定が揺れやすい時。大きな決断は先送りに。'],
+  ki:['Unpredictable. Be careful with new bets.','思わぬことが起きやすい時。新しい賭けは慎重に。']
+};
+var TG = {ei:'good',shin:'good',yu:'good',sei:'good',an:'calm',mei:'calm',tai:'calm',go:'care',sui:'care',kai:'care',ki:'care'};
+var TGN = {good:['Favorable','追い風'],calm:['Steady','安定'],care:['Go gently','慎重に']};
+function tagOf(key){ var g = TG[key]; return '<span class="tag t-' + g + '">' + L(TGN[g][0], TGN[g][1]) + '</span>'; }
+var LMON = ['Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan'];
+var DOW = [['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],['日','月','火','水','木','金','土']];
+
+function relName(key){ return lang === 'ja' ? RELJ[key][1] : REL[key][2]; }
+function relMark(key){ return REL[key][0]; }
+
+function nextDays(n){
+  var t = todayJST(), base = dayNum(t.y, t.m, t.d), out = [];
+  for (var i = 0; i < n; i++){
+    var dt = new Date((base + i) * 86400000), y = dt.getUTCFullYear(), m = dt.getUTCMonth() + 1, d = dt.getUTCDate(), s = shukuOf(y, m, d);
+    if (!s) continue;
+    out.push({m:m, d:d, w:dt.getUTCDay(), key:relOf(mine.idx, s.idx).key});
+  }
+  return out;
+}
+function dayLabel(x){ return L(x.m + '/' + x.d + ' ' + DOW[0][x.w], x.m + '月' + x.d + '日（' + DOW[1][x.w] + '）'); }
+
+function mp(i){
+  var s = charSlug(i), v = CHARS[s];
+  var im = v ? '<img src="/art/chars/' + s + '-s.webp?v=' + v + '" alt="" width="68" height="54">' : '<b lang="ja">' + M[i][0] + '</b>';
+  return '<div class="mp">' + im + '<small>' + esc(lang === 'ja' ? M[i][0] + '宿' : M[i][2]) + '</small></div>';
+}
+function pkey(key){
+  var list = [];
+  for (var b = 0; b < 27; b++){ if (b !== mine.idx && relOf(mine.idx, b).key === key) list.push(b); }
+  if (!list.length) return '';
+  return '<div class="pkey"><div class="pkey-h"><b>' + esc(L(ROLE[key][0], ROLE[key][1])) + '</b><span>' + esc(L(REL[key][0] + ' ' + REL[key][1] + ' · ' + REL[key][2], RELJ[key][0] + '（' + RELJ[key][1] + '）')) + '</span></div>' +
+    '<p>' + esc(L(SIDE[key].a[0], SIDE[key].a[1])) + '</p><div class="mrow">' + list.map(mp).join('') + '</div></div>';
+}
+
+function render(){
+  if (!mine) return;
+  var a = mine.idx, m = M[a], j = MJ[a], slug = charSlug(a), D = ME[slug], h = '';
+  var big = CHARS[slug] ? '<img class="cover-art" src="/art/chars/' + slug + '.webp?v=' + CHARS[slug] + '" alt="" width="1200" height="960">' : '';
+  h += '<section class="cover">' + big +
+    '<p class="cover-for">' + L('A reading for you', 'あなたのための鑑定') + '</p>' +
+    '<p class="cover-names">' + L(m[2] + ' Mansion', m[0] + '宿（' + YOMI[a] + '）') + '</p>' +
+    '<p class="cover-for">' + dateText(mine) + '</p>' +
+    '<p class="cover-bond">' + esc(L(m[3], j[0])) + '</p>' +
+    '<p class="cover-sub">' + esc(L(m[4], j[1])) + '</p></section>';
+  if (!D){
+    h += '<section class="soon"><p>' + L('Your personal reading for this mansion is still being written. Please check back soon.', 'この宿の「自分用の鑑定」は、いま書いているところです。もうしばらくお待ちください。') + '</p></section>';
+    $('reading').innerHTML = h; $('reading').hidden = false; return;
+  }
+  /* 1 */
+  var tr = m[11], kw = lang === 'ja' ? j[2] : m[5];
+  var li = function(x){ return '<li><b>' + esc(L(x[0], x[1])) + '</b><br>' + esc(L(x[2], x[3])) + '</li>'; };
+  h += chapter(1, L('The real you', '本当のあなた'),
+    '<ul class="chips" style="display:flex;flex-wrap:wrap;gap:6px">' + kw.map(function(x){ return '<li class="chip" style="background:var(--paper-2)">' + esc(x) + '</li>'; }).join('') + '</ul>' +
+    D.core.map(pr).join('') +
+    '<div class="meter">' + tr.map(function(v, i){ var lb = L(TRAITS[i][0], TRAITS[i][1]); return '<div class="meter-row"><span>' + lb + '</span>' + pbar([0, 34, 50, 66, 80, 92][v], lb) + '</div>'; }).join('') + '</div>' +
+    '<div class="pros"><div class="pro good"><div class="pro-h"><span class="pro-ic" aria-hidden="true">＋</span>' + L('Your strengths', 'あなたの強み') + '</div><ul>' + D.strengths.map(li).join('') + '</ul></div>' +
+    '<div class="pro care"><div class="pro-h"><span class="pro-ic" aria-hidden="true">！</span>' + L('Your blind spots', 'つまずきやすいところ') + '</div><ul>' + D.blind.map(li).join('') + '</ul></div></div>');
+  /* 2 */
+  h += chapter(2, L('How you love', '恋愛のしかた'),
+    '<div class="rooms">' + room(L('Who moves you', '惹かれる人'), D.love.attract) + room(L('Your pattern', 'くり返しやすいパターン'), D.love.pattern) + '</div>' +
+    '<div class="try"><span class="mini">' + L('Try this month', '今月やってみること') + '</span><p>' + esc(L(D.love.try[0], D.love.try[1])) + '</p></div>');
+  /* 3 */
+  h += chapter(3, L('Work and money', '仕事とお金'),
+    '<ul class="dots">' + D.work.fit.map(function(x){ return '<li>' + CHECK + '<span>' + esc(L(x[0], x[1])) + '</span></li>'; }).join('') + '</ul>' +
+    '<div class="rooms">' + room(L('How you work best', '力が出る環境'), D.work.style) + room(L('How money comes to you', 'お金との付き合い方'), D.work.money) + '</div>' +
+    '<div class="gift">' + SPARK + '<div><span class="mini">' + L('Keep in mind', '覚えておくこと') + '</span><p>' + esc(L(D.work.caution[0], D.work.caution[1])) + '</p></div></div>');
+  /* 4 */
+  h += chapter(4, L('The people around you', 'まわりの人との相性'),
+    '<p>' + L('Shukuyō sorts the other 26 mansions into kinds of bond with yours. Here is who lifts you, who is easy company, and who needs gentler handling.', '宿曜では、ほかの26の宿が、あなたの宿から見てどんな関係にあたるかが決まっています。運をくれる人、一緒にいて楽な人、ていねいに付き合いたい人を並べました。') + '</p>' +
+    '<h3 class="grp">' + L('Lift you up', 'あなたを引き上げてくれる人') + '</h3>' + pkey('ei') + pkey('shin') +
+    '<h3 class="grp">' + L('Easy to be with', '一緒にいて楽な人') + '</h3>' + pkey('yu') + pkey('an') +
+    '<h3 class="grp">' + L('Help you grow', '成長させてくれる人') + '</h3>' + pkey('sei') +
+    '<h3 class="grp">' + L('Old ties', '前世からの縁といわれる人') + '</h3>' + pkey('go') + pkey('tai') +
+    '<h3 class="grp">' + L('Handle with care', 'ていねいに付き合いたい人') + '</h3>' + pkey('sui') + pkey('kai') + pkey('ki') +
+    '<div class="rooms">' + room(L('What drains you', '消耗するもの'), D.drain) + room(L('What restores you', '回復するもの'), D.recharge) + '</div>');
+  /* 5 */
+  var t = todayJST(), lu = lunarOf(dayNum(t.y, t.m, t.d)), cur = lu ? lu.m : 0, months = '';
+  for (var mi = 1; mi <= 12; mi++){
+    var key = relOf(a, FIRST[mi]).key;
+    months += '<div class="mo' + (mi === cur ? ' now' : '') + '"><div class="mo-l">' + L('Lunar month ' + mi, '旧暦' + mi + '月') + '<small>' + L('around ' + LMON[mi - 1], 'おおよそ' + (((mi + 0) % 12) + 1) + '月') + (mi === cur ? L(' · now', '・いま') : '') + '</small></div>' +
+      '<div class="mo-t">' + tagOf(key) + esc(L(TONE[key][0], TONE[key][1])) + '</div></div>';
+  }
+  var days = nextDays(30), dh = '', good = [], care = [];
+  var GO = ['ei','shin','yu','sei'], CO = ['kai','ki','go','sui'];
+  days.forEach(function(x){
+    dh += '<span class="dc t-' + TG[x.key] + '"><b>' + x.d + '</b><small>' + DOW[lang === 'ja' ? 1 : 0][x.w] + '</small></span>';
+    if (GO.indexOf(x.key) >= 0) good.push(x); if (CO.indexOf(x.key) >= 0) care.push(x);
+  });
+  good.sort(function(p, q){ return GO.indexOf(p.key) - GO.indexOf(q.key); });
+  care.sort(function(p, q){ return CO.indexOf(p.key) - CO.indexOf(q.key); });
+  var pickList = function(arr, order, cls, ttl){
+    var rows = '';
+    order.forEach(function(k){
+      var ds = arr.filter(function(x){ return x.key === k; }).slice(0, 4);
+      if (ds.length) rows += '<div class="pk"><b>' + esc(L(TONE[k][0], TONE[k][1])) + '</b><span>' + ds.map(dayLabel).join(L(', ', '、')) + '</span></div>';
+    });
+    return '<div class="pick ' + cls + '"><span class="mini">' + ttl + '</span>' + (rows || '<p style="font-size:14.5px">' + L('None in the next 30 days.', 'この30日間にはありません。') + '</p>') + '</div>';
+  };
+  h += chapter(5, L('Your year, month by month', '運気の流れ'),
+    '<p>' + L('In Shukuyō, each lunar month and each day belongs to one of the 27 mansions. How that mansion relates to yours sets the tone. This is the traditional method, worked out for your mansion.', '宿曜では、旧暦の月も毎日も、27の宿のどれかにあたります。その宿があなたの宿から見て何にあたるかで、その時の流れが決まります。伝統的な読み方を、あなたの宿に合わせて計算しました。') + '</p>' +
+    '<h3 class="grp">' + L('The 12 lunar months', '旧暦12か月') + '</h3><div class="mon">' + months + '</div>' +
+    '<h3 class="grp">' + L('The next 30 days', 'これからの30日') + '</h3>' +
+    '<div class="legend" style="color:var(--ink-2);justify-content:flex-start"><span><i style="background:#2f7d5b"></i>' + L('Favorable', '追い風') + '</span><span><i style="background:#8fa1a8"></i>' + L('Steady', '安定') + '</span><span><i style="background:var(--shu)"></i>' + L('Go gently', '慎重に') + '</span></div>' +
+    '<div class="days">' + dh + '</div>' +
+    '<div class="picks">' + pickList(good, GO, 'good', L('Best days to move', '動くのによい日')) + pickList(care, CO, 'care', L('Days to go gently', '慎重に過ごしたい日')) + '</div>');
+  /* 6 */
+  var c1 = m[8], c2 = m[9], pat = PAT[m[10]], patJ = PATJ[m[10]];
+  h += chapter(6, L('Small things that bring luck', '運を呼ぶヒント'),
+    '<div class="swatches"><span class="sw-i"><i style="background:' + c1[2] + '"></i>' + esc(L(c1[0], c1[1])) + '</span><span class="sw-i"><i style="background:' + c2[2] + '"></i>' + esc(L(c2[0], c2[1])) + '</span></div>' +
+    '<p>' + L('Your kimono and obi colors, in Japan\'s traditional color names. Wear them, or carry them in something small. Pattern: ' + pat[0] + ' (' + pat[2] + ').', 'あなたの宿に合わせた、きものと帯の色です。身につけても、小物で持ち歩いても。柄は' + pat[1] + '（' + patJ + '）。') + '</p>' +
+    '<div class="try"><span class="mini">' + L('This week', '今週のひとこと') + '</span><p>' + esc(L(D.week[0], D.week[1])) + '</p></div>');
+  h += '<section class="closing"><img src="/full/art/moon.webp" alt="" width="330" height="328"><p class="for">' + L('For you', 'あなたへ') + '</p><p class="line">' + esc(L(D.close[0], D.close[1])) + '</p>' +
+    '<p class="fine">' + L('A reading for reflection and fun. It describes tendencies drawn from the Shukuyō tradition and promises no outcome. The kimono colors are our own styling idea.', '楽しみと振り返りのための読み物です。宿曜の伝統にもとづく傾向をお伝えするもので、結果を約束するものではありません。きものの色は当サイトの提案です。') + '</p></section>';
+  $('reading').innerHTML = h; $('reading').hidden = false;
+}
+function applyLang(){
+  document.documentElement.lang = lang;
+  $('langEn').setAttribute('aria-pressed', String(lang === 'en')); $('langJa').setAttribute('aria-pressed', String(lang === 'ja'));
+  document.title = L('Moonbond · Your Reading', '宿曜 くわしい鑑定（あなた編）');
+  $('tH1').textContent = L('Your personal reading', 'あなた編のくわしい鑑定');
+  $('tSub').textContent = L('Six chapters, written for your mansion.', '全6章。あなたの宿に合わせた鑑定です。');
+  $('tYou').textContent = L('Your birthday', 'あなたの誕生日');
+  $('tGo').textContent = L('Show the reading', '鑑定を表示する');
+  var set = function(c, t){ var e = document.querySelectorAll('.' + c); for (var i = 0; i < e.length; i++) e[i].textContent = t; };
+  set('lm', L('Month', '月')); set('ld', L('Day', '日')); set('ly', L('Year', '年'));
+  var os = $('bMonth').options; for (var i = 0; i < os.length; i++) os[i].textContent = L(MONTH_NAMES[i], (i + 1) + '月');
+  render();
+}
+function init(){
+  try { var s = localStorage.getItem('tsukiyado-lang'); if (s === 'ja' || s === 'en') lang = s; } catch (e) {}
+  fillDate('b', 1995, 11, 14);
+  $('langEn').addEventListener('click', function(){ lang = 'en'; try { localStorage.setItem('tsukiyado-lang', 'en'); } catch (e) {} applyLang(); });
+  $('langJa').addEventListener('click', function(){ lang = 'ja'; try { localStorage.setItem('tsukiyado-lang', 'ja'); } catch (e) {} applyLang(); });
+  $('birthForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var A = readDate('b');
+    if (A.err){ $('err').textContent = A.err; return; }
+    $('err').textContent = ''; mine = A; render();
+    $('reading').scrollIntoView({behavior: (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) ? 'auto' : 'smooth', block:'start'});
+  });
+  applyLang();
+  /* 購入後のリンク: ?a=YYYY-MM-DD&lang=en|ja&k=… */
+  try {
+    var q = new URLSearchParams(location.search), pa = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(q.get('a') || '');
+    if (q.get('lang') === 'ja' || q.get('lang') === 'en') { lang = q.get('lang'); applyLang(); }
+    if (pa) {
+      $('bYear').value = +pa[1]; $('bMonth').value = +pa[2]; $('bDay').value = +pa[3];
+      var A = readDate('b');
+      if (!A.err) { mine = A; render(); } else $('err').textContent = A.err;
+      if (q.get('k')) $('birthForm').style.display = 'none';
+    }
+  } catch (e) {}
+}
+init();
+</script>
+</body>
+</html>
