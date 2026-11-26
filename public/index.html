@@ -1469,7 +1469,7 @@ function drawShare(idx){
   var job = ++shareJob, m = M[idx], j = MJ[idx], c1 = m[8][2], c2 = m[9][2], on = onColor(c1);
   var s = {
     top:L('MY JAPANESE MOON SIGN', '私の宿 · 宿曜占星術'), name:nmFull(idx), sub:L(m[0] + '宿  ·  ' + m[1], YOMI[idx]),
-    arch:L(m[3], j[0]), kw:L(m[5], j[2]).join('  ·  '), foot:L('moonbondjp.win  ·  Japanese moon signs', 'moonbondjp.win  ·  日本の月の占星術')
+    arch:L(m[3], j[0]), desc:L(m[6], j[3]), kw:L(m[5], j[2]).join('  ·  '), foot:L('moonbondjp.win  ·  Japanese moon signs', 'moonbondjp.win  ·  日本の月の占星術')
   };
   var art = null;
   var paint = function(){
@@ -1477,30 +1477,35 @@ function drawShare(idx){
     var W = 1080, H = 1350, ctx = shareCanvas.getContext('2d');
     drawPattern(ctx, m[10], W, H, c1, mix(c1, on, 0.13), 62);
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    roundRect(ctx, 230, 78, 620, 76, 38); ctx.fillStyle = c1; ctx.fill();
-    ctx.fillStyle = on; ctx.font = '700 34px ' + BODY; ctx.fillText(s.top, W/2, 118);
+    roundRect(ctx, 230, 52, 620, 70, 35); ctx.fillStyle = c1; ctx.fill();
+    ctx.fillStyle = on; ctx.font = '700 32px ' + BODY; ctx.fillText(s.top, W/2, 88);
+    /* 絵（または漢字）を少し小さくして、下に「どんな宿か」の文章を入れる */
     if (art){
-      roundRect(ctx, 130, 176, 820, 640, 30); ctx.fillStyle = PAPER; ctx.fill();
-      ctx.save(); roundRect(ctx, 142, 188, 796, 616, 22); ctx.clip(); ctx.drawImage(art, 142, 188, 796, 637); ctx.restore();
+      roundRect(ctx, 200, 144, 680, 544, 28); ctx.fillStyle = PAPER; ctx.fill();
+      ctx.save(); roundRect(ctx, 211, 155, 658, 522, 20); ctx.clip(); ctx.drawImage(art, 211, 155, 658, 527); ctx.restore();
     } else {
-      ctx.fillStyle = PAPER; ctx.beginPath(); ctx.arc(W/2, 490, 285, 0, 2*Math.PI); ctx.fill();
-      ctx.fillStyle = INK; ctx.font = '800 330px ' + DISPLAY; ctx.fillText(m[0], W/2, 505);
+      ctx.fillStyle = PAPER; ctx.beginPath(); ctx.arc(W/2, 416, 250, 0, 2*Math.PI); ctx.fill();
+      ctx.fillStyle = INK; ctx.font = '800 290px ' + DISPLAY; ctx.fillText(m[0], W/2, 430);
     }
-    roundRect(ctx, 90, 820, 900, 330, 30); ctx.fillStyle = c1; ctx.fill();
-    ctx.fillStyle = on; fitFont(ctx, s.name, 800, 92, DISPLAY, 820); ctx.fillText(s.name, W/2, 900);
-    ctx.font = '500 40px ' + DISPLAY; ctx.fillText(s.sub, W/2, 978);
-    fitFont(ctx, s.arch, 800, 46, DISPLAY, 720);
-    var pw = ctx.measureText(s.arch).width + 80;
-    roundRect(ctx, (W - pw)/2, 1030, pw, 84, 42); ctx.fillStyle = c2; ctx.fill();
-    ctx.fillStyle = onColor(c2); ctx.fillText(s.arch, W/2, 1074);
-    roundRect(ctx, 150, 1180, 780, 66, 33); ctx.fillStyle = c1; ctx.fill();
-    ctx.fillStyle = on; fitFont(ctx, s.kw, 700, 36, BODY, 730); ctx.fillText(s.kw, W/2, 1214);
+    roundRect(ctx, 70, 712, 940, 540, 30); ctx.fillStyle = c1; ctx.fill();
+    ctx.fillStyle = on; fitFont(ctx, s.name, 800, 80, DISPLAY, 860); ctx.fillText(s.name, W/2, 778);
+    ctx.font = '500 34px ' + DISPLAY; ctx.fillText(s.sub, W/2, 840);
+    fitFont(ctx, s.arch, 800, 40, DISPLAY, 720);
+    var pw = ctx.measureText(s.arch).width + 70;
+    roundRect(ctx, (W - pw)/2, 874, pw, 70, 35); ctx.fillStyle = c2; ctx.fill();
+    ctx.fillStyle = onColor(c2); ctx.fillText(s.arch, W/2, 910);
+    /* どんな宿か（最大4行） */
+    ctx.fillStyle = on; var ds = lang === 'ja' ? 36 : 33, dl;
+    for (;;){ ctx.font = '500 ' + ds + 'px ' + BODY; dl = wrapText(ctx, s.desc, 840); if (dl.length <= 4 || ds <= 24) break; ds -= 2; }
+    var lh = ds * 1.5, y0 = 1066 - (Math.min(dl.length, 4) - 1) * lh / 2;
+    dl.slice(0, 4).forEach(function(t, n){ ctx.fillText(t, W/2, y0 + n * lh); });
+    ctx.globalAlpha = .85; fitFont(ctx, s.kw, 700, 30, BODY, 800); ctx.fillText(s.kw, W/2, 1214); ctx.globalAlpha = 1;
     ctx.fillStyle = NIGHT; ctx.fillRect(0, 1272, W, 78);
     ctx.fillStyle = PAPER; ctx.font = '700 30px ' + BODY; ctx.fillText(s.foot, W/2, 1312);
     try { $('shareImg').src = shareCanvas.toDataURL('image/png'); } catch (e) {}
   };
   paint();
-  loadFonts(m[0] + '宿' + s.top + s.name + s.sub + s.arch + s.kw + s.foot, paint);
+  loadFonts(m[0] + '宿' + s.top + s.name + s.sub + s.arch + s.desc + s.kw + s.foot, paint);
   if (hasChar(idx)) charImage(idx, function(im){ art = im; paint(); });
 }
 
