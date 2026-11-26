@@ -369,6 +369,31 @@ html[lang="ja"] .sub{font-size:16px}
 @media (min-width:720px){
   .tiers{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+.share-grid.compact{grid-template-columns:110px 1fr;gap:14px;align-items:center}
+.share-grid.compact img{width:110px;height:auto;border-radius:8px;display:block}
+.share-grid.compact .share-side{flex-direction:row;flex-wrap:wrap;gap:8px}
+.share-grid.compact .btn{padding:9px 16px;font-size:14px;border-radius:999px;background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.share-grid.compact .btn.line{background:transparent;color:var(--ink)}
+.share-grid.compact .msg{flex-basis:100%}
+.meup{background:linear-gradient(165deg,#223f78 0%,#12264f 100%);color:var(--paper);border:2px solid var(--kin);box-shadow:0 8px 28px rgba(0,0,0,.35)}
+.me-art{display:block;width:100%;height:auto;aspect-ratio:5/4;object-fit:cover}
+.me-art[hidden]{display:none}
+.me-body{padding:20px 20px 22px;display:flex;flex-direction:column;gap:14px}
+.me-kick{font-size:12.5px;font-weight:800;letter-spacing:.08em;color:var(--kin)}
+.meup h3{font-size:25px;line-height:1.3;color:var(--paper)}
+.me-tease{display:flex;flex-direction:column;gap:10px}
+.me-t{background:rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.6;display:flex;flex-direction:column;gap:10px}
+.me-t b{font-family:var(--display);font-size:22px;color:var(--kin);margin:0 2px}
+.me-t b.q{display:block;font-size:18px;margin:2px 0 0}
+.me-lk{display:flex;gap:10px}
+.lk{position:relative;width:72px;height:58px;border-radius:10px;overflow:hidden;background:#2b4c87}
+.lk img{width:100%;height:100%;object-fit:cover;filter:blur(7px) brightness(.8);transform:scale(1.2);display:block}
+.lk svg{position:absolute;inset:0;margin:auto;width:24px;height:24px}
+.meup .mebul{margin:0}
+.meup .price{color:var(--kin)}
+.meup .price-line{color:var(--mist)}
+.me-btn{background:var(--kin);border-color:var(--kin);color:var(--ink);font-size:18px;font-weight:800;padding:17px 18px;border-radius:14px;box-shadow:0 4px 0 #a98a3a}
+.meup .msg{color:var(--mist)}
 .mebul{display:flex;flex-direction:column;gap:6px;font-size:14.5px;margin-bottom:12px}
 .mebul li{display:grid;grid-template-columns:14px 1fr;gap:8px;align-items:start}
 .mebul li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--kin);margin-top:8px}
@@ -569,6 +594,30 @@ document.documentElement.setAttribute('data-hero',v);})();
           <p class="lunar" id="rLunar"></p>
         </div>
       </article>
+      <article class="card meup" id="meUp">
+        <img class="me-art" id="meArt" alt="" width="640" height="512" hidden>
+        <div class="me-body">
+          <p class="me-kick" data-i="meKick">Personal reading</p>
+          <h3 data-i="meH">Know yourself in more depth</h3>
+          <div class="me-tease">
+            <div class="me-t">
+              <span id="meLuckT"></span>
+              <div class="me-lk" id="meLuck"></div>
+            </div>
+            <div class="me-t"><span id="meDaysT"></span></div>
+          </div>
+          <ul class="mebul">
+            <li data-i="mea">The real you, strengths and blind spots</li>
+            <li data-i="meb">How you love, and the pattern to watch</li>
+            <li data-i="mec">Work and money</li>
+            <li data-i="med">Who lifts you, and who to handle gently</li>
+            <li data-i="mee">Your year month by month, plus the next 30 days</li>
+          </ul>
+          <div class="price-line"><span class="price">$6.99</span><span data-i="mePrice">Six chapters, written for your mansion</span></div>
+          <button class="btn me-btn" type="button" data-buy="me" data-i="meBtn">Read my personal reading &nbsp;→</button>
+          <p class="msg" id="buyMsg3" role="status"></p>
+        </div>
+      </article>
 
       <article class="card">
         <div class="pad">
@@ -587,8 +636,8 @@ document.documentElement.setAttribute('data-hero',v);})();
 
       <article class="card">
         <div class="pad">
-          <h3 data-i="shareMineH">Share your mansion</h3>
-          <div class="share-grid">
+          <h3 data-i="shareMineH" style="font-size:17px">Share your mansion</h3>
+          <div class="share-grid compact">
             <img id="shareImg" alt="Shareable card showing this moon mansion" width="1080" height="1350">
             <div class="share-side">
               <button class="btn" id="shareBtn" type="button" data-i="shareNow" hidden>Share</button>
@@ -597,23 +646,6 @@ document.documentElement.setAttribute('data-hero',v);})();
               <p class="msg" id="shareMsg" role="status"></p>
             </div>
           </div>
-        </div>
-      </article>
-
-      <article class="card meup">
-        <div class="pad">
-          <h3 data-i="meH">Know yourself in more depth</h3>
-          <p class="sec-sub" style="margin:0 0 10px;color:var(--ink-2)" data-i="meSub">Your personal reading: six chapters written for your mansion alone.</p>
-          <ul class="mebul">
-            <li data-i="mea">The real you, strengths and blind spots</li>
-            <li data-i="meb">How you love, and the pattern to watch</li>
-            <li data-i="mec">Work and money</li>
-            <li data-i="med">Who lifts you, and who to handle gently</li>
-            <li data-i="mee">Your year month by month, plus the next 30 days</li>
-          </ul>
-          <div class="price-line"><span class="price">$6.99</span><span data-i="mePrice">Six chapters, written for your mansion</span></div>
-          <button class="btn" type="button" data-buy="me" data-i="meBtn">Read my personal reading</button>
-          <p class="msg" id="buyMsg3" role="status"></p>
         </div>
       </article>
     </div>
@@ -957,7 +989,7 @@ var JA = {
   t1name:'無料診断', t1chip:'いま読んだ内容', t1a:'二人の相性と、お互いの見え方', t1b:'二人はこんな人', t1c:'二人に起きやすいこと', t1d:'シェア用の画像',
   t2name:'くわしい相性鑑定', t2chip:'おすすめ', t2a:'この関係が、今の形になった理由', t2b:'二人がぶつかる場所と、本当の理由', t2c:'相手が口にしない本音', t2d:'恋愛・結婚・日常、それぞれの相性', t2e:'長続きさせる3つのコツ', t2btn:'くわしい鑑定を読む',
   s1name:'あなた編のくわしい鑑定', s1chip:'あなた自身を知る', s1a:'本当のあなた、強みとつまずきやすいところ', s1b:'恋愛のしかたと、くり返しやすいパターン', s1c:'仕事とお金', s1d:'運をくれる人と、ていねいに付き合いたい人', s1e:'運気の流れ（12か月と、これからの30日）', s1btn:'あなた編の鑑定を読む',
-  meH:'あなた自身を、もっと深く知る', meSub:'あなたの宿だけのために書いた、全6章の鑑定です。', mea:'本当のあなた、強みとつまずきやすいところ', meb:'恋愛のしかたと、くり返しやすいパターン', mec:'仕事とお金', med:'運をくれる人と、ていねいに付き合いたい人', mee:'運気の流れ（12か月と、これからの30日）', mePrice:'全6章。あなたの宿に合わせて書かれます', meBtn:'あなた編の鑑定を読む',
+  meKick:'あなた編のくわしい鑑定', meH:'あなた自身を、もっと深く知る', mea:'本当のあなた、強みとつまずきやすいところ', meb:'恋愛のしかたと、くり返しやすいパターン', mec:'仕事とお金', med:'運をくれる人と、ていねいに付き合いたい人', mee:'運気の流れ（12か月と、これからの30日）', mePrice:'全6章。あなたの宿に合わせて書かれます', meBtn:'あなた編の鑑定を読む　→',
   t3name:'カップル完全版', t3chip:'近日公開', t3a:'くわしい相性鑑定のすべて', t3b:'二人が出会った意味', t3c:'一緒に暮らす時のコツ', t3d:'この先12か月、二人に良い日', t3e:'二人の名前が入った、記念の鑑定証', t3btn:'近日公開',
   abH:'宿曜とは',
   f1:'月が毎月通る宿の数', f2:'空海が唐から持ち帰ったと伝わる年', f3:'二人の相性の種類',
@@ -1470,6 +1502,28 @@ function renderMansion(idx, mode){
   $('shareMsg').textContent = '';
   var tiles = document.querySelectorAll('.tile');
   for (var t = 0; t < tiles.length; t++) tiles[t].setAttribute('aria-pressed', String(+tiles[t].dataset.idx === idx));
+  paintMeUp();
+}
+/* 「あなた編」の購入カード：絵と、中身の「さわり」（誰なのか・いつなのかは鑑定書で） */
+function paintMeUp(){
+  var card = $('meUp'); if (!card || !mine) return;
+  var a = mine.idx, img = $('meArt');
+  card.hidden = (viewMode !== 'mine');
+  if (hasChar(a)){ img.src = charURL(a, true); img.hidden = false; } else img.hidden = true;
+  var lucky = [], b;
+  for (b = 0; b < 27; b++) if (b !== a && relOf(a, b).key === 'ei') lucky.push(b);
+  $('meLuckT').innerHTML = L('Three mansions bring you luck. <b class="q">Who are they?</b>', 'あなたに運を運んでくる宿は3つ。<b class="q">それはどの宿？</b>');
+  var lh = '';
+  lucky.forEach(function(x){ lh += '<span class="lk">' + (hasChar(x) ? '<img src="' + charURL(x, true) + '" alt="">' : '') + LOCK_SVG + '</span>'; });
+  $('meLuck').innerHTML = lh;
+  var t = todayJST(), base = dayNum(t.y, t.m, t.d), good = 0, care = 0, GO = ['ei','shin','yu','sei'], CO = ['kai','ki','go','sui'];
+  for (var i = 0; i < 30; i++){
+    var dt = new Date((base + i) * 86400000), sk = shukuOf(dt.getUTCFullYear(), dt.getUTCMonth() + 1, dt.getUTCDate());
+    if (!sk) continue;
+    var k = relOf(a, sk.idx).key;
+    if (GO.indexOf(k) >= 0) good++; else if (CO.indexOf(k) >= 0) care++;
+  }
+  $('meDaysT').innerHTML = L('In the next 30 days, <b>' + good + '</b> days favor you and <b>' + care + '</b> call for care. <b class="q">Which days?</b>', 'これからの30日で、追い風の日は<b>' + good + '日</b>、慎重にしたい日は<b>' + care + '日</b>。<b class="q">それはいつ？</b>');
 }
 
 function drawKimono(idx){
