@@ -14,7 +14,7 @@ BANNER = (
     '<a href="/#editions"><span class="sb-en">Get my reading</span><span class="sb-ja">自分の鑑定を読む</span></a></div>'
 )
 CSS = (
-    '<style>.sample-bar{margin:12px 0;padding:14px 16px;border-radius:14px;background:#fbf3d9;color:#1d1b27;display:flex;flex-direction:column;gap:10px;font-size:14.5px;line-height:1.6}'
+    '<style>.sample-bar{margin:12px 0;padding:14px 16px;border-radius:14px;background:#fbf3d9;color:#1d1b27;display:flex;flex-direction:column;gap:10px;font-size:16px;line-height:1.6}'
     '.sample-bar a{align-self:flex-start;background:#d6b05a;color:#1d1b27;font-weight:800;text-decoration:none;border-radius:999px;padding:9px 18px}'
     'html[lang=ja] .sb-en{display:none}html:not([lang=ja]) .sb-ja{display:none}</style>'
 )
