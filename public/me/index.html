@@ -196,6 +196,18 @@ html[lang="ja"] h1,html[lang="ja"] h2,html[lang="ja"] .closing .line{text-wrap:w
 .cal-key span{display:inline-flex;align-items:center;gap:6px}
 .cal-key i{font-style:normal;font-weight:800;width:26px;height:26px;border-radius:8px;display:inline-grid;place-items:center;font-size:15.5px}
 .cal-key .k-good{background:#cfe8d8;color:#17513a}.cal-key .k-calm{background:#e6e9eb;color:#46555c}.cal-key .k-care{background:#f6d3c8;color:#9c2f16}
+.yr{border-radius:12px;padding:14px;background:var(--paper-2);display:flex;flex-direction:column;gap:6px}
+.yr.now{background:#fbf3d9;box-shadow:0 0 0 2px var(--kin)}
+.yr-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:700;font-size:16px}
+.yr-s{font-family:var(--display);font-size:22px;font-weight:700;line-height:1.3}
+.yr-s small{font-family:var(--body);font-size:15px;font-weight:500;color:var(--ink-2);margin-left:6px}
+.ys{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.yc{border-radius:10px;padding:8px 2px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;line-height:1.25}
+.yc small{font-size:13.5px;font-weight:700}
+.yc b{font-size:15.5px}
+.yc i{font-style:normal;font-size:16px;font-weight:800}
+.yc.t-good{background:#cfe8d8;color:#17513a}.yc.t-calm{background:#e6e9eb;color:#46555c}.yc.t-care{background:#f6d3c8;color:#9c2f16}
+.yc.now{box-shadow:0 0 0 3px var(--ink)}
 .luck{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .lk{background:var(--paper-2);border-radius:14px;padding:14px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
 .lk-i{height:44px;display:grid;place-items:center;font-size:34px;line-height:1}
@@ -540,6 +552,32 @@ function render(){
     months += '<div class="mo' + (mi === cur ? ' now' : '') + '"><div class="mo-l">' + L('Lunar month ' + mi, '旧暦' + mi + '月') + '<small>' + L('around ' + LMON[mi - 1], 'おおよそ' + (((mi + 0) % 12) + 1) + '月') + (mi === cur ? L(' · now', '・いま') : '') + '</small></div>' +
       '<div class="mo-t">' + tagOf(key) + esc(L(TONE[key][0], TONE[key][1])) + '</div></div>';
   }
+  /* 九曜（くよう）：数え年を9で割った余りで、その年の星が決まる。寺社の九曜早見表（数え年1=羅睺、2=土曜、3=水曜、4=金曜、5=日曜、6=火曜、7=計都、8=月曜、9=木曜）に合わせてある */
+  var MK = {good:'◎', calm:'○', care:'▲'};
+  var KUYO = [
+    ['木曜星', 'Jupiter', 'good', 'A year when sprouts come up. Almost anything you start is said to go well. Stay alert, and do not get careless.', '芽が出る年。何を始めても吉とされます。ただし油断は禁物です。'],
+    ['羅睺星', 'Rahu (the eclipse)', 'care', 'A slow year when things do not go as planned. Protect what you have and hold off on big new starts.', '思うように進みにくい年。新しいことを急がず、いまあるものを守る一年に。'],
+    ['土曜星', 'Saturn', 'calm', 'The year after a hard patch, when things begin to open. Good for preparing. Start the real thing a little later.', '苦しい時期のあとに、運が開きはじめる年。準備には向いています。本格的な開始は少し先に。'],
+    ['水曜星', 'Mercury', 'calm', 'A year when people above you and acquaintances lift you up. Stay modest even when things go well.', '目上の人や知人に引き立てられやすい年。調子がよくても、控えめに。'],
+    ['金曜星', 'Venus', 'calm', 'Steady effort pays off. Good for buying, selling, and steady work. Pay attention to detail.', 'コツコツ進めると成果が出る年。お金の整理や、地道な仕事に向いています。細かいところまで目を配って。'],
+    ['日曜星', 'Sun', 'good', 'A tailwind year. Things tend to go smoothly. Do not get proud, and avoid extravagance.', '追い風の年。物事が順調に運びやすい時です。おごらず、ぜいたくは控えめに。'],
+    ['火曜星', 'Mars', 'care', 'A year to be careful with haste, quarrels and fire or theft. Avoid forcing things and wait for the year to turn.', 'あせり、争いごと、火の元や盗難に気をつけたい年。無理をせず、年が変わるのを待つ気持ちで。'],
+    ['計都星', 'Ketu (the comet)', 'care', 'A year of hesitation and mix-ups. Avoid hasty decisions and borrowing money, and talk things over with someone you trust.', '迷いや行き違いが出やすい年。軽はずみな決断やお金の借り入れは避けて、信頼できる人に相談を。'],
+    ['月曜星', 'Moon', 'good', 'A year when happy things tend to come in threes. Find a good adviser and think things through.', 'うれしいことが重なりやすい年。よい相談相手を持って、じっくり考えて進むと運が味方します。']
+  ];
+  var TL = {good:['Tailwind', '追い風'], calm:['Steady', '安定'], care:['Go gently', '慎重に']};
+  var yearHtml = '';
+  if (mine.y){
+    var yh = '', ys = '';
+    for (var yi = 0; yi < 5; yi++){
+      var yy = t.y + yi, age = yy - mine.y + 1, K9 = KUYO[age % 9];
+      ys += '<span class="yc t-' + K9[2] + (yi === 0 ? ' now' : '') + '"><small>' + L(String(yy), yy + '年') + '</small><i aria-hidden="true">' + MK[K9[2]] + '</i><b>' + esc(L(K9[1].replace(/ \(.*\)/, ''), K9[0])) + '</b></span>';
+      if (yi < 2) yh += '<div class="yr' + (yi === 0 ? ' now' : '') + '"><div class="yr-h"><span class="tag t-' + K9[2] + '">' + L(TL[K9[2]][0], TL[K9[2]][1]) + '</span>' + L(yi === 0 ? 'This year, ' + yy : 'Next year, ' + yy, yi === 0 ? '今年（' + yy + '年）' : '来年（' + yy + '年）') + '</div><div class="yr-s">' + esc(L(K9[1], K9[0])) + '<small>' + L('age ' + age + ' by the old count', '数え年' + age + '歳') + '</small></div><p>' + esc(L(K9[3], K9[4])) + '</p></div>';
+    }
+    yearHtml = '<h3 class="grp">' + L('Your star for each year', '年ごとの運気（九曜）') + '</h3>' +
+      '<p>' + L('Shukuyō also reads a nine-year cycle of stars, called Kuyō. Your star changes every year, and follows your age counted the old Japanese way (you are one at birth, and add a year each New Year).', '宿曜には、九曜（くよう）という、9年でひとめぐりする星の見方もあります。星は毎年変わり、昔ながらの数え年（生まれた年が1歳、お正月ごとに1つ増える）で決まります。') + '</p>' +
+      yh + '<div class="ys">' + ys + '</div>';
+  }
   var days = nextDays(30), dh = '', good = [], care = [], MK = {good:'◎', calm:'○', care:'▲'}, t0 = todayJST(), curM = 0;
   var GO = ['ei','shin','yu','sei'], CO = ['kai','ki','go','sui'];
   days.forEach(function(x){
@@ -563,9 +601,11 @@ function render(){
     });
     return '<div class="pick ' + cls + '"><span class="mini">' + ttl + '</span>' + (rows || '<p>' + L('None in the next 30 days.', 'この30日間にはありません。') + '</p>') + '</div>';
   };
-  h += chapter(5, L('Your year, month by month', '運気の流れ'),
+  h += chapter(5, L('Your luck, year by year', '運気の流れ'),
     '<p>' + L('In Shukuyō, each lunar month and each day belongs to one of the 27 mansions. How that mansion relates to yours sets the tone. This is the traditional method, worked out for your mansion.', '宿曜では、旧暦の月も毎日も、27の宿のどれかにあたります。その宿があなたの宿から見て何にあたるかで、その時の流れが決まります。伝統的な読み方を、あなたの宿に合わせて計算しました。') + '</p>' +
-    '<h3 class="grp">' + L('The 12 lunar months', '旧暦12か月') + '</h3><div class="mon">' + months + '</div>' +
+    yearHtml +
+    '<h3 class="grp">' + L('The 12 lunar months', '旧暦12か月') + '</h3>' +
+    '<p>' + L('This part is the same every year. It is the pattern of your mansion, month by month.', 'この部分は、毎年同じです。あなたの宿の、月ごとのめぐりの傾向です。') + '</p><div class="mon">' + months + '</div>' +
     '<h3 class="grp">' + L('The next 30 days', 'これからの30日') + '</h3>' +
     '<div class="cal-key"><span><i class="k-good">◎</i>' + L('Favorable', '追い風') + '</span><span><i class="k-calm">○</i>' + L('Steady', '安定') + '</span><span><i class="k-care">▲</i>' + L('Go gently', '慎重に') + '</span><span>' + L('Black frame: today', '黒い枠：今日') + '</span></div>' +
     '<div class="calm">' + dh + '</div></div>' +

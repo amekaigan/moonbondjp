@@ -616,7 +616,7 @@ document.documentElement.setAttribute('data-hero',v);})();
             <li data-i="meb">How you love, and the pattern to watch</li>
             <li data-i="mec">Work and money</li>
             <li data-i="med">Who lifts you, and who to handle gently</li>
-            <li data-i="mee">Your year month by month, plus the next 30 days</li>
+            <li data-i="mee">Your luck year by year, month by month, plus the next 30 days</li>
           </ul>
           <div class="price-line"><span class="price">$6.99</span><span data-i="mePrice">Six chapters, written for your mansion</span></div>
           <button class="btn me-btn" type="button" data-buy="me" data-i="meBtn">Read my personal reading &nbsp;→</button>
@@ -701,7 +701,7 @@ document.documentElement.setAttribute('data-hero',v);})();
       <div class="tier">
         <div class="tier-top"><span class="tier-name" data-i="s1name">Personal reading</span><span class="chip kin" data-i="s1chip">Just you</span></div>
         <span class="price">$6.99</span>
-        <ul><li data-i="s1a">The real you, strengths and blind spots</li><li data-i="s1b">How you love, and the pattern to watch</li><li data-i="s1c">Work and money</li><li data-i="s1d">Who lifts you, and who to handle gently</li><li data-i="s1e">Your year month by month, plus the next 30 days</li></ul>
+        <ul><li data-i="s1a">The real you, strengths and blind spots</li><li data-i="s1b">How you love, and the pattern to watch</li><li data-i="s1c">Work and money</li><li data-i="s1d">Who lifts you, and who to handle gently</li><li data-i="s1e">Your luck year by year, month by month, plus the next 30 days</li></ul>
         <button class="btn" type="button" data-buy="me" data-i="s1btn">Read my personal reading</button>
         <a class="sample-link" href="/me/sample/" data-i="sampleLink">See a sample reading</a>
       </div>
@@ -998,8 +998,8 @@ var JA = {
   t1name:'無料診断', t1chip:'いま読んだ内容', t1a:'二人の相性と、お互いの見え方', t1b:'二人はこんな人', t1c:'二人に起きやすいこと', t1d:'シェア用の画像',
   t2name:'くわしい相性鑑定', t2chip:'おすすめ', t2a:'この関係が、今の形になった理由', t2b:'二人がぶつかる場所と、本当の理由', t2c:'相手が口にしない本音', t2d:'恋愛・結婚・日常、それぞれの相性', t2e:'長続きさせる3つのコツ', t2btn:'くわしい鑑定を読む',
   sampleLink:'鑑定書のサンプルを見る', refundNote:'鑑定書はお支払い後すぐに開きます。', refundLink:'返金・お問い合わせ',
-  s1name:'あなた編のくわしい鑑定', s1chip:'あなた自身を知る', s1a:'本当のあなた、強みとつまずきやすいところ', s1b:'恋愛のしかたと、くり返しやすいパターン', s1c:'仕事とお金', s1d:'運をくれる人と、ていねいに付き合いたい人', s1e:'運気の流れ（12か月と、これからの30日）', s1btn:'あなた編の鑑定を読む',
-  meKick:'あなた編のくわしい鑑定', meH:'あなた自身を、もっと深く知る', mea:'本当のあなた、強みとつまずきやすいところ', meb:'恋愛のしかたと、くり返しやすいパターン', mec:'仕事とお金', med:'運をくれる人と、ていねいに付き合いたい人', mee:'運気の流れ（12か月と、これからの30日）', mePrice:'全6章。あなたの宿に合わせて書かれます', meBtn:'あなた編の鑑定を読む　→',
+  s1name:'あなた編のくわしい鑑定', s1chip:'あなた自身を知る', s1a:'本当のあなた、強みとつまずきやすいところ', s1b:'恋愛のしかたと、くり返しやすいパターン', s1c:'仕事とお金', s1d:'運をくれる人と、ていねいに付き合いたい人', s1e:'運気の流れ（今年からの5年、12か月、これからの30日）', s1btn:'あなた編の鑑定を読む',
+  meKick:'あなた編のくわしい鑑定', meH:'あなた自身を、もっと深く知る', mea:'本当のあなた、強みとつまずきやすいところ', meb:'恋愛のしかたと、くり返しやすいパターン', mec:'仕事とお金', med:'運をくれる人と、ていねいに付き合いたい人', mee:'運気の流れ（今年からの5年、12か月、これからの30日）', mePrice:'全6章。あなたの宿に合わせて書かれます', meBtn:'あなた編の鑑定を読む　→',
   t3name:'カップル完全版', t3chip:'近日公開', t3a:'くわしい相性鑑定のすべて', t3b:'二人が出会った意味', t3c:'一緒に暮らす時のコツ', t3d:'この先12か月、二人に良い日', t3e:'二人の名前が入った、記念の鑑定証', t3btn:'近日公開',
   abH:'宿曜とは',
   f1:'月が毎月通る宿の数', f2:'空海が唐から持ち帰ったと伝わる年', f3:'二人の相性の種類',
@@ -1543,8 +1543,9 @@ function paintMeUp(){
   }
   var h1 = dEi < 0 ? '' : (dEi === 0 ? L('Today is <b>your luckiest kind of day</b>.', '今日は、<b>あなたの運気がいちばん味方する日</b>です。') : L('Your luckiest kind of day is <b>' + dEi + (dEi === 1 ? ' day' : ' days') + '</b> away.', 'あなたの運気がいちばん味方する日まで、あと<b>' + dEi + '日</b>。'));
   var h2 = bestN < 0 ? '' : (bestN === 0 ? L(' The strongest month of your year is <b>this month</b>.', 'この1年でもっとも運気が高まる月は、<b>今月</b>です。') : L(' The strongest month of your year is <b>' + bestN + (bestN === 1 ? ' month' : ' months') + '</b> away.', 'この1年でもっとも運気が高まる月まで、あと<b>' + bestN + 'か月</b>。'));
-  $('meHook').innerHTML = h1 + (h1 && h2 ? '<br>' : '') + h2.replace(/^ /, '');
-  $('meHook').hidden = !(h1 || h2);
+  var h3 = mine.y ? L('What kind of year is <b>' + (t.y + 1) + '</b> for you?', '<b>' + (t.y + 1) + '年</b>は、あなたにとってどんな一年になる？') : '';
+  $('meHook').innerHTML = h1 + (h1 && h2 ? '<br>' : '') + h2.replace(/^ /, '') + ((h1 || h2) && h3 ? '<br>' : '') + h3;
+  $('meHook').hidden = !(h1 || h2 || h3);
   $('meDaysT').innerHTML = L('In the next 30 days, <b>' + good + '</b> days favor you and <b>' + care + '</b> call for care. <b class="q">Which days?</b>', 'これからの30日で、追い風の日は<b>' + good + '日</b>、慎重にしたい日は<b>' + care + '日</b>。<b class="q">それはいつ？</b>');
 }
 
