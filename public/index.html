@@ -1367,7 +1367,7 @@ function renderFreeExtras(a, b, key, pk){
 }
 
 /* ---------- character art（できた宿から順に /art/chars/ に置く） ---------- */
-var CHARS = {'pleiades':1, 'net':1, 'beak':1, 'three-stars':1, 'well':1, 'spirit':2, 'rooftop':1, 'willow':2, 'star':2, 'drawn-bow':2, 'wings':2, 'chariot':1, 'horn':1, 'neck':1, 'root':1, 'chamber':1, 'heart':1, 'tail':2, 'winnowing-basket':1, 'dipper':1, 'maiden':1, 'void':1, 'hall':1, 'wall':1, 'stride':1, 'bond':1};
+var CHARS = {'pleiades':1, 'net':1, 'beak':1, 'three-stars':1, 'well':1, 'spirit':2, 'rooftop':1, 'willow':2, 'star':2, 'drawn-bow':2, 'wings':2, 'chariot':1, 'horn':1, 'neck':1, 'root':1, 'chamber':1, 'heart':1, 'tail':2, 'winnowing-basket':1, 'dipper':1, 'maiden':1, 'void':1, 'hall':1, 'wall':1, 'stride':1, 'bond':1, 'granary':1};
 function charSlug(idx){ return M[idx][2].toLowerCase().replace(/[^a-z]+/g, '-'); }
 function hasChar(idx){ return !!CHARS[charSlug(idx)]; }
 /* 絵を差し替えたら CHARS の数字を上げる（ブラウザに残った古い絵を読み直させるため） */
