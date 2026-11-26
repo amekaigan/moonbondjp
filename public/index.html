@@ -396,6 +396,8 @@ html[lang="ja"] .sub{font-size:16px}
 .meup .price-line{color:var(--mist)}
 .me-btn{background:var(--kin);border-color:var(--kin);color:var(--ink);font-size:18px;font-weight:800;padding:17px 18px;border-radius:14px;box-shadow:0 4px 0 #a98a3a}
 .meup .msg{color:var(--mist)}
+.sample-link{display:block;text-align:center;margin-top:10px;font-size:14.5px;font-weight:700;color:inherit;text-decoration:underline;text-underline-offset:3px}
+.meup .sample-link{color:var(--kin)}
 .mebul{display:flex;flex-direction:column;gap:6px;font-size:14.5px;margin-bottom:12px}
 .mebul li{display:grid;grid-template-columns:14px 1fr;gap:8px;align-items:start}
 .mebul li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--kin);margin-top:8px}
@@ -544,6 +546,7 @@ document.documentElement.setAttribute('data-hero',v);})();
       <div class="lock-list" id="lockList"></div>
       <div class="price-line"><span class="price">$9.99</span><span data-i="priceLine">All 5 remaining chapters, written for your exact pairing</span></div>
       <button class="btn" type="button" data-buy="bond" data-i="unlock">Read the next 5 chapters</button>
+      <a class="sample-link" href="/full/sample/" data-i="sampleLink">See a sample reading</a>
       <button class="linkbtn" type="button" id="compareBtn" data-i="compare">See all options</button>
       <p class="msg" id="buyMsg" role="status"></p>
       <p class="fine" data-i="lockFine">A reading for reflection and fun. It describes tendencies and promises no outcome.</p>
@@ -617,6 +620,7 @@ document.documentElement.setAttribute('data-hero',v);})();
           </ul>
           <div class="price-line"><span class="price">$6.99</span><span data-i="mePrice">Six chapters, written for your mansion</span></div>
           <button class="btn me-btn" type="button" data-buy="me" data-i="meBtn">Read my personal reading &nbsp;→</button>
+          <a class="sample-link" href="/me/sample/" data-i="sampleLink">See a sample reading</a>
           <p class="msg" id="buyMsg3" role="status"></p>
         </div>
       </article>
@@ -692,12 +696,14 @@ document.documentElement.setAttribute('data-hero',v);})();
         <span class="price">$9.99</span>
         <ul><li data-i="t2a">Why this bond feels the way it does</li><li data-i="t2b">Where you clash, and what it is really about</li><li data-i="t2c">What they need from you but rarely say</li><li data-i="t2d">Love, marriage and daily life, one by one</li><li data-i="t2e">Three things that make it last</li></ul>
         <button class="btn" type="button" data-buy="bond" data-i="t2btn">Read the full reading</button>
+        <a class="sample-link" href="/full/sample/" data-i="sampleLink">See a sample reading</a>
       </div>
       <div class="tier">
         <div class="tier-top"><span class="tier-name" data-i="s1name">Personal reading</span><span class="chip kin" data-i="s1chip">Just you</span></div>
         <span class="price">$6.99</span>
         <ul><li data-i="s1a">The real you, strengths and blind spots</li><li data-i="s1b">How you love, and the pattern to watch</li><li data-i="s1c">Work and money</li><li data-i="s1d">Who lifts you, and who to handle gently</li><li data-i="s1e">Your year month by month, plus the next 30 days</li></ul>
         <button class="btn" type="button" data-buy="me" data-i="s1btn">Read my personal reading</button>
+        <a class="sample-link" href="/me/sample/" data-i="sampleLink">See a sample reading</a>
       </div>
       <div class="tier">
         <div class="tier-top"><span class="tier-name" data-i="t3name">Couple edition</span><span class="chip kin" data-i="t3chip">Coming soon</span></div>
@@ -706,6 +712,7 @@ document.documentElement.setAttribute('data-hero',v);})();
         <button class="btn line" type="button" disabled aria-disabled="true" style="opacity:.55;cursor:default" data-i="t3btn">Coming soon</button>
       </div>
     </div>
+    <p class="msg" style="color:var(--mist);text-align:center"><span data-i="refundNote">Digital readings open right after payment.</span> <a href="/refund/" data-i="refundLink" style="color:var(--kin)">Refunds and contact</a></p>
     <p class="msg" id="buyMsg2" role="status" style="color:var(--mist)"></p>
 
   </div>
@@ -741,7 +748,7 @@ document.documentElement.setAttribute('data-hero',v);})();
   <canvas id="footScene" aria-hidden="true"></canvas>
   <div class="foot-in">
     <div class="wrap">
-      <nav aria-label="Guides" lang="en" style="display:flex;gap:6px 18px;flex-wrap:wrap;margin-bottom:10px;font-weight:700"><a href="/mansions/" style="color:inherit">27 mansions</a><a href="/bonds/" style="color:inherit">6 bonds</a></nav>
+      <nav aria-label="Guides" lang="en" style="display:flex;gap:6px 18px;flex-wrap:wrap;margin-bottom:10px;font-weight:700"><a href="/mansions/" style="color:inherit">27 mansions</a><a href="/refund/" style="color:inherit">Refunds &amp; contact</a><a href="/bonds/" style="color:inherit">6 bonds</a></nav>
       <p data-i="ft1">For entertainment purposes only. Readings describe tendencies and promise no outcome.</p>
       <p data-i="ft2">Mansions follow the Japanese lunisolar calendar in Japan time, for birthdays from 1920 onward. A leap month takes the mansions of the month it repeats.</p>
     </div>
@@ -990,6 +997,7 @@ var JA = {
   edH:'もっと詳しく知りたい方へ', edSub:'知りたい深さに合わせて選べます。',
   t1name:'無料診断', t1chip:'いま読んだ内容', t1a:'二人の相性と、お互いの見え方', t1b:'二人はこんな人', t1c:'二人に起きやすいこと', t1d:'シェア用の画像',
   t2name:'くわしい相性鑑定', t2chip:'おすすめ', t2a:'この関係が、今の形になった理由', t2b:'二人がぶつかる場所と、本当の理由', t2c:'相手が口にしない本音', t2d:'恋愛・結婚・日常、それぞれの相性', t2e:'長続きさせる3つのコツ', t2btn:'くわしい鑑定を読む',
+  sampleLink:'鑑定書のサンプルを見る', refundNote:'鑑定書はお支払い後すぐに開きます。', refundLink:'返金・お問い合わせ',
   s1name:'あなた編のくわしい鑑定', s1chip:'あなた自身を知る', s1a:'本当のあなた、強みとつまずきやすいところ', s1b:'恋愛のしかたと、くり返しやすいパターン', s1c:'仕事とお金', s1d:'運をくれる人と、ていねいに付き合いたい人', s1e:'運気の流れ（12か月と、これからの30日）', s1btn:'あなた編の鑑定を読む',
   meKick:'あなた編のくわしい鑑定', meH:'あなた自身を、もっと深く知る', mea:'本当のあなた、強みとつまずきやすいところ', meb:'恋愛のしかたと、くり返しやすいパターン', mec:'仕事とお金', med:'運をくれる人と、ていねいに付き合いたい人', mee:'運気の流れ（12か月と、これからの30日）', mePrice:'全6章。あなたの宿に合わせて書かれます', meBtn:'あなた編の鑑定を読む　→',
   t3name:'カップル完全版', t3chip:'近日公開', t3a:'くわしい相性鑑定のすべて', t3b:'二人が出会った意味', t3c:'一緒に暮らす時のコツ', t3d:'この先12か月、二人に良い日', t3e:'二人の名前が入った、記念の鑑定証', t3btn:'近日公開',
@@ -1767,6 +1775,7 @@ function renderBond(){
   };
   drawPair();
   $('pairMsg').textContent = ''; $('buyMsg').textContent = ''; $('buyMsg2').textContent = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.tier-msg'), function(n){ n.textContent = ''; });
   $('bondChip').textContent = (mine.example || partner.example) ? L('Sample', 'サンプル') : L('Your result', 'あなたたちの結果');
   $('bondState').textContent = (mine.example || partner.example)
     ? L('This is a sample. Enter two birthdays above to see yours.', 'これはサンプルです。上で二人の誕生日を入れると、あなたたちの結果に変わります。')
@@ -1911,7 +1920,14 @@ function init(){
   for (var bi = 0; bi < buys.length; bi++){
     buys[bi].addEventListener('click', function(e){
       var kind = e.currentTarget.getAttribute('data-buy');
-      var note = e.currentTarget.closest('.locked') ? $('buyMsg') : (e.currentTarget.closest('.meup') ? $('buyMsg3') : $('buyMsg2'));
+      var btn = e.currentTarget, note;
+      if (btn.closest('.locked')) note = $('buyMsg');
+      else if (btn.closest('.meup')) note = $('buyMsg3');
+      else if (btn.closest('.tier')){
+        /* プラン表のボタンは、押したカードの中に支払い欄を出す（表の下の離れた場所だと、押しても何も起きないように見えるため） */
+        note = btn.parentNode.querySelector('.tier-msg');
+        if (!note){ note = document.createElement('p'); note.className = 'msg tier-msg'; note.setAttribute('role', 'status'); note.style.color = btn.closest('.tier.main') ? 'var(--ink-2)' : 'var(--mist)'; btn.parentNode.appendChild(note); }
+      } else note = $('buyMsg2');
       startCheckout(note, kind);
     });
   }
@@ -1967,6 +1983,7 @@ function init(){
       if (!cfg.clientId){ note.textContent = L('Coming soon. We are still getting this ready.', 'ただいま準備中です。もうしばらくお待ちください。'); return; }
       return loadPayPal(cfg.clientId).then(function(){
         var box = ppBox(note); box.innerHTML = '';
+        setTimeout(function(){ box.scrollIntoView({behavior:reduce() ? 'auto' : 'smooth', block:'center'}); }, 450);
         note.textContent = L('Your reading opens right after payment.', 'お支払いが終わると、すぐに鑑定が開きます。');
         if (window.mbTrack) mbTrack('begin_checkout', {currency:'USD', value:price, product:kind});
         var opts = {

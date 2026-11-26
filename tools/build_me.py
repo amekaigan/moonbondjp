@@ -330,3 +330,7 @@ out = (TEMPLATE
 (ROOT / 'public/me/index.html').write_text(out, encoding='utf-8')
 (ROOT / 'public/me-ready.json').write_text(json.dumps(sorted(ME.keys()), ensure_ascii=False) + '\n', encoding='utf-8')
 print('作成: public/me/index.html（', len(ME), '宿ぶん）')
+
+# 見本ページも一緒に作り直す
+import subprocess
+subprocess.run([sys.executable, str(ROOT / 'tools/build_samples.py')], check=True)
