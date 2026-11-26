@@ -9,10 +9,14 @@
   s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
   document.head.appendChild(s);
   gtag('js', new Date());
+  /* トップの絵のABテスト（index.html の head で決めた値）。すべてのイベントに hero を付けて、どちらの絵の人かで比べられるようにする */
+  var hero = document.documentElement.getAttribute('data-hero');
+  if (hero) gtag('set', 'user_properties', { hero_variant: hero });
   /* Never send the query string: /full/?a=..&b=.. carries birthdays. */
   gtag('config', GA_ID, { page_location: location.origin + location.pathname, page_referrer: document.referrer ? document.referrer.split('?')[0] : '' });
   var isFull = /^\/full\/?/.test(location.pathname);
-  window.mbTrack = function (name, params) { try { gtag('event', name, params || {}); } catch (e) {} };
+  window.mbTrack = function (name, params) { try { params = params || {}; if (hero && !params.hero) params.hero = hero; gtag('event', name, params); } catch (e) {} };
+  if (hero) mbTrack('hero_view', { hero: hero });
   function lang() { return document.documentElement.lang === 'ja' ? 'ja' : 'en'; }
   document.addEventListener('click', function (e) {
     var t = e.target.closest && e.target.closest('button, a, .tile, [data-buy]');
