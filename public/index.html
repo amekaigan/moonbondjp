@@ -381,6 +381,8 @@ html[lang="ja"] .sub{font-size:16px}
 .me-body{padding:20px 20px 22px;display:flex;flex-direction:column;gap:14px}
 .me-kick{font-size:12.5px;font-weight:800;letter-spacing:.08em;color:var(--kin)}
 .meup h3{font-size:25px;line-height:1.3;color:var(--paper)}
+.me-hook{background:rgba(214,176,90,.16);border-radius:12px;padding:12px 14px;font-size:17px;font-weight:700;line-height:1.65}
+.me-hook b{font-family:var(--display);font-size:24px;color:var(--kin);margin:0 2px}
 .me-tease{display:flex;flex-direction:column;gap:10px}
 .me-t{background:rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.6;display:flex;flex-direction:column;gap:10px}
 .me-t b{font-family:var(--display);font-size:22px;color:var(--kin);margin:0 2px}
@@ -548,8 +550,8 @@ document.documentElement.setAttribute('data-hero',v);})();
     </article>
     <article class="card">
       <div class="pad">
-        <h3 data-i="shareBondH">Share your bond</h3>
-        <div class="share-grid">
+        <h3 data-i="shareBondH" style="font-size:17px">Share your bond</h3>
+        <div class="share-grid compact">
           <img id="pairImg" alt="Tall story card showing the bond between the two mansions" width="1080" height="1920">
           <div class="share-side">
             <button class="btn" id="pairShareBtn" type="button" data-i="shareNow" hidden>Share</button>
@@ -595,10 +597,10 @@ document.documentElement.setAttribute('data-hero',v);})();
         </div>
       </article>
       <article class="card meup" id="meUp">
-        <img class="me-art" id="meArt" alt="" width="640" height="512" hidden>
         <div class="me-body">
           <p class="me-kick" data-i="meKick">Personal reading</p>
           <h3 data-i="meH">Know yourself in more depth</h3>
+          <p class="me-hook" id="meHook"></p>
           <div class="me-tease">
             <div class="me-t">
               <span id="meLuckT"></span>
@@ -1507,9 +1509,8 @@ function renderMansion(idx, mode){
 /* 「あなた編」の購入カード：絵と、中身の「さわり」（誰なのか・いつなのかは鑑定書で） */
 function paintMeUp(){
   var card = $('meUp'); if (!card || !mine) return;
-  var a = mine.idx, img = $('meArt');
+  var a = mine.idx;
   card.hidden = (viewMode !== 'mine');
-  if (hasChar(a)){ img.src = charURL(a, true); img.hidden = false; } else img.hidden = true;
   var lucky = [], b;
   for (b = 0; b < 27; b++) if (b !== a && relOf(a, b).key === 'ei') lucky.push(b);
   $('meLuckT').innerHTML = L('Three mansions bring you luck. <b class="q">Who are they?</b>', 'あなたに運を運んでくる宿は3つ。<b class="q">それはどの宿？</b>');
@@ -1523,6 +1524,19 @@ function paintMeUp(){
     var k = relOf(a, sk.idx).key;
     if (GO.indexOf(k) >= 0) good++; else if (CO.indexOf(k) >= 0) care++;
   }
+  var dEi = -1, order = ['ei','shin','yu','sei'], bestN = -1, bestR = 99, lu = lunarOf(base), cur = lu ? lu.m : 0;
+  for (i = 0; i < 90 && dEi < 0; i++){
+    var d2 = new Date((base + i) * 86400000), s2 = shukuOf(d2.getUTCFullYear(), d2.getUTCMonth() + 1, d2.getUTCDate());
+    if (s2 && relOf(a, s2.idx).key === 'ei') dEi = i;
+  }
+  if (cur) for (var n = 0; n < 12; n++){
+    var mm = (cur - 1 + n) % 12 + 1, r = order.indexOf(relOf(a, FIRST[mm]).key);
+    if (r >= 0 && r < bestR){ bestR = r; bestN = n; }
+  }
+  var h1 = dEi < 0 ? '' : (dEi === 0 ? L('Today is <b>your luckiest kind of day</b>.', '今日は、<b>あなたの運気がいちばん味方する日</b>です。') : L('Your luckiest kind of day is <b>' + dEi + (dEi === 1 ? ' day' : ' days') + '</b> away.', 'あなたの運気がいちばん味方する日まで、あと<b>' + dEi + '日</b>。'));
+  var h2 = bestN < 0 ? '' : (bestN === 0 ? L(' The strongest month of your year is <b>this month</b>.', 'この1年でもっとも運気が高まる月は、<b>今月</b>です。') : L(' The strongest month of your year is <b>' + bestN + (bestN === 1 ? ' month' : ' months') + '</b> away.', 'この1年でもっとも運気が高まる月まで、あと<b>' + bestN + 'か月</b>。'));
+  $('meHook').innerHTML = h1 + (h1 && h2 ? '<br>' : '') + h2.replace(/^ /, '');
+  $('meHook').hidden = !(h1 || h2);
   $('meDaysT').innerHTML = L('In the next 30 days, <b>' + good + '</b> days favor you and <b>' + care + '</b> call for care. <b class="q">Which days?</b>', 'これからの30日で、追い風の日は<b>' + good + '日</b>、慎重にしたい日は<b>' + care + '日</b>。<b class="q">それはいつ？</b>');
 }
 
