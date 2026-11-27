@@ -186,9 +186,11 @@ html[lang="ja"] h1,html[lang="ja"] h2,html[lang="ja"] .closing .line{text-wrap:w
 .mb p{font-size:16px;line-height:1.7}
 .mb .lbl{font-weight:800}
 .mb .lbl.g{color:#17513a}.mb .lbl.c{color:#9c2f16}
-.cert-form{display:flex;flex-direction:column;gap:10px}
-.cert-form label{display:flex;flex-direction:column;gap:4px;font-size:15.5px;font-weight:700}
-.cert-form input{font:inherit;font-size:17px;padding:12px 12px;border-radius:10px;border:1px solid rgba(29,27,39,.3);background:#fff;color:var(--ink)}
+.cert-form{display:flex;flex-direction:column;gap:10px;min-width:0;max-width:100%}
+.cert-form label{display:flex;flex-direction:column;gap:4px;font-size:15.5px;font-weight:700;min-width:0;max-width:100%}
+.cert-form input{font:inherit;font-size:17px;padding:12px 12px;border-radius:10px;border:1px solid rgba(29,27,39,.3);background:#fff;color:var(--ink);display:block;width:100%;min-width:0;max-width:100%;box-sizing:border-box;-webkit-appearance:none;appearance:none}
+.cert-btn{width:100%;box-sizing:border-box}
+html,body{overflow-x:clip}
 .cert-btn{appearance:none;border:0;background:var(--shu);color:#fff6ea;font:inherit;font-size:17px;font-weight:700;border-radius:10px;padding:14px 18px;cursor:pointer}
 .cert-out{display:flex;flex-direction:column;gap:10px;align-items:center}
 .cert-out img{width:100%;max-width:420px;height:auto;border-radius:12px;box-shadow:0 4px 18px rgba(0,0,0,.25)}
@@ -869,8 +871,8 @@ function render(){
   /* 13 */
   h += chapter(13, L('Your certificate', '記念の鑑定証'),
     '<p>' + L('A keepsake with your two names, your mansions and your bond. Type your names and save it as a picture.', '二人の名前と宿、縁のかたちが入った、記念の鑑定証です。名前を入れて、画像として保存できます。') + '</p>' +
-    '<div class="cert-form"><label>' + L('Your name', 'あなたの名前') + '<input type="text" id="certA" maxlength="20" autocomplete="off" value="' + esc(certNames.a) + '"></label>' +
-    '<label>' + L('Their name', 'お相手の名前') + '<input type="text" id="certB" maxlength="20" autocomplete="off" value="' + esc(certNames.b) + '"></label>' +
+    '<div class="cert-form"><label>' + L('Your name', 'あなたの名前') + '<input type="text" id="certA" size="10" maxlength="20" autocomplete="off" value="' + esc(certNames.a) + '"></label>' +
+    '<label>' + L('Their name', 'お相手の名前') + '<input type="text" id="certB" size="10" maxlength="20" autocomplete="off" value="' + esc(certNames.b) + '"></label>' +
     '<button class="cert-btn" type="button" id="certGo">' + L('Make the certificate', '鑑定証をつくる') + '</button></div><div class="cert-out" id="certOut"></div>');
   /* ===== 完全版の追加章ここまで ===== */
   h += '<section class="closing"><img src="/full/art/moon.webp" alt="" width="330" height="328"><p class="for">' + L('For the two of you', '二人へ') + '</p><p class="line">' + esc(F('CLOSE', k)) + '</p>' +
