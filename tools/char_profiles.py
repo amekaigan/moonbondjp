@@ -16,7 +16,7 @@ CHARS = [
       likes=("Old books and starry nights", "古い本と、星の夜"),
       spirit=("Hoho", "ほうほう", "a little owl with seven stars on its chest", "胸に七つ星のある小さなフクロウ"),
       look="10代後半。明るい茶色の長いストレートの髪、細い丸眼鏡。藤色に七宝つなぎの着物、黄金色の帯。"),
- dict(slug="net", name=("Ayumi", "あゆみ"),
+ dict(slug="net", name=("Mikuri", "みくり"),
       traits=[("Steady", "コツコツ"), ("Honest", "まっすぐ"), ("Never gives up", "あきらめない")],
       line=("One step, then the next one.", "一歩ずつ、一歩ずつ。"),
       likes=("Mountain paths and warm lanterns", "山道と、あたたかい提灯"),
