@@ -44,6 +44,10 @@ for k, c in enumerate(CHARS):
         extra = '<p class="note">設定シートはほぼ完成。今のチャットで、これを送るだけです。</p><img class="sheet" src="img/kirara-sheet.png" alt="きららの設定シート">'
     else:
         pr = prompt(c); extra = ''
+        sh = ROOT / f"art-src/sheets/{c['slug']}.png"
+        if sh.exists():
+            shutil.copy(sh, OUT / f"img/{c['slug']}-sheet.png")
+            extra = f'<p class="note">設定シート完成</p><img class="sheet" src="img/{c["slug"]}-sheet.png" alt="{e(c["name"][1])}の設定シート">'
     cards += f'''<article class="c" id="{c['slug']}"><img src="img/{c['slug']}.webp" alt="{e(c['name'][1])}" loading="lazy">
 <div class="b"><p class="sh"><span class="kj">{m[0]}</span>{m[0]}宿 · {e(m[2])}</p>
 <h2>{e(c['name'][1])}<small>{e(c['name'][0])}</small></h2>
